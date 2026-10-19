@@ -53,6 +53,8 @@ async def test_mcp_tools_list(mcp):
         "get_hint",
         "mock_interview",
         "get_code_solution",
+        "export_apl_document",
+        "send_streak_reminder",
     ]
     for expected in expected_tools:
         assert expected in tool_names
@@ -88,6 +90,7 @@ async def test_mcp_resources_list_and_read(mcp):
     uris = [r["uri"] for r in resources]
     assert "skillforge://topics/catalog" in uris
     assert "skillforge://progress/overview" in uris
+    assert "skillforge://notifications/feed" in uris
 
     # Read
     req_read = {
@@ -134,3 +137,39 @@ async def test_mcp_unknown_method_error(mcp):
     response = await mcp.handle_jsonrpc(request)
     assert "error" in response
     assert response["error"]["code"] == -32601
+
+
+@pytest.mark.asyncio
+async def test_mcp_send_streak_reminder_and_notifications_feed(mcp):
+    # Test tool call
+    call_req = {
+        "jsonrpc": "2.0",
+        "id": 10,
+        "method": "tools/call",
+        "params": {
+            "name": "send_streak_reminder",
+            "arguments": {"user_id": "test_dev", "urgency": "streak_at_risk"},
+        },
+    }
+    call_res = await mcp.handle_jsonrpc(call_req)
+    assert "result" in call_res
+    content = call_res["result"]["content"]
+    data = json.loads(content[0]["text"])
+    assert "title" in data
+    assert "body" in data
+    assert "voice_prompt" in data
+    assert "streak_days" in data
+
+    # Test resource read
+    read_req = {
+        "jsonrpc": "2.0",
+        "id": 11,
+        "method": "resources/read",
+        "params": {"uri": "skillforge://notifications/feed"},
+    }
+    read_res = await mcp.handle_jsonrpc(read_req)
+    contents = read_res["result"]["contents"]
+    feed_data = json.loads(contents[0]["text"])
+    assert "notifications" in feed_data
+    assert len(feed_data["notifications"]) >= 1
+

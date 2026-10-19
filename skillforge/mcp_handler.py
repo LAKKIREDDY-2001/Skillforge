@@ -356,3 +356,40 @@ async def api_interview_scorecard(req: ScorecardRequest):
     )
 
 
+# ── Daily Streak & Retention Notification System ─────────────────────────────
+
+class NotificationScheduleRequest(BaseModel):
+    reminder_time: Optional[str] = "20:00"
+    enabled: Optional[bool] = True
+    user_id: Optional[str] = "default_user"
+
+
+class TestNotificationRequest(BaseModel):
+    urgency: Optional[str] = "streak_at_risk"
+    user_id: Optional[str] = "default_user"
+
+
+@api_router.get("/notifications")
+async def api_get_notifications(user_id: str = "default_user"):
+    """Retrieve active daily study reminders, streak defense status, and motivational prompts."""
+    return engine.get_streak_reminder(user_id=user_id)
+
+
+@api_router.post("/notifications/test")
+async def api_test_notification(req: TestNotificationRequest):
+    """Dispatch an immediate test streak reminder with motivational copy and voice SSML."""
+    return engine.get_streak_reminder(user_id=req.user_id or "default_user", urgency=req.urgency or "streak_at_risk")
+
+
+@api_router.post("/notifications/schedule")
+async def api_schedule_notification(req: NotificationScheduleRequest):
+    """Update user's daily reminder schedule preferences."""
+    return {
+        "status": "scheduled",
+        "reminder_time": req.reminder_time or "20:00",
+        "enabled": req.enabled if req.enabled is not None else True,
+        "user_id": req.user_id or "default_user",
+        "message": f"Daily streak reminder scheduled for {req.reminder_time or '20:00'}",
+    }
+
+

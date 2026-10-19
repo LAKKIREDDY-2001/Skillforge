@@ -633,6 +633,115 @@ class SkillEngine:
             "storage_engine": "AWS DynamoDB" if self.store.is_dynamodb_active else "Local Resilient Store",
         }
 
+    def get_streak_reminder(self, user_id: str = "default_user", urgency: str = "streak_at_risk") -> dict[str, Any]:
+        """Generate a personalized daily streak retention notification and Alexa voice prompt."""
+        stats = self.check_streak(user_id=user_id)
+        streak = stats.get("streak_days", 0)
+        level = stats.get("level", 1)
+        xp = stats.get("xp", 0)
+
+        today = date.today()
+        user_data = self.store.get_user_data(user_id)
+        raw_log = user_data.get("study_log", [])
+        practiced_today = any(
+            str(entry)[:10] == str(today)
+            if not isinstance(entry, dict)
+            else str(entry.get("date", ""))[:10] == str(today)
+            for entry in raw_log
+        )
+
+        schedule = self.store.get_review_schedule(user_id)
+        due_count = 0
+        for item in schedule.values():
+            nr = item.get("next_review")
+            if nr and (nr <= str(today)):
+                due_count += 1
+
+        now = datetime.now()
+        midnight = now.replace(hour=23, minute=59, second=59, microsecond=999999)
+        hours_remaining = max(1, int((midnight - now).total_seconds() // 3600))
+
+        if practiced_today:
+            title = f"🌟 Streak Protected ({streak} Days)!"
+            body = f"Great work! Your {streak}-day streak is secured for today. Tomorrow's daily challenge unlocks at midnight."
+            voice = f"Awesome dedication! Your {streak}-day study streak is safely protected for today. Rest up or explore a new topic when you're ready."
+            status = "protected"
+        elif streak > 0:
+            title = f"🔥 Don't Break Your {streak}-Day Streak!"
+            body = f"You have {hours_remaining} hours left to protect your flame! Complete 1 quick voice drill on Dynamic Programming before midnight."
+            voice = f"Hey engineer! Your {streak}-day streak is on the line. You have {hours_remaining} hours left to keep the momentum alive. Let's do a quick three-minute voice quiz!"
+            status = "at_risk"
+        else:
+            title = "⚡ Start Your Algorithmic Streak Today!"
+            body = "Build the habit that lands FAANG offers! Take 3 minutes with Alexa+ to solve today's Kadane's Algorithm challenge."
+            voice = "Welcome to SkillForge! Today is the perfect day to start your daily coding streak. Tap the mic or say: Alexa, quiz me on dynamic programming."
+            status = "start_streak"
+
+        notifications_feed = [
+            {
+                "id": f"notif_streak_{today}",
+                "type": "streak",
+                "title": title,
+                "body": body,
+                "tag": "Daily Streak",
+                "urgency": "high" if not practiced_today else "normal",
+                "timestamp": "Just now",
+                "icon": "🔥" if not practiced_today else "🌟",
+                "action": "quiz",
+            },
+            {
+                "id": f"notif_review_{today}",
+                "type": "sm2",
+                "title": "🧠 SuperMemo SM-2 Recall Due",
+                "body": f"{max(1, due_count)} algorithmic concept(s) scheduled for spaced repetition review today.",
+                "tag": "Retention",
+                "urgency": "medium",
+                "timestamp": "2 hours ago",
+                "icon": "🧠",
+                "action": "review",
+            },
+            {
+                "id": f"notif_daily_{today}",
+                "type": "challenge",
+                "title": "⚡ Daily Challenge Live: Dynamic Programming",
+                "body": "Kadane's Algorithm for Maximum Subarray is today's featured voice drill (+50 XP).",
+                "tag": "Daily Challenge",
+                "urgency": "normal",
+                "timestamp": "Today 09:00 AM",
+                "icon": "⚡",
+                "action": "daily",
+            },
+            {
+                "id": "notif_milestone",
+                "type": "milestone",
+                "title": f"🏆 Level {level} Milestone",
+                "body": f"You currently have {xp} XP! Earn {max(10, (level * 50) - xp)} more XP to level up.",
+                "tag": "Progress",
+                "urgency": "low",
+                "timestamp": "Yesterday",
+                "icon": "🏆",
+                "action": "progress",
+            },
+        ]
+
+        return {
+            "user_id": user_id,
+            "title": title,
+            "body": body,
+            "voice_prompt": voice,
+            "streak_days": streak,
+            "practiced_today": practiced_today,
+            "hours_remaining": hours_remaining,
+            "due_reviews_count": due_count,
+            "urgency": urgency,
+            "status": status,
+            "level": level,
+            "xp": xp,
+            "notifications": notifications_feed,
+            "action": "daily_challenge",
+            "timestamp": now.isoformat(),
+        }
+
     # ── 4. SM-2 Spaced Repetition Suggestion ──────────────────────────────────
 
     def suggest_next(self, user_id: str = "default_user") -> dict[str, Any]:

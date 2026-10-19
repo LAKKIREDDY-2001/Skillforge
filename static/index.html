@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SkillForge — Voice-First DSA Learning Companion</title>
-  <link rel="icon" type="image/svg+xml" href="/static/icon.svg">
+  <link rel="icon" type="image/png" href="/static/icon.png">
+  <link rel="apple-touch-icon" href="/static/icon.png">
   <link rel="stylesheet" href="/static/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,8 +18,7 @@
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-brand">
         <a href="#" class="brand-link" id="brandHomeLink" title="SkillForge Home">
-          <img src="/static/icon.svg" alt="SkillForge" class="sidebar-logo-icon">
-          <span class="sidebar-logo-text">SkillForge</span>
+          <img src="/static/logo.png" alt="SkillForge" class="sidebar-logo-img">
         </a>
       </div>
 
@@ -86,11 +86,88 @@
             <span id="topModelName">Claude 3.5 Sonnet</span>
           </div>
 
-          <!-- Notification Bell -->
-          <button class="icon-circle-btn" id="bellBtn" title="Review Reminders">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-            <span class="notification-indicator"></span>
-          </button>
+          <!-- Notification Bell Wrap -->
+          <div class="notification-bell-wrap">
+            <button class="icon-circle-btn" id="bellBtn" title="Streak & Study Notifications">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+              <span class="notification-indicator" id="notifIndicator"></span>
+            </button>
+
+            <!-- Notifications Dropdown Panel -->
+            <div class="notification-dropdown hidden" id="notificationDropdown">
+              <!-- Header -->
+              <div class="notif-header">
+                <div class="notif-title-wrap">
+                  <span class="notif-title-icon">🔔</span>
+                  <div>
+                    <div class="notif-head-title">Streak & Daily Reminders</div>
+                    <div class="notif-head-sub" id="notifHeadSub">Stay consistent, never miss a streak</div>
+                  </div>
+                </div>
+                <div class="notif-header-actions">
+                  <span class="notif-count-badge" id="notifBadgeCount">3 New</span>
+                  <button class="notif-close-btn" id="closeNotifBtn" title="Close">✕</button>
+                </div>
+              </div>
+
+              <!-- Streak Defense Banner -->
+              <div class="streak-defense-card" id="streakDefenseCard">
+                <div class="defense-top">
+                  <div class="defense-flame-icon">🔥</div>
+                  <div class="defense-info">
+                    <div class="defense-title" id="defenseTitle">14-Day Streak Defense Active</div>
+                    <div class="defense-timer" id="defenseTimer">⏰ <span id="defenseHours">7</span> hours left today</div>
+                  </div>
+                  <button class="btn-micro-fire" id="defensePracticeBtn">Practice Now 🔥</button>
+                </div>
+                <p class="defense-desc" id="defenseDesc">Complete 1 quick voice challenge before midnight to protect your 14-day study streak!</p>
+              </div>
+
+              <!-- Desktop Push Permission Banner -->
+              <div class="push-permission-card" id="pushPermissionCard">
+                <div class="push-icon">⚡</div>
+                <div class="push-content">
+                  <div class="push-title">Desktop Push Reminders</div>
+                  <div class="push-subtitle" id="pushSubtitle">Get daily reminders on your Mac/PC even when this tab is closed.</div>
+                </div>
+                <button class="btn-push-enable" id="enablePushBtn">Enable Push 🔔</button>
+              </div>
+
+              <!-- Daily Scheduler Controls -->
+              <div class="notif-scheduler-box">
+                <div class="scheduler-row">
+                  <label for="reminderTimeSelect">⏰ Daily Alert Time:</label>
+                  <select id="reminderTimeSelect" class="scheduler-select">
+                    <option value="09:00">09:00 AM (Morning Boost)</option>
+                    <option value="13:00">01:00 PM (Lunch Break)</option>
+                    <option value="18:00">06:00 PM (After Work)</option>
+                    <option value="20:00" selected>08:00 PM (Streak Defense)</option>
+                    <option value="22:00">10:00 PM (Night Owl / Last Call)</option>
+                  </select>
+                </div>
+                <div class="scheduler-row scheduler-toggle-row">
+                  <label for="dailyReminderToggle">Daily Reminders Enabled:</label>
+                  <input type="checkbox" id="dailyReminderToggle" checked class="modern-toggle">
+                </div>
+                <div class="scheduler-actions">
+                  <button class="btn-test-reminder" id="testReminderBtn" title="Test instant browser notification & Alexa voice chime">
+                    🔔 Send Test Daily Reminder
+                  </button>
+                </div>
+              </div>
+
+              <!-- Notification Feed Items -->
+              <div class="notif-feed-container" id="notifFeedContainer">
+                <!-- Dynamically populated -->
+              </div>
+
+              <!-- Footer -->
+              <div class="notif-footer">
+                <button class="notif-footer-link" id="markAllReadBtn">Mark All Read</button>
+                <button class="notif-footer-link" id="clearAllNotifsBtn">Clear All</button>
+              </div>
+            </div>
+          </div>
 
           <!-- User Profile Avatar Pill -->
           <div class="user-avatar-circle" id="userAvatarBtn" title="View Profile / Switch User">
@@ -988,6 +1065,22 @@
             <button type="submit" class="primary-btn full-width">Create Developer Account</button>
           </form>
         </div>
+      </div>
+    </div>
+
+    <!-- ── Floating In-App Streak Notification Toast ──────────────────────── -->
+    <div class="in-app-toast hidden" id="inAppToast">
+      <div class="toast-glow-border"></div>
+      <div class="toast-icon-wrap">
+        <img src="/static/icon.png" alt="SkillForge" class="toast-logo-icon">
+      </div>
+      <div class="toast-body">
+        <div class="toast-title" id="toastTitle">🔥 SkillForge Streak Reminder</div>
+        <div class="toast-desc" id="toastDesc">Don't break your 14-day streak! Complete 1 quick voice challenge today.</div>
+      </div>
+      <div class="toast-actions">
+        <button class="toast-action-btn" id="toastActionBtn">Practice Now 🔥</button>
+        <button class="toast-close-btn" id="toastCloseBtn">✕</button>
       </div>
     </div>
 

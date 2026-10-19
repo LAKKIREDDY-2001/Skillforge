@@ -151,3 +151,36 @@ async def test_api_bar_raiser_scorecard():
         assert "metrics" in data["scorecard"]
 
 
+@pytest.mark.asyncio
+async def test_api_notifications_endpoints():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        # GET /api/notifications
+        resp = await client.get("/api/notifications")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "title" in data
+        assert "body" in data
+        assert "voice_prompt" in data
+        assert "streak_days" in data
+        assert "notifications" in data
+
+        # POST /api/notifications/test
+        test_resp = await client.post("/api/notifications/test", json={"urgency": "streak_at_risk"})
+        assert test_resp.status_code == 200
+        test_data = test_resp.json()
+        assert "voice_prompt" in test_data
+        assert "streak_days" in test_data
+
+        # POST /api/notifications/schedule
+        sched_resp = await client.post(
+            "/api/notifications/schedule",
+            json={"reminder_time": "21:00", "enabled": True, "user_id": "default_user"},
+        )
+        assert sched_resp.status_code == 200
+        sched_data = sched_resp.json()
+        assert sched_data["status"] == "scheduled"
+        assert sched_data["reminder_time"] == "21:00"
+
+
+

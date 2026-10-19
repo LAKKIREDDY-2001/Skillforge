@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="static/logo.svg" alt="SkillForge Logo" width="440">
+  <img src="static/logo.png" alt="SkillForge Logo" width="420">
 </p>
 
 <p align="center">
@@ -17,7 +17,7 @@
 [![MCP Spec](https://img.shields.io/badge/MCP_Spec-2025--11--25-00c3ff.svg)](https://modelcontextprotocol.io)
 [![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.14-green.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com)
-[![Tests](https://img.shields.io/badge/Tests-41%2F41%20Passing-brightgreen.svg)](tests/)
+[![Tests](https://img.shields.io/badge/Tests-43%2F43%20Passing-brightgreen.svg)](tests/)
 [![APL 2026](https://img.shields.io/badge/APL-2026_Echo_Show-9d4edd.svg)](https://developer.amazon.com/docs/alexa-presentation-language/apl-overview.html)
 
 
@@ -83,7 +83,7 @@ flowchart TD
 
 SkillForge exposes a compliant **Streamable HTTP & SSE transport** (`/mcp/sse`, `/mcp/messages`, and `/mcp`) compatible with Alexa+, Claude Desktop, and modern AI coding assistants.
 
-### 1. Registered MCP Tools (10 Tools)
+### 1. Registered MCP Tools (11 Tools)
 | Tool Name | Description | Key Arguments |
 |-----------|-------------|---------------|
 | `quiz_me` | Generates interactive voice quiz questions on any DSA topic | `topic`, `difficulty`, `num_questions` |
@@ -96,12 +96,14 @@ SkillForge exposes a compliant **Streamable HTTP & SSE transport** (`/mcp/sse`, 
 | `mock_interview` | Simulates a FAANG voice technical screen | `company`, `role`, `topic` |
 | `get_code_solution` | Full Python/Java/C++ runnable reference solution with step-by-step walkthrough | `question_id`, `language` |
 | `export_apl_document` | Exports native Echo Show 15 Alexa Presentation Language (APL 2026) JSON layout | `screen_type`, `topic` |
+| `send_streak_reminder` | Dispatches proactive voice & push streak defense notifications | `user_id`, `urgency` |
 
-### 2. Registered MCP Resources (4 Resources)
+### 2. Registered MCP Resources (5 Resources)
 * `skillforge://progress/overview`: Real-time user progress, streak, XP, and badge breakdown.
 * `skillforge://topics/catalog`: All 10 curated DSA topics with question inventory.
 * `skillforge://reviews/due`: Flashcards due for spaced repetition review today.
 * `skillforge://interview/scorecard`: Bar Raiser 4-pillar interview scorecard (Communication, Problem Solving, Code Efficiency, Mastery).
+* `skillforge://notifications/feed`: Real-time stream of daily study reminders and streak preservation alerts.
 
 ### 3. Registered MCP Prompts (3 Prompts)
 * `study_session`: Structured 15-30 minute focused algorithmic review session.

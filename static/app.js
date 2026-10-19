@@ -711,6 +711,352 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ── Notification & Daily Streak Retention System ─────────────────────────
+  const bellBtn = document.getElementById('bellBtn');
+  const notificationDropdown = document.getElementById('notificationDropdown');
+  const closeNotifBtn = document.getElementById('closeNotifBtn');
+  const notifIndicator = document.getElementById('notifIndicator');
+  const notifBadgeCount = document.getElementById('notifBadgeCount');
+  const defensePracticeBtn = document.getElementById('defensePracticeBtn');
+  const defenseHours = document.getElementById('defenseHours');
+  const defenseDesc = document.getElementById('defenseDesc');
+  const enablePushBtn = document.getElementById('enablePushBtn');
+  const pushSubtitle = document.getElementById('pushSubtitle');
+  const reminderTimeSelect = document.getElementById('reminderTimeSelect');
+  const dailyReminderToggle = document.getElementById('dailyReminderToggle');
+  const testReminderBtn = document.getElementById('testReminderBtn');
+  const notifFeedContainer = document.getElementById('notifFeedContainer');
+  const markAllReadBtn = document.getElementById('markAllReadBtn');
+  const clearAllNotifsBtn = document.getElementById('clearAllNotifsBtn');
+  const inAppToast = document.getElementById('inAppToast');
+  const toastTitle = document.getElementById('toastTitle');
+  const toastDesc = document.getElementById('toastDesc');
+  const toastActionBtn = document.getElementById('toastActionBtn');
+  const toastCloseBtn = document.getElementById('toastCloseBtn');
+
+  // Load preferences from localStorage
+  const savedReminderTime = localStorage.getItem('skillforge_reminder_time') || '20:00';
+  const savedNotifsEnabled = localStorage.getItem('skillforge_notifs_enabled') !== 'false';
+  if (reminderTimeSelect) reminderTimeSelect.value = savedReminderTime;
+  if (dailyReminderToggle) dailyReminderToggle.checked = savedNotifsEnabled;
+
+  // Authentic 2-Tone Alexa Audio Chime (Web Audio API)
+  function playAlexaChime() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const now = ctx.currentTime;
+
+      // Tone 1: 784 Hz (G5)
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(784, now);
+      gain1.gain.setValueAtTime(0.18, now);
+      gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+      osc1.connect(gain1);
+      gain1.connect(ctx.destination);
+      osc1.start(now);
+      osc1.stop(now + 0.35);
+
+      // Tone 2: 1046.5 Hz (C6)
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(1046.5, now + 0.16);
+      gain2.gain.setValueAtTime(0.22, now + 0.16);
+      gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.start(now + 0.16);
+      osc2.stop(now + 0.65);
+    } catch (err) {
+      console.warn('AudioContext chime error:', err);
+    }
+  }
+
+  // Update Push Permission UI
+  function updatePushStatusUI() {
+    if (!('Notification' in window)) {
+      if (pushSubtitle) pushSubtitle.textContent = 'Desktop notifications not supported in this browser.';
+      if (enablePushBtn) enablePushBtn.style.display = 'none';
+      return;
+    }
+    if (Notification.permission === 'granted') {
+      if (pushSubtitle) pushSubtitle.textContent = '✅ Desktop push notifications are active and ready!';
+      if (enablePushBtn) {
+        enablePushBtn.textContent = 'Active ✅';
+        enablePushBtn.disabled = true;
+        enablePushBtn.style.opacity = '0.6';
+      }
+    } else if (Notification.permission === 'denied') {
+      if (pushSubtitle) pushSubtitle.textContent = '⚠️ Notifications blocked in browser settings.';
+      if (enablePushBtn) {
+        enablePushBtn.textContent = 'Blocked ✕';
+        enablePushBtn.disabled = true;
+      }
+    } else {
+      if (pushSubtitle) pushSubtitle.textContent = 'Receive daily reminders on your desktop so you never lose your streak.';
+      if (enablePushBtn) {
+        enablePushBtn.textContent = 'Enable Push 🔔';
+        enablePushBtn.disabled = false;
+        enablePushBtn.style.opacity = '1';
+      }
+    }
+  }
+  updatePushStatusUI();
+
+  // Floating Toast Notification
+  let toastTimeout = null;
+  function showInAppToast(title, desc, actionCallback) {
+    if (!inAppToast) return;
+    if (toastTitle) toastTitle.textContent = title;
+    if (toastDesc) toastDesc.textContent = desc;
+    inAppToast.classList.remove('hidden');
+
+    if (toastTimeout) clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => {
+      inAppToast.classList.add('hidden');
+    }, 8000);
+
+    if (toastActionBtn) {
+      toastActionBtn.onclick = () => {
+        inAppToast.classList.add('hidden');
+        if (actionCallback) actionCallback();
+        else if (cardDailyChallenge) cardDailyChallenge.click();
+      };
+    }
+  }
+
+  if (toastCloseBtn) {
+    toastCloseBtn.addEventListener('click', () => {
+      if (inAppToast) inAppToast.classList.add('hidden');
+    });
+  }
+
+  // Toggle Notifications Dropdown
+  if (bellBtn && notificationDropdown) {
+    bellBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      notificationDropdown.classList.toggle('hidden');
+      if (!notificationDropdown.classList.contains('hidden')) {
+        refreshNotifications();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!notificationDropdown.contains(e.target) && e.target !== bellBtn && !bellBtn.contains(e.target)) {
+        notificationDropdown.classList.add('hidden');
+      }
+    });
+  }
+
+  if (closeNotifBtn) {
+    closeNotifBtn.addEventListener('click', () => {
+      if (notificationDropdown) notificationDropdown.classList.add('hidden');
+    });
+  }
+
+  // Protect Streak Button
+  if (defensePracticeBtn) {
+    defensePracticeBtn.addEventListener('click', () => {
+      if (notificationDropdown) notificationDropdown.classList.add('hidden');
+      if (cardDailyChallenge) cardDailyChallenge.click();
+      speak("Starting your daily streak drill! Let's conquer today's challenge.");
+    });
+  }
+
+  // Enable Push Button Handler
+  if (enablePushBtn) {
+    enablePushBtn.addEventListener('click', () => {
+      if ('Notification' in window) {
+        Notification.requestPermission().then((perm) => {
+          updatePushStatusUI();
+          if (perm === 'granted') {
+            playAlexaChime();
+            showInAppToast(
+              '🔥 SkillForge Streak Reminders Enabled!',
+              'We will alert you daily so you never break your 14-day coding streak.'
+            );
+            try {
+              new Notification('🔥 SkillForge: Daily Streak Reminders Active!', {
+                body: "We will alert you daily so you never break your 14-day coding streak. Tap to practice anytime!",
+                icon: '/static/icon.png',
+                badge: '/static/icon.png',
+              });
+            } catch (e) { console.warn(e); }
+          }
+        });
+      }
+    });
+  }
+
+  // Scheduler Controls
+  if (reminderTimeSelect) {
+    reminderTimeSelect.addEventListener('change', (e) => {
+      localStorage.setItem('skillforge_reminder_time', e.target.value);
+      fetch(`${API_BASE}/api/notifications/schedule`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reminder_time: e.target.value, enabled: true, user_id: state.userId }),
+      }).catch(() => {});
+    });
+  }
+
+  if (dailyReminderToggle) {
+    dailyReminderToggle.addEventListener('change', (e) => {
+      localStorage.setItem('skillforge_notifs_enabled', e.target.checked);
+    });
+  }
+
+  // Test Reminder Handler
+  if (testReminderBtn) {
+    testReminderBtn.addEventListener('click', () => {
+      triggerStreakReminder(true);
+    });
+  }
+
+  // Trigger Streak Reminder (Test or Daily Scheduled)
+  async function triggerStreakReminder(isTest = false) {
+    playAlexaChime();
+
+    try {
+      const resp = await fetch(`${API_BASE}/api/notifications/test`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ urgency: 'streak_at_risk', user_id: state.userId }),
+      });
+      const data = await resp.json();
+
+      const title = data.title || `🔥 Don't Break Your ${state.streak}-Day Streak!`;
+      const body = data.body || "Complete 1 quick voice challenge before midnight to protect your flame.";
+      const voice = data.voice_prompt || `Hey! Time to protect your ${state.streak}-day coding streak. Ready for a quick voice drill on Dynamic Programming?`;
+
+      // 1. Show In-App Toast
+      showInAppToast(title, body, () => {
+        if (cardDailyChallenge) cardDailyChallenge.click();
+      });
+
+      // 2. Dispatch native OS/Browser notification
+      if ('Notification' in window && Notification.permission === 'granted') {
+        try {
+          const notif = new Notification(title, {
+            body: body,
+            icon: '/static/icon.png',
+            badge: '/static/icon.png',
+            tag: 'skillforge-streak-alert',
+          });
+          notif.onclick = () => {
+            window.focus();
+            if (cardDailyChallenge) cardDailyChallenge.click();
+            notif.close();
+          };
+        } catch (e) {
+          console.warn('Native notification error:', e);
+        }
+      }
+
+      // 3. Alexa speaks the motivational message
+      speak(voice);
+
+      // 4. Update notification dot & feed
+      if (notifIndicator) notifIndicator.classList.remove('hidden');
+      if (notifBadgeCount) notifBadgeCount.textContent = 'Active 🔥';
+    } catch (err) {
+      // Offline fallback
+      showInAppToast(
+        `🔥 Don't Break Your ${state.streak}-Day Streak!`,
+        "Complete 1 quick voice challenge before midnight to protect your flame."
+      );
+      speak(`Hey! Time to protect your ${state.streak}-day coding streak. Let's do a quick voice drill!`);
+    }
+  }
+
+  // Fetch & Render Notification Feed
+  async function refreshNotifications() {
+    try {
+      const resp = await fetch(`${API_BASE}/api/notifications?user_id=${state.userId}`);
+      const data = await resp.json();
+
+      if (defenseHours) defenseHours.textContent = data.hours_remaining || 7;
+      if (defenseDesc && data.body) defenseDesc.textContent = data.body;
+
+      if (notifFeedContainer && data.notifications) {
+        notifFeedContainer.innerHTML = data.notifications.map(n => `
+          <div class="notif-card ${n.urgency === 'high' ? 'unread' : ''}" data-action="${n.action}">
+            <div class="notif-card-icon">${n.icon || '🔥'}</div>
+            <div class="notif-card-content">
+              <div class="notif-card-header">
+                <span class="notif-card-title">${n.title}</span>
+                <span class="notif-card-time">${n.timestamp}</span>
+              </div>
+              <p class="notif-card-body">${n.body}</p>
+            </div>
+          </div>
+        `).join('');
+
+        // Wire up clicks on feed items
+        notifFeedContainer.querySelectorAll('.notif-card').forEach(card => {
+          card.addEventListener('click', () => {
+            const act = card.dataset.action;
+            if (notificationDropdown) notificationDropdown.classList.add('hidden');
+            if (act === 'quiz' || act === 'daily') {
+              if (cardDailyChallenge) cardDailyChallenge.click();
+            } else if (act === 'review') {
+              switchView('reviews');
+            } else {
+              switchView('dashboard');
+            }
+          });
+        });
+      }
+    } catch (err) {
+      console.warn('Could not fetch notifications:', err);
+    }
+  }
+
+  // Mark all read / clear
+  if (markAllReadBtn) {
+    markAllReadBtn.addEventListener('click', () => {
+      if (notifIndicator) notifIndicator.classList.add('hidden');
+      if (notifBadgeCount) notifBadgeCount.textContent = '0 New';
+      if (notifFeedContainer) {
+        notifFeedContainer.querySelectorAll('.notif-card').forEach(c => c.classList.remove('unread'));
+      }
+    });
+  }
+
+  if (clearAllNotifsBtn) {
+    clearAllNotifsBtn.addEventListener('click', () => {
+      if (notifIndicator) notifIndicator.classList.add('hidden');
+      if (notifBadgeCount) notifBadgeCount.textContent = '0 New';
+      if (notifFeedContainer) notifFeedContainer.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text-muted);font-size:0.8rem;">No notifications right now. Streak protected!</div>';
+    });
+  }
+
+  // Background Daily Streak Monitor (Runs every 30 seconds)
+  setInterval(() => {
+    const now = new Date();
+    const curTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const targetTime = localStorage.getItem('skillforge_reminder_time') || '20:00';
+    const notifsEnabled = localStorage.getItem('skillforge_notifs_enabled') !== 'false';
+    const todayStr = now.toISOString().slice(0, 10);
+    const lastNotified = localStorage.getItem('skillforge_last_notified_date');
+
+    // Update remaining hours live
+    const hoursLeft = 23 - now.getHours();
+    if (defenseHours) defenseHours.textContent = Math.max(1, hoursLeft);
+
+    if (notifsEnabled && curTime === targetTime && lastNotified !== todayStr) {
+      localStorage.setItem('skillforge_last_notified_date', todayStr);
+      triggerStreakReminder(false);
+    }
+  }, 30000);
+
+  // Initial fetch
+  refreshNotifications();
+
   // ── Dynamic Audio Visualizer Canvas Loop ──────────────────────────────────
   function initVisualizer() {
     const canvas = document.getElementById('audioVisualizer');

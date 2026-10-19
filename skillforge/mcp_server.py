@@ -180,6 +180,17 @@ class MCPServer:
                     },
                 },
             },
+            {
+                "name": "send_streak_reminder",
+                "description": "Dispatch a daily streak retention reminder with personalized Alexa+ motivational speech, notification copy, and streak countdown.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "user_id": {"type": "string", "default": "default_user"},
+                        "urgency": {"type": "string", "enum": ["normal", "streak_at_risk", "morning_boost"], "default": "streak_at_risk"},
+                    },
+                },
+            },
         ]
 
     def list_resources(self) -> list[dict[str, Any]]:
@@ -207,6 +218,12 @@ class MCPServer:
                 "uri": "skillforge://apl/template",
                 "name": "Alexa Presentation Language (APL) Layout",
                 "description": "Multi-modal display template for Echo Show 10/15 devices.",
+                "mimeType": "application/json",
+            },
+            {
+                "uri": "skillforge://notifications/feed",
+                "name": "Daily Streak Notifications Feed",
+                "description": "Real-time stream of daily study reminders and streak preservation alerts.",
                 "mimeType": "application/json",
             },
         ]
@@ -349,6 +366,7 @@ class MCPServer:
             "mock_interview": self.engine.mock_interview,
             "get_code_solution": self.engine.get_code_solution,
             "export_apl_document": self.engine.export_apl_document,
+            "send_streak_reminder": self.engine.get_streak_reminder,
         }
 
         handler = tool_map.get(name)
@@ -371,6 +389,8 @@ class MCPServer:
             return {"due_count": len(schedule), "schedule": schedule}
         elif uri.startswith("skillforge://apl"):
             return self.engine.export_apl_document(topic="dynamic_programming", user_id=user_id)
+        elif uri == "skillforge://notifications/feed":
+            return self.engine.get_streak_reminder(user_id=user_id)
 
         else:
             return {"error": f"Resource URI not recognized: {uri}"}
