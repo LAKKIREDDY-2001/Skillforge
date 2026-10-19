@@ -52,6 +52,7 @@ async def test_mcp_tools_list(mcp):
         "daily_challenge",
         "get_hint",
         "mock_interview",
+        "get_code_solution",
     ]
     for expected in expected_tools:
         assert expected in tool_names

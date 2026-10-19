@@ -122,6 +122,284 @@ class SkillEngine:
             "voice_output": explanation,
         }
 
+    # ── 2b. Code Implementation Solution ─────────────────────────────────────
+
+    def get_code_solution(
+        self,
+        topic: str = "dynamic_programming",
+        problem: str = "",
+        language: str = "python",
+    ) -> dict[str, Any]:
+        """Provide clean, production-grade DSA code implementations with complexity analysis."""
+        normalized_topic = topic.strip().lower().replace(" ", "_").replace("-", "_")
+        aliases = {
+            "dp": "dynamic_programming",
+            "ll": "linked_lists",
+            "bst": "trees",
+            "heap": "stacks_queues",
+            "queue": "stacks_queues",
+            "stack": "stacks_queues",
+            "hash": "hash_tables",
+            "hashmap": "hash_tables",
+            "string": "strings",
+            "array": "arrays",
+            "graph": "graphs",
+            "tree": "trees",
+        }
+        if normalized_topic in aliases:
+            normalized_topic = aliases[normalized_topic]
+        if normalized_topic not in TOPICS:
+            normalized_topic = "dynamic_programming"
+
+        code_catalog = {
+            "arrays": {
+                "title": "Two-Pointer Sorted Pair Sum & Kadane's Algorithm",
+                "code": (
+                    "# 1. Two-Pointer Sum: O(n) Time, O(1) Space\n"
+                    "def two_sum_sorted(nums: list[int], target: int) -> list[int]:\n"
+                    "    left, right = 0, len(nums) - 1\n"
+                    "    while left < right:\n"
+                    "        curr_sum = nums[left] + nums[right]\n"
+                    "        if curr_sum == target:\n"
+                    "            return [left, right]\n"
+                    "        elif curr_sum < target:\n"
+                    "            left += 1\n"
+                    "        else:\n"
+                    "            right -= 1\n"
+                    "    return []\n\n"
+                    "# 2. Kadane's Algorithm: O(n) Time, O(1) Space\n"
+                    "def max_subarray_sum(nums: list[int]) -> int:\n"
+                    "    max_sum = curr_sum = nums[0]\n"
+                    "    for x in nums[1:]:\n"
+                    "        curr_sum = max(x, curr_sum + x)\n"
+                    "        max_sum = max(max_sum, curr_sum)\n"
+                    "    return max_sum\n"
+                ),
+                "time_complexity": "O(n)",
+                "space_complexity": "O(1)",
+                "voice_summary": "Here is the Python implementation for Two Pointers and Kadane's algorithm. Both run in linear O of N time with constant O of 1 auxiliary space.",
+            },
+            "dynamic_programming": {
+                "title": "0/1 Knapsack & Longest Common Subsequence",
+                "code": (
+                    "# 1. 0/1 Knapsack: O(N*W) Time, O(W) Space\n"
+                    "def knapsack_01(weights: list[int], values: list[int], capacity: int) -> int:\n"
+                    "    dp = [0] * (capacity + 1)\n"
+                    "    for wt, val in zip(weights, values):\n"
+                    "        # Iterate backwards to avoid reusing the same item\n"
+                    "        for w in range(capacity, wt - 1, -1):\n"
+                    "            dp[w] = max(dp[w], dp[w - wt] + val)\n"
+                    "    return dp[capacity]\n\n"
+                    "# 2. Longest Common Subsequence: O(M*N) Time, O(N) Space\n"
+                    "def longest_common_subsequence(text1: str, text2: str) -> int:\n"
+                    "    m, n = len(text1), len(text2)\n"
+                    "    dp = [0] * (n + 1)\n"
+                    "    for c1 in text1:\n"
+                    "        prev_diag = 0\n"
+                    "        for j, c2 in enumerate(text2, 1):\n"
+                    "            temp = dp[j]\n"
+                    "            if c1 == c2:\n"
+                    "                dp[j] = 1 + prev_diag\n"
+                    "            else:\n"
+                    "                dp[j] = max(dp[j], dp[j - 1])\n"
+                    "            prev_diag = temp\n"
+                    "    return dp[n]\n"
+                ),
+                "time_complexity": "O(N * W)",
+                "space_complexity": "O(W) space-optimized",
+                "voice_summary": "Here is the dynamic programming implementation for 0/1 Knapsack and LCS. Knapsack runs in O of N times W time using a 1D array by iterating capacity backwards.",
+            },
+            "linked_lists": {
+                "title": "Reverse Linked List & Floyd's Cycle Detection",
+                "code": (
+                    "class ListNode:\n"
+                    "    def __init__(self, val=0, next=None):\n"
+                    "        self.val = val\n"
+                    "        self.next = next\n\n"
+                    "# In-Place Reverse: O(n) Time, O(1) Space\n"
+                    "def reverse_list(head: ListNode) -> ListNode:\n"
+                    "    prev, curr = None, head\n"
+                    "    while curr:\n"
+                    "        nxt = curr.next\n"
+                    "        curr.next = prev\n"
+                    "        prev = curr\n"
+                    "        curr = nxt\n"
+                    "    return prev\n\n"
+                    "# Floyd's Tortoise and Hare: O(n) Time, O(1) Space\n"
+                    "def has_cycle(head: ListNode) -> bool:\n"
+                    "    slow = fast = head\n"
+                    "    while fast and fast.next:\n"
+                    "        slow = slow.next\n"
+                    "        fast = fast.next.next\n"
+                    "        if slow == fast:\n"
+                    "            return True\n"
+                    "    return False\n"
+                ),
+                "time_complexity": "O(n)",
+                "space_complexity": "O(1)",
+                "voice_summary": "Here is the code to reverse a singly linked list and detect cycles using Floyd's tortoise and hare algorithm. Both use O of 1 memory.",
+            },
+            "trees": {
+                "title": "Validate Binary Search Tree (BST)",
+                "code": (
+                    "class TreeNode:\n"
+                    "    def __init__(self, val=0, left=None, right=None):\n"
+                    "        self.val = val\n"
+                    "        self.left = left\n"
+                    "        self.right = right\n\n"
+                    "# Validate BST with Range Bounds: O(n) Time, O(h) Space\n"
+                    "def is_valid_bst(root: TreeNode, low=float('-inf'), high=float('inf')) -> bool:\n"
+                    "    if not root:\n"
+                    "        return True\n"
+                    "    if not (low < root.val < high):\n"
+                    "        return False\n"
+                    "    return is_valid_bst(root.left, low, root.val) and is_valid_bst(root.right, root.val, high)\n"
+                ),
+                "time_complexity": "O(n)",
+                "space_complexity": "O(h) call stack",
+                "voice_summary": "Here is the code to validate a BST using ancestor low and high bounds, running in linear O of N time.",
+            },
+            "graphs": {
+                "title": "Dijkstra's Shortest Path & BFS",
+                "code": (
+                    "import heapq\n\n"
+                    "# Dijkstra's Algorithm: O((V + E) log V)\n"
+                    "def dijkstra(graph: dict[int, list[tuple[int, int]]], source: int) -> dict[int, int]:\n"
+                    "    distances = {node: float('inf') for node in graph}\n"
+                    "    distances[source] = 0\n"
+                    "    pq = [(0, source)]  # (distance, node)\n\n"
+                    "    while pq:\n"
+                    "        curr_dist, u = heapq.heappop(pq)\n"
+                    "        if curr_dist > distances[u]:\n"
+                    "            continue\n"
+                    "        for v, weight in graph[u]:\n"
+                    "            new_dist = curr_dist + weight\n"
+                    "            if new_dist < distances[v]:\n"
+                    "                distances[v] = new_dist\n"
+                    "                heapq.heappush(pq, (new_dist, v))\n"
+                    "    return distances\n"
+                ),
+                "time_complexity": "O((V + E) log V)",
+                "space_complexity": "O(V + E)",
+                "voice_summary": "Here is Dijkstra's shortest path algorithm using a min-heap, running in O of V plus E log V time.",
+            },
+            "sorting": {
+                "title": "Quicksort with Randomized Pivot",
+                "code": (
+                    "import random\n\n"
+                    "def quicksort(arr: list[int]) -> list[int]:\n"
+                    "    if len(arr) <= 1:\n"
+                    "        return arr\n"
+                    "    pivot = random.choice(arr)\n"
+                    "    left = [x for x in arr if x < pivot]\n"
+                    "    middle = [x for x in arr if x == pivot]\n"
+                    "    right = [x for x in arr if x > pivot]\n"
+                    "    return quicksort(left) + middle + quicksort(right)\n"
+                ),
+                "time_complexity": "O(n log n) average",
+                "space_complexity": "O(n)",
+                "voice_summary": "Here is Quicksort with randomized pivot selection, achieving O of N log N average time.",
+            },
+            "searching": {
+                "title": "Binary Search & Rotated Sorted Array",
+                "code": (
+                    "# Search in Rotated Sorted Array: O(log n) Time\n"
+                    "def search_rotated(nums: list[int], target: int) -> int:\n"
+                    "    left, right = 0, len(nums) - 1\n"
+                    "    while left <= right:\n"
+                    "        mid = (left + right) // 2\n"
+                    "        if nums[mid] == target:\n"
+                    "            return mid\n"
+                    "        # Check if left half is sorted\n"
+                    "        if nums[left] <= nums[mid]:\n"
+                    "            if nums[left] <= target < nums[mid]:\n"
+                    "                right = mid - 1\n"
+                    "            else:\n"
+                    "                left = mid + 1\n"
+                    "        else:\n"
+                    "            # Right half is sorted\n"
+                    "            if nums[mid] < target <= nums[right]:\n"
+                    "                left = mid + 1\n"
+                    "            else:\n"
+                    "                right = mid - 1\n"
+                    "    return -1\n"
+                ),
+                "time_complexity": "O(log n)",
+                "space_complexity": "O(1)",
+                "voice_summary": "Here is modified binary search for rotated sorted arrays in logarithmic O of log N time.",
+            },
+            "stacks_queues": {
+                "title": "Min Stack in O(1)",
+                "code": (
+                    "class MinStack:\n"
+                    "    def __init__(self):\n"
+                    "        self.stack = []\n"
+                    "        self.min_stack = []\n\n"
+                    "    def push(self, val: int) -> None:\n"
+                    "        self.stack.append(val)\n"
+                    "        curr_min = min(val, self.min_stack[-1] if self.min_stack else val)\n"
+                    "        self.min_stack.append(curr_min)\n\n"
+                    "    def pop(self) -> None:\n"
+                    "        self.stack.pop()\n"
+                    "        self.min_stack.pop()\n\n"
+                    "    def top(self) -> int:\n"
+                    "        return self.stack[-1]\n\n"
+                    "    def get_min(self) -> int:\n"
+                    "        return self.min_stack[-1]\n"
+                ),
+                "time_complexity": "O(1) all operations",
+                "space_complexity": "O(n)",
+                "voice_summary": "Here is a Min Stack implementation supporting push, pop, top, and getMin in constant O of 1 time.",
+            },
+            "hash_tables": {
+                "title": "Two Sum via Hash Map: O(n) Time",
+                "code": (
+                    "def two_sum(nums: list[int], target: int) -> list[int]:\n"
+                    "    seen = {}  # val -> index\n"
+                    "    for i, num in enumerate(nums):\n"
+                    "        diff = target - num\n"
+                    "        if diff in seen:\n"
+                    "            return [seen[diff], i]\n"
+                    "        seen[num] = i\n"
+                    "    return []\n"
+                ),
+                "time_complexity": "O(n)",
+                "space_complexity": "O(n)",
+                "voice_summary": "Here is Two Sum solved in linear O of N time using a single pass hash table.",
+            },
+            "strings": {
+                "title": "Longest Substring Without Repeating Characters",
+                "code": (
+                    "# Sliding Window: O(n) Time, O(min(m, n)) Space\n"
+                    "def length_of_longest_substring(s: str) -> int:\n"
+                    "    seen = {}\n"
+                    "    left = max_len = 0\n"
+                    "    for right, char in enumerate(s):\n"
+                    "        if char in seen and seen[char] >= left:\n"
+                    "            left = seen[char] + 1\n"
+                    "        seen[char] = right\n"
+                    "        max_len = max(max_len, right - left + 1)\n"
+                    "    return max_len\n"
+                ),
+                "time_complexity": "O(n)",
+                "space_complexity": "O(min(m, n))",
+                "voice_summary": "Here is the sliding window algorithm for Longest Substring Without Repeating Characters in linear O of N time.",
+            },
+        }
+
+        entry = code_catalog.get(normalized_topic, code_catalog["dynamic_programming"])
+        meta = TOPIC_METADATA.get(normalized_topic, {})
+        return {
+            "topic": normalized_topic,
+            "topic_display": meta.get("title", normalized_topic.replace("_", " ").title()),
+            "title": entry["title"],
+            "code": entry["code"],
+            "language": language,
+            "time_complexity": entry["time_complexity"],
+            "space_complexity": entry["space_complexity"],
+            "voice_prompt": entry["voice_summary"],
+        }
+
     # ── 3. Check Streak & Gamification ────────────────────────────────────────
 
     def check_streak(self, user_id: str = "default_user") -> dict[str, Any]:

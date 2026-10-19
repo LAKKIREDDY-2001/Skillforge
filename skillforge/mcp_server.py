@@ -156,6 +156,17 @@ class MCPServer:
                     },
                 },
             },
+            {
+                "name": "get_code_solution",
+                "description": "Get production-grade DSA code implementations and complexity analysis for any algorithmic pattern.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "topic": {"type": "string", "default": "dynamic_programming"},
+                        "language": {"type": "string", "default": "python"},
+                    },
+                },
+            },
         ]
 
     def list_resources(self) -> list[dict[str, Any]]:
@@ -316,6 +327,7 @@ class MCPServer:
             "daily_challenge": self.engine.daily_challenge,
             "get_hint": self.engine.get_hint,
             "mock_interview": self.engine.mock_interview,
+            "get_code_solution": self.engine.get_code_solution,
         }
 
         handler = tool_map.get(name)

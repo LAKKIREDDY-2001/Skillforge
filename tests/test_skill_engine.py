@@ -182,3 +182,16 @@ class TestQuestionBankIntegrity:
                     assert "hint" in q
                     assert "key_points" in q
                     assert len(q["key_points"]) >= 1
+
+
+class TestCodeSolution:
+    def test_get_code_solution_default(self, engine):
+        res = engine.get_code_solution(topic="dynamic_programming")
+        assert "code" in res
+        assert "knapsack" in res["code"].lower()
+        assert "time_complexity" in res
+
+    def test_get_code_solution_arrays(self, engine):
+        res = engine.get_code_solution(topic="arrays")
+        assert "two_sum_sorted" in res["code"]
+        assert res["time_complexity"] == "O(n)"
