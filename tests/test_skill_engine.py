@@ -195,3 +195,31 @@ class TestCodeSolution:
         res = engine.get_code_solution(topic="arrays")
         assert "two_sum_sorted" in res["code"]
         assert res["time_complexity"] == "O(n)"
+
+    def test_get_code_solution_multilang(self, engine):
+        res_java = engine.get_code_solution(topic="dynamic_programming", language="java")
+        assert "public class" in res_java["code"]
+        assert "languages" in res_java
+        assert "python" in res_java["languages"]
+        assert "cpp" in res_java["languages"]
+        assert "go" in res_java["languages"]
+
+    def test_get_code_solution_dry_run(self, engine):
+        res = engine.get_code_solution(topic="arrays")
+        assert "dry_run" in res
+        assert "steps" in res["dry_run"]
+        assert len(res["dry_run"]["steps"]) >= 1
+
+    def test_export_apl_document(self, engine):
+        doc = engine.export_apl_document(topic="dynamic_programming")
+        assert "document" in doc
+        assert doc["document"]["type"] == "APL"
+        assert "datasources" in doc
+        assert "payload" in doc["datasources"]
+
+    def test_mock_interview_bar_raiser_scorecard(self, engine):
+        res = engine.mock_interview(company="Amazon", role="SDE II", stage="scorecard")
+        assert "scorecard" in res
+        assert res["scorecard"]["verdict"] == "STRONG HIRE"
+        assert "leadership_principles_evaluated" in res["scorecard"]
+

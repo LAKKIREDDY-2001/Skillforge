@@ -37,4 +37,29 @@ class Settings(BaseModel):
     local_storage_file: str = os.getenv("LOCAL_STORAGE_FILE", "./data/skillforge_store.json")
 
 
+AVAILABLE_BEDROCK_MODELS = {
+    "claude-3-5-sonnet": {
+        "id": "anthropic.claude-3-5-sonnet-20241022-v2:0",
+        "name": "Claude 3.5 Sonnet v2",
+        "description": "Deep algorithmic reasoning & precise grading",
+        "badge": "High Reasoning",
+        "latency_target_ms": 320,
+    },
+    "claude-3-haiku": {
+        "id": "anthropic.claude-3-haiku-20240307-v1:0",
+        "name": "Claude 3 Haiku",
+        "description": "Sub-second voice response latency for Alexa+",
+        "badge": "Ultra-Fast Voice (<800ms)",
+        "latency_target_ms": 110,
+    },
+    "amazon-titan": {
+        "id": "amazon.titan-text-express-v1",
+        "name": "Amazon Titan Text Express",
+        "description": "Cost-effective Amazon native LLM runtime",
+        "badge": "AWS Native",
+        "latency_target_ms": 180,
+    },
+}
+
 settings = Settings()
+

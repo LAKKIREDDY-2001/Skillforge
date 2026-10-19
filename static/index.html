@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SkillForge — Voice-First DSA Learning Companion (Alexa+ & AWS Bedrock)</title>
+  <link rel="icon" type="image/svg+xml" href="/static/icon.svg">
   <link rel="stylesheet" href="/static/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,18 +15,30 @@
     <!-- Top Header Bar -->
     <header class="header">
       <div class="brand">
-        <div class="brand-logo">
-          <div class="logo-ring"></div>
-          <span class="logo-icon">⚡</span>
-        </div>
-        <div class="brand-text">
-          <h1>SkillForge</h1>
-          <span class="badge alexa-badge">Alexa+ MCP Spec 2025-11-25</span>
-          <span class="badge aws-badge">AWS Bedrock (Claude 3.5 Sonnet)</span>
-        </div>
+        <a href="/" class="brand-link" title="SkillForge Home">
+          <img src="/static/icon.svg" alt="SkillForge Icon" class="brand-icon-svg">
+          <div class="brand-text">
+            <div class="brand-title-row">
+              <span class="brand-title">SKILL<span class="highlight">FORGE</span></span>
+              <span class="badge alexa-badge">Alexa+ MCP 2025-11-25</span>
+              <span class="badge aws-badge" id="headerModelBadge">Claude 3.5 Sonnet</span>
+            </div>
+            <span class="brand-subtitle">Voice-First Algorithmic Companion • Spaced Repetition (SM-2)</span>
+          </div>
+        </a>
       </div>
 
       <div class="header-status">
+        <!-- Bedrock Model Selector -->
+        <div class="model-picker-container" title="Select Amazon Bedrock AI Model">
+          <label for="modelSelectHeader" class="model-label">Bedrock Model:</label>
+          <select class="model-select-header" id="modelSelectHeader">
+            <option value="claude-3-5-sonnet" selected>🧠 Claude 3.5 Sonnet (Deep Reasoning)</option>
+            <option value="claude-3-haiku">⚡ Claude 3 Haiku (&lt;800ms Voice)</option>
+            <option value="amazon-titan">🏛️ Amazon Titan Text (AWS Native)</option>
+          </select>
+        </div>
+
         <!-- MCP Status -->
         <div class="status-indicator" id="mcpStatus">
           <span class="pulse-dot"></span>
@@ -67,12 +80,19 @@
           <div class="device-top-bar">
             <div class="device-name">
               <span class="device-dot"></span>
-              <span>Alexa+ Echo Simulator</span>
+              <span id="deviceTitleDisplay">Alexa+ Echo Studio</span>
             </div>
+
+            <!-- Multi-Modal Device Switcher (Echo Studio vs Echo Show 15) -->
+            <div class="echo-mode-selector" id="echoModeSelector" title="Switch Device Form Factor">
+              <button class="mode-pill active" id="modeEchoStudio" data-mode="studio">🔊 Voice Mode</button>
+              <button class="mode-pill" id="modeEchoShow" data-mode="show">🖥️ Echo Show 15 (APL)</button>
+            </div>
+
             <div class="voice-controls">
               <button class="icon-btn" id="ttsToggleBtn" title="Toggle Alexa Speech Output">🔊 Voice: On</button>
-              <button class="icon-btn" id="soundTestBtn" title="Test Voice Output">🔔 Test Sound</button>
-              <button class="icon-btn" id="quickProfileBtn" title="Switch User Profile">👤 Switch User</button>
+              <button class="icon-btn" id="soundTestBtn" title="Test Voice Output">🔔 Test</button>
+              <button class="icon-btn" id="quickProfileBtn" title="Switch User Profile">👤 Profile</button>
             </div>
           </div>
 
@@ -88,8 +108,11 @@
                 </div>
               </div>
             </div>
+            <!-- Dynamic Audio Visualizer Canvas -->
+            <canvas id="audioVisualizer" class="audio-visualizer-canvas" width="320" height="36" title="Live Voice Frequency Spectrum"></canvas>
             <div class="orb-status" id="orbStatus">"Alexa, quiz me on dynamic programming"</div>
           </div>
+
 
           <!-- Spoken Transcript / Conversation Feed -->
           <div class="conversation-feed" id="conversationFeed">
@@ -108,12 +131,14 @@
           <div class="quick-chips">
             <button class="chip-btn" data-action="daily">📅 Daily Challenge</button>
             <button class="chip-btn" data-action="quiz-dp">⚡ DP Quiz (Medium)</button>
-            <button class="chip-btn" data-action="code-dsa">💻 Give Me DSA Code</button>
+            <button class="chip-btn chip-code" data-action="code-dsa">💻 DSA Code (Multi-Lang)</button>
             <button class="chip-btn" data-action="explain-kadane">💡 Explain Kadane's</button>
             <button class="chip-btn" data-action="suggest">🧠 Next Due (SM-2)</button>
-            <button class="chip-btn" data-action="streak">🔥 Check Streak</button>
-            <button class="chip-btn" data-action="mock">🏢 Mock Interview</button>
+            <button class="chip-btn chip-bar-raiser" data-action="bar-raiser">🏢 Bar Raiser Scorecard</button>
+            <button class="chip-btn chip-apl" data-action="apl-preview">📱 Echo Show APL</button>
+            <button class="chip-btn" data-action="streak">🔥 Streak & Badges</button>
           </div>
+
 
           <!-- Spoken / Text Input Bar -->
           <div class="input-bar">
@@ -483,6 +508,177 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal 3: Amazon Bar Raiser SDE Interview Scorecard Modal -->
+    <div class="modal-overlay hidden" id="scorecardModal">
+      <div class="modal-card wide-modal">
+        <div class="modal-header">
+          <div class="modal-title">
+            <span class="modal-icon">🏢</span>
+            <span>Amazon Bar Raiser — SDE II Technical Evaluation</span>
+          </div>
+          <button class="modal-close-btn" id="closeScorecardModalBtn">✕</button>
+        </div>
+
+        <div class="scorecard-body">
+          <!-- Verdict Banner -->
+          <div class="verdict-banner">
+            <div class="verdict-pill" id="scorecardVerdict">STRONG HIRE</div>
+            <div class="verdict-meta">
+              <span class="verdict-role">Role: Amazon Software Development Engineer II (L5)</span>
+              <span class="verdict-score" id="scorecardOverallRating">Overall: 4.9 / 5.0</span>
+            </div>
+          </div>
+
+          <p class="scorecard-summary" id="scorecardSummary">
+            Candidate demonstrated outstanding algorithmic rigor, proactively discussing Big-O trade-offs, handling boundary constraints, and strongly exemplifying Amazon Leadership Principles.
+          </p>
+
+          <!-- Core Competencies Grid -->
+          <div class="scorecard-grid">
+            <div class="metric-card">
+              <div class="metric-val" id="metricAlgo">9.5/10</div>
+              <div class="metric-name">Algorithmic Depth</div>
+              <div class="metric-bar"><div class="metric-fill" style="width: 95%;"></div></div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val" id="metricCode">9.2/10</div>
+              <div class="metric-name">Code Modularity</div>
+              <div class="metric-bar"><div class="metric-fill" style="width: 92%;"></div></div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val" id="metricEdges">9.4/10</div>
+              <div class="metric-name">Edge Cases & Bounds</div>
+              <div class="metric-bar"><div class="metric-fill" style="width: 94%;"></div></div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val" id="metricVoice">9.8/10</div>
+              <div class="metric-name">Voice Articulation</div>
+              <div class="metric-bar"><div class="metric-fill" style="width: 98%;"></div></div>
+            </div>
+          </div>
+
+          <!-- Amazon Leadership Principles Breakdown -->
+          <div class="lp-section">
+            <h4>🏆 Amazon Leadership Principles Evaluated</h4>
+            <div class="lp-item">
+              <div class="lp-header">
+                <strong>Customer Obsession</strong>
+                <span class="lp-badge exceeds">Exceeds Bar</span>
+              </div>
+              <div class="lp-desc">Framed memory and execution latency directly around end-user SLA and customer responsiveness.</div>
+            </div>
+            <div class="lp-item">
+              <div class="lp-header">
+                <strong>Bias for Action</strong>
+                <span class="lp-badge exceeds">Exceeds Bar</span>
+              </div>
+              <div class="lp-desc">Identified baseline approach rapidly and seamlessly pivoted to the optimal linear solution.</div>
+            </div>
+            <div class="lp-item">
+              <div class="lp-header">
+                <strong>Deliver Results</strong>
+                <span class="lp-badge meets">Meets Bar</span>
+              </div>
+              <div class="lp-desc">Provided verified, robust code with zero unhandled null pointer or integer overflow edge cases.</div>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button class="primary-btn" id="printScorecardBtn">📋 Copy Scorecard Summary</button>
+            <button class="secondary-btn" id="closeScorecardActionBtn">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 4: Alexa Presentation Language (APL 2026) Document Modal -->
+    <div class="modal-overlay hidden" id="aplModal">
+      <div class="modal-card wide-modal">
+        <div class="modal-header">
+          <div class="modal-title">
+            <span class="modal-icon">📱</span>
+            <span>Alexa Presentation Language (APL 2026 / Echo Show 15)</span>
+          </div>
+          <button class="modal-close-btn" id="closeAplModalBtn">✕</button>
+        </div>
+
+        <div class="apl-body">
+          <p class="apl-intro">
+            This production-ready APL 2026 JSON specification is generated dynamically by the SkillForge MCP Server for Amazon Echo Show 10, Echo Show 15, and Fire TV devices.
+          </p>
+
+          <div class="code-tabs-row">
+            <button class="code-tab-btn active" id="aplTabDoc">APL Document (JSON)</button>
+            <button class="code-tab-btn" id="aplTabData">Data Sources (JSON)</button>
+          </div>
+
+          <pre class="apl-code-box"><code id="aplCodeDisplay">// Loading APL Specification...</code></pre>
+
+          <div class="modal-actions">
+            <button class="primary-btn" id="copyAplBtn">📋 Copy APL JSON for Alexa Console</button>
+            <button class="secondary-btn" id="closeAplActionBtn">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 5: Multi-Language Code Playground & Dry-Run Trace -->
+    <div class="modal-overlay hidden" id="codePlaygroundModal">
+      <div class="modal-card wide-modal">
+        <div class="modal-header">
+          <div class="modal-title">
+            <span class="modal-icon">💻</span>
+            <span id="codeModalTitle">DSA Code Solution & Execution Trace</span>
+          </div>
+          <button class="modal-close-btn" id="closeCodeModalBtn">✕</button>
+        </div>
+
+        <div class="code-playground-body">
+          <!-- Language Selector Tabs -->
+          <div class="lang-selector-bar">
+            <button class="lang-tab-btn active" data-lang="python">Python 3</button>
+            <button class="lang-tab-btn" data-lang="java">Java 17 (Amazon Standard)</button>
+            <button class="lang-tab-btn" data-lang="cpp">C++20 (Optimized STL)</button>
+            <button class="lang-tab-btn" data-lang="go">Go 1.22 (Cloud-Native)</button>
+          </div>
+
+          <!-- Code Display Container -->
+          <div class="code-box-wrapper">
+            <pre class="code-box"><code id="playgroundCodeDisplay">// Code loading...</code></pre>
+            <button class="copy-snippet-btn" id="copySnippetBtn" title="Copy Code">📋 Copy</button>
+          </div>
+
+          <!-- Complexity & Dry Run Table -->
+          <div class="dry-run-container">
+            <div class="dry-run-header">
+              <h4>🔍 Algorithmic Dry-Run Trace Table</h4>
+              <div class="complexity-chips">
+                <span class="chip-complexity time" id="playgroundTimeChip">Time: O(n)</span>
+                <span class="chip-complexity space" id="playgroundSpaceChip">Space: O(1)</span>
+              </div>
+            </div>
+            <div class="dry-run-input" id="playgroundInputDisplay">Input: nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]</div>
+            <div class="trace-table-wrapper">
+              <table class="trace-table" id="traceTable">
+                <thead>
+                  <tr>
+                    <th>Step</th>
+                    <th>Element / State</th>
+                    <th>Action / Invariant Update</th>
+                  </tr>
+                </thead>
+                <tbody id="traceTableBody">
+                  <!-- Generated dynamically -->
+                </tbody>
+              </table>
+            </div>
+            <div class="dry-run-output" id="playgroundOutputDisplay">Output: 6 (Subarray: [4, -1, 2, 1])</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
     <!-- Footer Bar -->
     <footer class="footer">

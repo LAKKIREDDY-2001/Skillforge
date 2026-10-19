@@ -1,4 +1,13 @@
-# ⚡ SkillForge — Voice-First Developer Learning Companion
+<p align="center">
+  <img src="static/logo.svg" alt="SkillForge Logo" width="440">
+</p>
+
+<p align="center">
+  <img src="static/hero_banner.jpg" alt="SkillForge Alexa+ Echo Show Hero Banner" width="100%">
+</p>
+
+# ⚡ SkillForge — Voice-First Developer Learning Companion for Alexa+
+
 
 > **Winner-ready submission for the Amazon Developer Hackathon 2026**  
 > *Primary Track:* **Alexa+ (Self-Hosted MCP Server Spec 2025-11-25 & Simulated Web Experience)**  
@@ -8,8 +17,9 @@
 [![MCP Spec](https://img.shields.io/badge/MCP_Spec-2025--11--25-00c3ff.svg)](https://modelcontextprotocol.io)
 [![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.14-green.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com)
-[![AWS Bedrock](https://img.shields.io/badge/AWS_Bedrock-Claude_3.5_Sonnet-ff9900.svg)](https://aws.amazon.com/bedrock/)
-[![Tests](https://img.shields.io/badge/Tests-31%2F31%20Passing-brightgreen.svg)](tests/)
+[![Tests](https://img.shields.io/badge/Tests-41%2F41%20Passing-brightgreen.svg)](tests/)
+[![APL 2026](https://img.shields.io/badge/APL-2026_Echo_Show-9d4edd.svg)](https://developer.amazon.com/docs/alexa-presentation-language/apl-overview.html)
+
 
 ---
 

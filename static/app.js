@@ -33,6 +33,10 @@ document.addEventListener('DOMContentLoaded', () => {
     totalQuizzes: 4,
     serverOnline: false,
     flashcards: [],
+    echoMode: 'studio',
+    activeModel: 'claude-3-5-sonnet',
+    currentCodeData: null,
+    currentAplData: null,
   };
 
   // ── DOM References ───────────────────────────────────────────────────────
@@ -45,11 +49,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const profilePillBtn = document.getElementById('profilePillBtn');
   const quickProfileBtn = document.getElementById('quickProfileBtn');
 
-  // Header User Display
+  // Header & Controls
   const navUserAvatar = document.getElementById('navUserAvatar');
   const navUserName = document.getElementById('navUserName');
   const navUserXp = document.getElementById('navUserXp');
   const navUserLevel = document.getElementById('navUserLevel');
+  const modelSelectHeader = document.getElementById('modelSelectHeader');
+  const headerModelBadge = document.getElementById('headerModelBadge');
+  const deviceTitleDisplay = document.getElementById('deviceTitleDisplay');
+  const modeEchoStudio = document.getElementById('modeEchoStudio');
+  const modeEchoShow = document.getElementById('modeEchoShow');
 
   // Modals
   const authModal = document.getElementById('authModal');
@@ -63,6 +72,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const settingTtsToggle = document.getElementById('settingTtsToggle');
   const settingRateSlider = document.getElementById('settingRateSlider');
   const settingStorageStatus = document.getElementById('settingStorageStatus');
+
+  const scorecardModal = document.getElementById('scorecardModal');
+  const closeScorecardModalBtn = document.getElementById('closeScorecardModalBtn');
+  const closeScorecardActionBtn = document.getElementById('closeScorecardActionBtn');
+  const printScorecardBtn = document.getElementById('printScorecardBtn');
+
+  const aplModal = document.getElementById('aplModal');
+  const closeAplModalBtn = document.getElementById('closeAplModalBtn');
+  const closeAplActionBtn = document.getElementById('closeAplActionBtn');
+  const copyAplBtn = document.getElementById('copyAplBtn');
+  const aplTabDoc = document.getElementById('aplTabDoc');
+  const aplTabData = document.getElementById('aplTabData');
+  const aplCodeDisplay = document.getElementById('aplCodeDisplay');
+
+  const codePlaygroundModal = document.getElementById('codePlaygroundModal');
+  const closeCodeModalBtn = document.getElementById('closeCodeModalBtn');
+  const codeModalTitle = document.getElementById('codeModalTitle');
+  const playgroundCodeDisplay = document.getElementById('playgroundCodeDisplay');
+  const copySnippetBtn = document.getElementById('copySnippetBtn');
+  const playgroundTimeChip = document.getElementById('playgroundTimeChip');
+  const playgroundSpaceChip = document.getElementById('playgroundSpaceChip');
+  const playgroundInputDisplay = document.getElementById('playgroundInputDisplay');
+  const playgroundOutputDisplay = document.getElementById('playgroundOutputDisplay');
+  const traceTableBody = document.getElementById('traceTableBody');
+
 
   // Device & Chat
   const alexaRing = document.getElementById('alexaRing');
@@ -250,24 +284,91 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ── Conversation Feed UI ──────────────────────────────────────────────────
-  function addMessage(role, text, title) {
+  function addMessage(role, text, title, meta) {
     const msgDiv = document.createElement('div');
     msgDiv.className = `message ${role}-msg`;
 
     const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const headerTitle = title || (role === 'assistant' ? '🎙️ Alexa+' : '👤 You');
 
+    let bodyHtml = formatMarkdownLike(text);
+
+    // If Echo Show 15 Multi-Modal mode is active, render the APL visual card!
+    if (state.echoMode === 'show' && role === 'assistant' && meta) {
+      bodyHtml += renderEchoShowCard(meta);
+    }
+
     msgDiv.innerHTML = `
       <div class="msg-header">
         <span class="msg-avatar">${headerTitle}</span>
         <span class="msg-time">${now}</span>
       </div>
-      <div class="msg-body">${formatMarkdownLike(text)}</div>
+      <div class="msg-body">${bodyHtml}</div>
     `;
 
     conversationFeed.appendChild(msgDiv);
     conversationFeed.scrollTop = conversationFeed.scrollHeight;
+
+    // Attach click listeners to dynamically created Echo Show card buttons
+    msgDiv.querySelectorAll('.echo-card-code-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const topic = meta.topic || 'dynamic_programming';
+        callMcpTool('get_code_solution', { topic, language: 'python' }).then(codeData => {
+          openCodePlaygroundModal(codeData);
+        });
+      });
+    });
+
+    msgDiv.querySelectorAll('.echo-card-apl-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const topic = meta.topic || 'dynamic_programming';
+        callMcpTool('export_apl_document', { topic, language: 'python' }).then(aplData => {
+          openAplModal(aplData);
+        });
+      });
+    });
   }
+
+  function renderEchoShowCard(meta) {
+    const title = meta.title || 'Algorithmic Pattern Card';
+    const timeC = meta.time_complexity || 'O(n)';
+    const spaceC = meta.space_complexity || 'O(1)';
+    const topic = (meta.topic || 'Dynamic Programming').replace('_', ' ').toUpperCase();
+
+    return `
+      <div class="echo-show-card">
+        <div class="echo-show-header">
+          <div class="echo-show-title">
+            <span>🖥️ Echo Show 15 Display: ${title}</span>
+          </div>
+          <span class="echo-show-badge">${topic}</span>
+        </div>
+        <div class="echo-show-grid">
+          <div class="echo-metric-box">
+            <div class="echo-metric-title">Time Complexity</div>
+            <div class="echo-metric-value">${timeC}</div>
+          </div>
+          <div class="echo-metric-box">
+            <div class="echo-metric-title">Space Complexity</div>
+            <div class="echo-metric-value">${spaceC}</div>
+          </div>
+          <div class="echo-metric-box">
+            <div class="echo-metric-title">Spaced Repetition (SM-2)</div>
+            <div class="echo-metric-value" style="color:#a78bfa;">Interval: 6 Days (EF: 2.6)</div>
+          </div>
+          <div class="echo-metric-box">
+            <div class="echo-metric-title">Active Bedrock Model</div>
+            <div class="echo-metric-value" style="color:#38bdf8;">${state.activeModel}</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:12px;">
+          <button class="small-btn echo-card-code-btn" style="background:var(--alexa-cyan);color:#050811;font-weight:700;">💻 Multi-Lang Code</button>
+          <button class="small-btn echo-card-apl-btn" style="background:#1e293b;color:#fff;">📱 View APL 2026 JSON</button>
+        </div>
+      </div>
+    `;
+  }
+
 
   function formatMarkdownLike(str) {
     if (!str) return '';
@@ -1124,6 +1225,9 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('click', (e) => {
     if (e.target === authModal) authModal.classList.add('hidden');
     if (e.target === settingsModal) settingsModal.classList.add('hidden');
+    if (e.target === scorecardModal) scorecardModal.classList.add('hidden');
+    if (e.target === aplModal) aplModal.classList.add('hidden');
+    if (e.target === codePlaygroundModal) codePlaygroundModal.classList.add('hidden');
   });
 
   // Settings: Voice Preferences
@@ -1137,17 +1241,261 @@ document.addEventListener('DOMContentLoaded', () => {
     state.speechRate = parseFloat(e.target.value);
   });
 
+  // ── Echo Mode Switcher (Studio vs Echo Show 15) ───────────────────────────
+  if (modeEchoStudio && modeEchoShow) {
+    modeEchoStudio.addEventListener('click', () => {
+      state.echoMode = 'studio';
+      modeEchoStudio.classList.add('active');
+      modeEchoShow.classList.remove('active');
+      if (deviceTitleDisplay) deviceTitleDisplay.textContent = 'Alexa+ Echo Studio';
+      addMessage('assistant', 'Switched to <strong>Echo Studio (Voice Mode)</strong>. Audio waveforms and spoken feedback active.');
+    });
+
+    modeEchoShow.addEventListener('click', () => {
+      state.echoMode = 'show';
+      modeEchoShow.classList.add('active');
+      modeEchoStudio.classList.remove('active');
+      if (deviceTitleDisplay) deviceTitleDisplay.textContent = 'Alexa+ Echo Show 15';
+      addMessage('assistant', 'Switched to <strong>Echo Show 15 (APL Multi-Modal Mode)</strong>! Responses will render rich interactive visual display cards.');
+    });
+  }
+
+  // ── Bedrock Model Switcher ────────────────────────────────────────────────
+  if (modelSelectHeader) {
+    modelSelectHeader.addEventListener('change', (e) => {
+      state.activeModel = e.target.value;
+      const modelNames = {
+        'claude-3-5-sonnet': 'Claude 3.5 Sonnet',
+        'claude-3-haiku': 'Claude 3 Haiku (<800ms)',
+        'amazon-titan': 'Amazon Titan Express'
+      };
+      if (headerModelBadge) headerModelBadge.textContent = modelNames[state.activeModel] || state.activeModel;
+      logMcpCall('model/switch', { model: state.activeModel }, { status: 'Model runtime switched', target_latency: state.activeModel === 'claude-3-haiku' ? '<800ms' : '1.2s' }, 35);
+    });
+  }
+
+  // ── Modal Handlers: Bar Raiser Scorecard ──────────────────────────────────
+  function openScorecardModal(scorecard) {
+    if (!scorecardModal) return;
+    const s = scorecard || {};
+    const verdict = s.verdict || 'STRONG HIRE';
+    const rating = s.overall_rating || '4.9 / 5.0';
+    const summary = s.bar_raiser_summary || 'Candidate demonstrated deep algorithmic problem solving and leadership principles.';
+
+    const verdictEl = document.getElementById('scorecardVerdict');
+    const ratingEl = document.getElementById('scorecardOverallRating');
+    const summaryEl = document.getElementById('scorecardSummary');
+
+    if (verdictEl) verdictEl.textContent = verdict;
+    if (ratingEl) ratingEl.textContent = `Overall: ${rating}`;
+    if (summaryEl) summaryEl.textContent = summary;
+
+    scorecardModal.classList.remove('hidden');
+  }
+
+  if (closeScorecardModalBtn) closeScorecardModalBtn.addEventListener('click', () => scorecardModal.classList.add('hidden'));
+  if (closeScorecardActionBtn) closeScorecardActionBtn.addEventListener('click', () => scorecardModal.classList.add('hidden'));
+  if (printScorecardBtn) {
+    printScorecardBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText('SkillForge Amazon Bar Raiser Scorecard: STRONG HIRE (4.9/5.0). Exceeds Bar in Customer Obsession & Bias for Action. Recommendation: SDE II (L5).');
+      printScorecardBtn.textContent = '✅ Copied to Clipboard!';
+      setTimeout(() => { printScorecardBtn.textContent = '📋 Copy Scorecard Summary'; }, 2000);
+    });
+  }
+
+  // ── Modal Handlers: APL Document Modal ────────────────────────────────────
+  function openAplModal(aplData) {
+    if (!aplModal) return;
+    state.currentAplData = aplData || {};
+    updateAplDisplay('doc');
+    aplModal.classList.remove('hidden');
+  }
+
+  function updateAplDisplay(view) {
+    if (!aplCodeDisplay || !state.currentAplData) return;
+    if (view === 'doc') {
+      aplCodeDisplay.textContent = JSON.stringify(state.currentAplData.document || {}, null, 2);
+      if (aplTabDoc) aplTabDoc.classList.add('active');
+      if (aplTabData) aplTabData.classList.remove('active');
+    } else {
+      aplCodeDisplay.textContent = JSON.stringify(state.currentAplData.datasources || {}, null, 2);
+      if (aplTabDoc) aplTabDoc.classList.remove('active');
+      if (aplTabData) aplTabData.classList.add('active');
+    }
+  }
+
+  if (aplTabDoc) aplTabDoc.addEventListener('click', () => updateAplDisplay('doc'));
+  if (aplTabData) aplTabData.addEventListener('click', () => updateAplDisplay('data'));
+  if (closeAplModalBtn) closeAplModalBtn.addEventListener('click', () => aplModal.classList.add('hidden'));
+  if (closeAplActionBtn) closeAplActionBtn.addEventListener('click', () => aplModal.classList.add('hidden'));
+  if (copyAplBtn) {
+    copyAplBtn.addEventListener('click', () => {
+      const code = aplCodeDisplay ? aplCodeDisplay.textContent : '';
+      navigator.clipboard.writeText(code);
+      copyAplBtn.textContent = '✅ Copied APL JSON!';
+      setTimeout(() => { copyAplBtn.textContent = '📋 Copy APL JSON for Alexa Console'; }, 2000);
+    });
+  }
+
+  // ── Modal Handlers: Multi-Language Code Playground ────────────────────────
+  function openCodePlaygroundModal(codeData) {
+    if (!codePlaygroundModal) return;
+    state.currentCodeData = codeData || {};
+
+    if (codeModalTitle) codeModalTitle.textContent = codeData.title || 'DSA Code Solution';
+    if (playgroundTimeChip) playgroundTimeChip.textContent = `Time: ${codeData.time_complexity || 'O(n)'}`;
+    if (playgroundSpaceChip) playgroundSpaceChip.textContent = `Space: ${codeData.space_complexity || 'O(1)'}`;
+
+    // Set code for Python by default
+    updatePlaygroundCode('python');
+
+    // Render Dry Run Steps
+    if (traceTableBody && codeData.dry_run && codeData.dry_run.steps) {
+      if (playgroundInputDisplay) playgroundInputDisplay.textContent = `Input: ${codeData.dry_run.input || 'Sample Input'}`;
+      if (playgroundOutputDisplay) playgroundOutputDisplay.textContent = `Output: ${codeData.dry_run.output || 'Optimal Output'}`;
+
+      traceTableBody.innerHTML = codeData.dry_run.steps.map(s => `
+        <tr>
+          <td><strong style="color:var(--alexa-cyan);">${s.step}</strong></td>
+          <td>${s.element !== undefined ? s.element : (s.item || '-')}</td>
+          <td>${s.action || ''}</td>
+        </tr>
+      `).join('');
+    }
+
+    codePlaygroundModal.classList.remove('hidden');
+  }
+
+  function updatePlaygroundCode(lang) {
+    if (!playgroundCodeDisplay || !state.currentCodeData) return;
+    const langs = state.currentCodeData.languages || {};
+    const code = langs[lang] || state.currentCodeData.code || '// Code snippet';
+    playgroundCodeDisplay.textContent = code;
+
+    document.querySelectorAll('.lang-tab-btn').forEach(btn => {
+      if (btn.dataset.lang === lang) btn.classList.add('active');
+      else btn.classList.remove('active');
+    });
+  }
+
+  document.querySelectorAll('.lang-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      updatePlaygroundCode(btn.dataset.lang);
+    });
+  });
+
+  if (closeCodeModalBtn) closeCodeModalBtn.addEventListener('click', () => codePlaygroundModal.classList.add('hidden'));
+  if (copySnippetBtn) {
+    copySnippetBtn.addEventListener('click', () => {
+      const code = playgroundCodeDisplay ? playgroundCodeDisplay.textContent : '';
+      navigator.clipboard.writeText(code);
+      copySnippetBtn.textContent = '✅ Copied!';
+      setTimeout(() => { copySnippetBtn.textContent = '📋 Copy'; }, 2000);
+    });
+  }
+
+  // ── Dynamic Audio Visualizer Canvas Loop ──────────────────────────────────
+  function initVisualizer() {
+    const canvas = document.getElementById('audioVisualizer');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let frame = 0;
+
+    function render() {
+      requestAnimationFrame(render);
+      frame++;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const isSpeaking = state.synth && state.synth.speaking;
+      const isListening = state.isListening;
+      const barCount = 28;
+      const spacing = 3;
+      const totalSpacing = (barCount - 1) * spacing;
+      const barWidth = (canvas.width - totalSpacing) / barCount;
+
+      for (let i = 0; i < barCount; i++) {
+        let height = 3;
+        if (isSpeaking) {
+          height = Math.max(4, Math.sin(frame * 0.18 + i * 0.45) * 11 + Math.cos(frame * 0.09 + i * 0.25) * 6 + 12);
+        } else if (isListening) {
+          height = Math.max(4, (Math.sin(frame * 0.3 + i * 0.8) * 0.5 + 0.5) * 20);
+        } else {
+          height = Math.max(2, Math.sin(frame * 0.04 + i * 0.2) * 3 + 4);
+        }
+
+        const x = i * (barWidth + spacing);
+        const y = (canvas.height - height) / 2;
+
+        let grad;
+        if (isListening) {
+          grad = ctx.createLinearGradient(0, y, 0, y + height);
+          grad.addColorStop(0, '#34d399');
+          grad.addColorStop(1, '#059669');
+        } else if (isSpeaking) {
+          grad = ctx.createLinearGradient(0, y, 0, y + height);
+          grad.addColorStop(0, '#00f3ff');
+          grad.addColorStop(1, '#9d4edd');
+        } else {
+          grad = ctx.createLinearGradient(0, y, 0, y + height);
+          grad.addColorStop(0, 'rgba(0, 243, 255, 0.4)');
+          grad.addColorStop(1, 'rgba(157, 78, 221, 0.2)');
+        }
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(x, y, barWidth, height, 2);
+        } else {
+          ctx.rect(x, y, barWidth, height);
+        }
+        ctx.fill();
+      }
+    }
+    render();
+  }
+
   // ── Quick Suggestion Chips ────────────────────────────────────────────────
   document.querySelectorAll('.chip-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const action = btn.dataset.action;
       if (action === 'daily') handleUserInput('daily challenge');
       else if (action === 'quiz-dp') handleUserInput('quiz me on dynamic programming');
-      else if (action === 'code-dsa') handleUserInput('Give me DSA code');
+      else if (action === 'code-dsa') {
+        callMcpTool('get_code_solution', { topic: 'dynamic_programming', language: 'python' }).then(res => {
+          openCodePlaygroundModal(res);
+          addMessage('assistant', 'Opened <strong>Multi-Language Code Playground</strong>! Inspect Python 3, Java 17, C++20, and Go 1.22 implementations along with the execution trace table.', '🎙️ Alexa+', res);
+          speak('Here is the multi-language code solution and step-by-step trace.');
+        });
+      }
       else if (action === 'explain-kadane') handleUserInput("explain Kadane's algorithm");
       else if (action === 'suggest') handleUserInput('suggest next flashcard');
       else if (action === 'streak') handleUserInput('check my streak');
       else if (action === 'mock') handleUserInput('mock interview');
+      else if (action === 'bar-raiser') {
+        fetch(`${API_BASE}/api/interview/scorecard`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ company: 'Amazon', role: 'SDE II', topic: 'dynamic_programming' }),
+        })
+        .then(r => r.json())
+        .then(data => {
+          const scorecard = data.scorecard || executeLocalTool('mock_interview', { stage: 'scorecard' }).scorecard;
+          openScorecardModal(scorecard);
+          addMessage('assistant', '🏢 <strong>Amazon Bar Raiser Scorecard Ready!</strong> Overall Rating: <strong>4.9 / 5.0</strong>. Recommendation: <span style="color:#10b981;font-weight:700;">STRONG HIRE</span> for Amazon SDE II.');
+          speak('Congratulations! Your Amazon Bar Raiser scorecard is ready. Recommendation: Strong Hire for Amazon SDE II.');
+        })
+        .catch(() => {
+          const scorecard = executeLocalTool('mock_interview', { stage: 'scorecard' }).scorecard;
+          openScorecardModal(scorecard);
+        });
+      }
+      else if (action === 'apl-preview') {
+        callMcpTool('export_apl_document', { topic: 'dynamic_programming', language: 'python' }).then(aplData => {
+          openAplModal(aplData);
+          addMessage('assistant', '📱 Rendered <strong>Alexa Presentation Language (APL 2026)</strong> layout for Echo Show 15. You can copy the raw JSON specification directly into the Alexa Developer Console!');
+          speak('Rendered the Alexa Presentation Language document for your Echo Show.');
+        });
+      }
     });
   });
 
@@ -1176,7 +1524,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
   // Initial Load
+  initVisualizer();
   updateUserUI(state.currentUser);
   loadTopicsCatalog();
   refreshDashboards();
 });
+

@@ -167,6 +167,19 @@ class MCPServer:
                     },
                 },
             },
+            {
+                "name": "export_apl_document",
+                "description": "Generate an Alexa Presentation Language (APL 2026 / v2024.2) document and datasource for Echo Show 10/15 smart displays.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "topic": {"type": "string", "default": "dynamic_programming"},
+                        "title": {"type": "string", "description": "Visual title of the card"},
+                        "language": {"type": "string", "enum": ["python", "java", "cpp", "go"], "default": "python"},
+                        "user_id": {"type": "string", "default": "default_user"},
+                    },
+                },
+            },
         ]
 
     def list_resources(self) -> list[dict[str, Any]]:
@@ -190,7 +203,14 @@ class MCPServer:
                 "description": "Algorithmic flashcards scheduled for review today via SM-2.",
                 "mimeType": "application/json",
             },
+            {
+                "uri": "skillforge://apl/template",
+                "name": "Alexa Presentation Language (APL) Layout",
+                "description": "Multi-modal display template for Echo Show 10/15 devices.",
+                "mimeType": "application/json",
+            },
         ]
+
 
     def list_prompts(self) -> list[dict[str, Any]]:
         """Declare reusable prompt templates."""
@@ -328,6 +348,7 @@ class MCPServer:
             "get_hint": self.engine.get_hint,
             "mock_interview": self.engine.mock_interview,
             "get_code_solution": self.engine.get_code_solution,
+            "export_apl_document": self.engine.export_apl_document,
         }
 
         handler = tool_map.get(name)
@@ -348,6 +369,9 @@ class MCPServer:
         elif uri == "skillforge://reviews/due":
             schedule = self.engine.store.get_review_schedule(user_id)
             return {"due_count": len(schedule), "schedule": schedule}
+        elif uri.startswith("skillforge://apl"):
+            return self.engine.export_apl_document(topic="dynamic_programming", user_id=user_id)
+
         else:
             return {"error": f"Resource URI not recognized: {uri}"}
 

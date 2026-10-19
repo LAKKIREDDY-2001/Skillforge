@@ -309,3 +309,50 @@ async def api_profile(username: str = "hackathon_judge"):
     stats = engine.check_streak(username)
     return {"user": acc, "stats": stats}
 
+
+# ── Advanced Hackathon Endpoints (APL, Multi-Model, Bar Raiser) ─────────────
+
+from skillforge.config import AVAILABLE_BEDROCK_MODELS
+
+
+@api_router.get("/models")
+async def api_models():
+    """List available Bedrock LLM models and performance benchmarks."""
+    return {"models": AVAILABLE_BEDROCK_MODELS, "active_default": "claude-3-5-sonnet"}
+
+
+@api_router.get("/apl/export")
+async def api_apl_export(
+    topic: str = "dynamic_programming",
+    title: str = "",
+    language: str = "python",
+    user_id: str = "default_user",
+):
+    """Export standard Alexa Presentation Language (APL 2026 / v2024.2) document and data source."""
+    return engine.export_apl_document(
+        topic=topic,
+        title=title,
+        language=language,
+        user_id=user_id,
+    )
+
+
+class ScorecardRequest(BaseModel):
+    company: Optional[str] = "Amazon"
+    role: Optional[str] = "Software Development Engineer"
+    topic: Optional[str] = "dynamic_programming"
+    user_id: Optional[str] = "default_user"
+
+
+@api_router.post("/interview/scorecard")
+async def api_interview_scorecard(req: ScorecardRequest):
+    """Generate comprehensive Amazon Bar Raiser SDE Interview Scorecard."""
+    return engine.mock_interview(
+        company=req.company or "Amazon",
+        role=req.role or "Software Development Engineer",
+        topic=req.topic or "dynamic_programming",
+        user_id=req.user_id or "default_user",
+        stage="scorecard",
+    )
+
+

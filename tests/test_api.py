@@ -111,3 +111,43 @@ async def test_api_auth_flow():
         assert prof_resp.json()["user"]["display_name"] == "New Coder"
         assert "stats" in prof_resp.json()
 
+
+@pytest.mark.asyncio
+async def test_api_models_endpoint():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        resp = await client.get("/api/models")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "models" in data
+        assert "claude-3-5-sonnet" in data["models"]
+        assert "claude-3-haiku" in data["models"]
+
+
+@pytest.mark.asyncio
+async def test_api_apl_export_endpoint():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        resp = await client.get("/api/apl/export?topic=dynamic_programming&language=python")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "document" in data
+        assert data["document"]["type"] == "APL"
+        assert "datasources" in data
+
+
+@pytest.mark.asyncio
+async def test_api_bar_raiser_scorecard():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        resp = await client.post(
+            "/api/interview/scorecard",
+            json={"company": "Amazon", "role": "SDE II", "topic": "dynamic_programming"},
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "scorecard" in data
+        assert data["scorecard"]["verdict"] == "STRONG HIRE"
+        assert "metrics" in data["scorecard"]
+
+
