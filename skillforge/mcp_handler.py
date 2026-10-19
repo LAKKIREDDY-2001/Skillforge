@@ -255,3 +255,57 @@ async def api_flashcards(user_id: str = "default_user"):
                 "last_score": state.get("last_score", 0),
             })
     return {"flashcards": cards, "total": len(cards)}
+
+
+# ── Authentication & User Profiles ──────────────────────────────────────────
+
+class SignUpRequest(BaseModel):
+    username: str
+    password: str
+    display_name: Optional[str] = ""
+    email: Optional[str] = ""
+    target_role: Optional[str] = "Software Development Engineer"
+    avatar: Optional[str] = "🚀"
+
+
+class SignInRequest(BaseModel):
+    username: str
+    password: str
+
+
+@api_router.post("/auth/signup")
+async def api_signup(req: SignUpRequest):
+    result = engine.store.register_account(
+        username=req.username,
+        password=req.password,
+        display_name=req.display_name or "",
+        email=req.email or "",
+        target_role=req.target_role or "Software Development Engineer",
+        avatar=req.avatar or "🚀",
+    )
+    if "error" in result:
+        raise HTTPException(status_code=400, detail=result["error"])
+    return result
+
+
+@api_router.post("/auth/signin")
+async def api_signin(req: SignInRequest):
+    result = engine.store.authenticate_account(username=req.username, password=req.password)
+    if "error" in result:
+        raise HTTPException(status_code=401, detail=result["error"])
+    return result
+
+
+@api_router.get("/auth/users")
+async def api_list_users():
+    return {"users": engine.store.list_accounts()}
+
+
+@api_router.get("/auth/profile")
+async def api_profile(username: str = "hackathon_judge"):
+    acc = engine.store.get_account(username)
+    if not acc:
+        raise HTTPException(status_code=404, detail="User not found")
+    stats = engine.check_streak(username)
+    return {"user": acc, "stats": stats}
+

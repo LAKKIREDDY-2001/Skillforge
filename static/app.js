@@ -11,7 +11,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── State ────────────────────────────────────────────────────────────────
   const state = {
-    userId: 'hackathon_judge',
+    userId: 'alex',
+    currentUser: {
+      username: 'alex',
+      display_name: 'Alex Chen',
+      email: 'alex.chen@aws.dev',
+      target_role: 'Amazon SDE II Candidate',
+      avatar: '👨‍💻',
+    },
+    speechRate: 1.05,
     ttsEnabled: true,
     isListening: false,
     currentQuestion: null, // holds currently active question for answering
@@ -28,6 +36,35 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // ── DOM References ───────────────────────────────────────────────────────
+  const mainLayout = document.getElementById('mainLayout');
+  const inspectorPanel = document.getElementById('inspectorPanel');
+  const toggleInspectorBtn = document.getElementById('toggleInspectorBtn');
+  const hideInspectorBtn = document.getElementById('hideInspectorBtn');
+  const floatingInspectorBtn = document.getElementById('floatingInspectorBtn');
+  const settingsBtn = document.getElementById('settingsBtn');
+  const profilePillBtn = document.getElementById('profilePillBtn');
+  const quickProfileBtn = document.getElementById('quickProfileBtn');
+
+  // Header User Display
+  const navUserAvatar = document.getElementById('navUserAvatar');
+  const navUserName = document.getElementById('navUserName');
+  const navUserXp = document.getElementById('navUserXp');
+  const navUserLevel = document.getElementById('navUserLevel');
+
+  // Modals
+  const authModal = document.getElementById('authModal');
+  const closeAuthModalBtn = document.getElementById('closeAuthModalBtn');
+  const signinForm = document.getElementById('signinForm');
+  const signupForm = document.getElementById('signupForm');
+  const signOutBtn = document.getElementById('signOutBtn');
+
+  const settingsModal = document.getElementById('settingsModal');
+  const closeSettingsModalBtn = document.getElementById('closeSettingsModalBtn');
+  const settingTtsToggle = document.getElementById('settingTtsToggle');
+  const settingRateSlider = document.getElementById('settingRateSlider');
+  const settingStorageStatus = document.getElementById('settingStorageStatus');
+
+  // Device & Chat
   const alexaRing = document.getElementById('alexaRing');
   const orbStatus = document.getElementById('orbStatus');
   const conversationFeed = document.getElementById('conversationFeed');
@@ -184,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Clean speech text (strip markdown)
       const cleanText = text.replace(/<[^>]+>/g, '').replace(/\*+/g, '').replace(/`/g, '');
       const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.rate = 1.05;
+      utterance.rate = state.speechRate || 1.05;
       utterance.pitch = 1.0;
 
       const voices = state.synth.getVoices();
@@ -899,12 +936,214 @@ document.addEventListener('DOMContentLoaded', () => {
 
   refreshDeckBtn.addEventListener('click', refreshDashboards);
 
-  // Quick Chips
+  // ── Collapsible MCP Inspector Management ──────────────────────────────────
+  function toggleInspector(show) {
+    const isCurrentlyHidden = mainLayout.classList.contains('inspector-hidden');
+    const shouldShow = (show !== undefined) ? show : isCurrentlyHidden;
+
+    if (shouldShow) {
+      mainLayout.classList.remove('inspector-hidden');
+      toggleInspectorBtn.classList.add('active');
+      floatingInspectorBtn.classList.add('hidden');
+    } else {
+      mainLayout.classList.add('inspector-hidden');
+      toggleInspectorBtn.classList.remove('active');
+      floatingInspectorBtn.classList.remove('hidden');
+    }
+  }
+
+  toggleInspectorBtn.addEventListener('click', () => toggleInspector());
+  hideInspectorBtn.addEventListener('click', () => toggleInspector(false));
+  floatingInspectorBtn.addEventListener('click', () => toggleInspector(true));
+
+  // ── User Profile & Authentication Logic ───────────────────────────────────
+  function updateUserUI(user, stats) {
+    if (!user) return;
+    state.currentUser = user;
+    state.userId = user.username;
+
+    // Header Navbar elements
+    if (navUserAvatar) navUserAvatar.textContent = user.avatar || '👨‍💻';
+    if (navUserName) navUserName.textContent = user.display_name || user.username;
+
+    const currentXp = stats ? stats.xp : state.xp;
+    const currentLevel = stats ? stats.level : state.level;
+    if (navUserXp) navUserXp.textContent = `${currentXp} XP`;
+    if (navUserLevel) navUserLevel.textContent = `Lvl ${currentLevel}`;
+
+    // Modal Profile elements
+    const modalProfileAvatar = document.getElementById('modalProfileAvatar');
+    const modalProfileName = document.getElementById('modalProfileName');
+    const modalProfileRole = document.getElementById('modalProfileRole');
+    const modalProfileEmail = document.getElementById('modalProfileEmail');
+
+    if (modalProfileAvatar) modalProfileAvatar.textContent = user.avatar || '👨‍💻';
+    if (modalProfileName) modalProfileName.textContent = user.display_name || user.username;
+    if (modalProfileRole) modalProfileRole.textContent = user.target_role || 'Amazon SDE Candidate';
+    if (modalProfileEmail) modalProfileEmail.textContent = user.email || `${user.username}@developer.io`;
+
+    // Modal Stats
+    const modalStatStreak = document.getElementById('modalStatStreak');
+    const modalStatXp = document.getElementById('modalStatXp');
+    const modalStatQuizzes = document.getElementById('modalStatQuizzes');
+    const modalStatAccuracy = document.getElementById('modalStatAccuracy');
+
+    if (modalStatStreak) modalStatStreak.textContent = stats ? stats.streak_days : state.streak;
+    if (modalStatXp) modalStatXp.textContent = currentXp;
+    if (modalStatQuizzes) modalStatQuizzes.textContent = stats ? stats.total_quizzes : state.totalQuizzes;
+    if (modalStatAccuracy) modalStatAccuracy.textContent = `${stats ? stats.accuracy : state.accuracy}%`;
+  }
+
+  function openAuthModal(defaultTab = 'signin-tab') {
+    authModal.classList.remove('hidden');
+    document.querySelectorAll('.modal-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.modal-tab-content').forEach(c => c.classList.remove('active'));
+
+    const tabBtn = document.querySelector(`.modal-tab-btn[data-authtab="${defaultTab}"]`);
+    const tabContent = document.getElementById(defaultTab);
+    if (tabBtn) tabBtn.classList.add('active');
+    if (tabContent) tabContent.classList.add('active');
+  }
+
+  profilePillBtn.addEventListener('click', () => openAuthModal('profile-tab'));
+  quickProfileBtn.addEventListener('click', () => openAuthModal('signin-tab'));
+  closeAuthModalBtn.addEventListener('click', () => authModal.classList.add('hidden'));
+
+  // Auth Tabs navigation
+  document.querySelectorAll('.modal-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.modal-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.modal-tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      const targetId = btn.dataset.authtab;
+      const targetContent = document.getElementById(targetId);
+      if (targetContent) targetContent.classList.add('active');
+    });
+  });
+
+  // Sign In action
+  async function signInUser(username, password) {
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/signin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      }).catch(() => null);
+
+      let userObj;
+      if (res && res.ok) {
+        const data = await res.json();
+        userObj = data.user;
+      } else {
+        // Local fallback authentication
+        const demoAccounts = {
+          hackathon_judge: { username: "hackathon_judge", display_name: "Amazon Reviewer", target_role: "Amazon Developer Relations", avatar: "⚡", email: "testing@devpost.com" },
+          alex: { username: "alex", display_name: "Alex Chen", target_role: "Amazon SDE II Candidate", avatar: "👨‍💻", email: "alex.chen@aws.dev" },
+          sarah: { username: "sarah", display_name: "Sarah Jenkins", target_role: "Principal Systems Architect", avatar: "👩‍💻", email: "sarah.j@techlead.io" },
+        };
+        userObj = demoAccounts[username] || { username, display_name: username.toUpperCase(), target_role: "Developer", avatar: "🚀", email: `${username}@dev.io` };
+      }
+
+      updateUserUI(userObj);
+      authModal.classList.add('hidden');
+      addMessage('assistant', `👋 Welcome back, <strong>${userObj.display_name}</strong>! Switched profile to <em>${userObj.target_role}</em>. Ready for algorithms?`);
+      speak(`Welcome back, ${userObj.display_name}! Ready for your algorithm training?`);
+      refreshDashboards();
+    } catch (err) {
+      console.warn('Sign in notice:', err);
+    }
+  }
+
+  signinForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const u = document.getElementById('signinUsername').value.trim();
+    const p = document.getElementById('signinPassword').value;
+    signInUser(u, p);
+  });
+
+  // 1-Click Switch Demo Profiles
+  document.querySelectorAll('.quick-profile-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const u = btn.dataset.user;
+      const p = btn.dataset.pass;
+      signInUser(u, p);
+    });
+  });
+
+  // Sign Up action
+  signupForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const username = document.getElementById('signupUsername').value.trim();
+    const displayName = document.getElementById('signupDisplayName').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const targetRole = document.getElementById('signupRole').value.trim();
+    const avatar = document.getElementById('signupAvatar').value;
+    const password = document.getElementById('signupPassword').value;
+
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username,
+          password,
+          display_name: displayName,
+          email,
+          target_role: targetRole,
+          avatar,
+        }),
+      }).catch(() => null);
+
+      let userObj;
+      if (res && res.ok) {
+        const data = await res.json();
+        userObj = data.user;
+      } else {
+        userObj = { username, display_name: displayName, target_role: targetRole, avatar, email };
+      }
+
+      updateUserUI(userObj);
+      authModal.classList.add('hidden');
+      addMessage('assistant', `🎉 Account created! Welcome to SkillForge, <strong>${userObj.display_name}</strong>. Your study streaks and SM-2 flashcard intervals will be tracked here.`);
+      speak(`Account created! Welcome to SkillForge, ${userObj.display_name}.`);
+      refreshDashboards();
+    } catch (err) {
+      console.warn('Sign up notice:', err);
+    }
+  });
+
+  signOutBtn.addEventListener('click', () => {
+    openAuthModal('signin-tab');
+  });
+
+  // ── Settings Modal Management ─────────────────────────────────────────────
+  settingsBtn.addEventListener('click', () => settingsModal.classList.remove('hidden'));
+  closeSettingsModalBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
+
+  // Close modals on background click
+  window.addEventListener('click', (e) => {
+    if (e.target === authModal) authModal.classList.add('hidden');
+    if (e.target === settingsModal) settingsModal.classList.add('hidden');
+  });
+
+  // Settings: Voice Preferences
+  settingTtsToggle.addEventListener('change', (e) => {
+    state.ttsEnabled = e.target.checked;
+    ttsToggleBtn.textContent = state.ttsEnabled ? '🔊 Voice: On' : '🔇 Voice: Off';
+    if (!state.ttsEnabled && state.synth) state.synth.cancel();
+  });
+
+  settingRateSlider.addEventListener('input', (e) => {
+    state.speechRate = parseFloat(e.target.value);
+  });
+
+  // ── Quick Suggestion Chips ────────────────────────────────────────────────
   document.querySelectorAll('.chip-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const action = btn.dataset.action;
       if (action === 'daily') handleUserInput('daily challenge');
       else if (action === 'quiz-dp') handleUserInput('quiz me on dynamic programming');
+      else if (action === 'code-dsa') handleUserInput('Give me DSA code');
       else if (action === 'explain-kadane') handleUserInput("explain Kadane's algorithm");
       else if (action === 'suggest') handleUserInput('suggest next flashcard');
       else if (action === 'streak') handleUserInput('check my streak');
@@ -912,7 +1151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Tab Navigation
+  // Tab Navigation for Inspector
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -937,6 +1176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
   // Initial Load
+  updateUserUI(state.currentUser);
   loadTopicsCatalog();
   refreshDashboards();
 });

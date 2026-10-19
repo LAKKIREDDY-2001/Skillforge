@@ -28,8 +28,43 @@ class ProgressStore:
         self._memory_users: dict[str, dict[str, Any]] = {}
         # { user_id: { question_id: { interval: int, repetitions: int, ease_factor: float, next_review: "YYYY-MM-DD" } } }
         self._memory_reviews: dict[str, dict[str, dict[str, Any]]] = {}
+        # { username: { username, display_name, email, password_hash, target_role, avatar, created_at } }
+        self._memory_accounts: dict[str, dict[str, Any]] = {}
 
+        self._seed_default_accounts()
         self._init_backend()
+
+    def _seed_default_accounts(self):
+        """Seed starter accounts for hackathon demo and quick sign-in."""
+        self._memory_accounts = {
+            "hackathon_judge": {
+                "username": "hackathon_judge",
+                "display_name": "Amazon Reviewer",
+                "email": "testing@devpost.com",
+                "password_hash": "judge2026",
+                "target_role": "Amazon Developer Relations",
+                "avatar": "⚡",
+                "created_at": datetime.now().isoformat(),
+            },
+            "alex": {
+                "username": "alex",
+                "display_name": "Alex Chen",
+                "email": "alex.chen@aws.dev",
+                "password_hash": "alex123",
+                "target_role": "Amazon SDE II Candidate",
+                "avatar": "👨‍💻",
+                "created_at": datetime.now().isoformat(),
+            },
+            "sarah": {
+                "username": "sarah",
+                "display_name": "Sarah Jenkins",
+                "email": "sarah.j@techlead.io",
+                "password_hash": "sarah123",
+                "target_role": "Principal Algorithm Architect",
+                "avatar": "👩‍💻",
+                "created_at": datetime.now().isoformat(),
+            },
+        }
 
     def _init_backend(self):
         """Attempt to initialize DynamoDB, fallback to local storage if unavailable."""
@@ -96,6 +131,9 @@ class ProgressStore:
                     data = json.load(f)
                     self._memory_users = data.get("users", {})
                     self._memory_reviews = data.get("reviews", {})
+                    saved_accs = data.get("accounts", {})
+                    if saved_accs:
+                        self._memory_accounts.update(saved_accs)
             except Exception as e:
                 logger.warning(f"Could not read local store file: {e}")
 
@@ -108,6 +146,7 @@ class ProgressStore:
                     {
                         "users": self._memory_users,
                         "reviews": self._memory_reviews,
+                        "accounts": self._memory_accounts,
                         "updated_at": datetime.now().isoformat(),
                     },
                     f,
@@ -115,6 +154,65 @@ class ProgressStore:
                 )
         except Exception as e:
             logger.warning(f"Could not save to local store: {e}")
+
+    # ── User Accounts & Authentication ─────────────────────────────────────────
+
+    def register_account(
+        self,
+        username: str,
+        password: str,
+        display_name: str = "",
+        email: str = "",
+        target_role: str = "Software Development Engineer",
+        avatar: str = "🚀",
+    ) -> dict[str, Any]:
+        """Register a new user account."""
+        clean_user = username.strip().lower()
+        if not clean_user:
+            return {"error": "Username cannot be empty."}
+        if clean_user in self._memory_accounts:
+            return {"error": f"Username '{clean_user}' is already registered."}
+
+        account = {
+            "username": clean_user,
+            "display_name": display_name.strip() or clean_user.capitalize(),
+            "email": email.strip() or f"{clean_user}@developer.io",
+            "password_hash": password,  # lightweight hash for demo
+            "target_role": target_role.strip() or "Amazon SDE Candidate",
+            "avatar": avatar or "🚀",
+            "created_at": datetime.now().isoformat(),
+        }
+        self._memory_accounts[clean_user] = account
+        # Initialize default user progress
+        self.get_user_data(clean_user)
+        self.record_study_event(clean_user, "dynamic_programming", xp_earned=50)
+        self._save_local_store()
+        return {"status": "success", "user": account}
+
+    def authenticate_account(self, username: str, password: str) -> dict[str, Any]:
+        """Authenticate user by username and password."""
+        clean_user = username.strip().lower()
+        acc = self._memory_accounts.get(clean_user)
+        if not acc:
+            return {"error": f"User '{clean_user}' not found. Please sign up!"}
+        if acc["password_hash"] != password:
+            return {"error": "Incorrect password. Please try again."}
+        return {"status": "success", "user": acc}
+
+    def get_account(self, username: str) -> Optional[dict[str, Any]]:
+        clean_user = username.strip().lower()
+        return self._memory_accounts.get(clean_user)
+
+    def list_accounts(self) -> list[dict[str, Any]]:
+        return [
+            {
+                "username": a["username"],
+                "display_name": a["display_name"],
+                "target_role": a.get("target_role", "Software Engineer"),
+                "avatar": a.get("avatar", "👤"),
+            }
+            for a in self._memory_accounts.values()
+        ]
 
     # ── User & Study Events ────────────────────────────────────────────────────
 

@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="app-container">
+  <div class="app-container" id="appContainer">
     <!-- Top Header Bar -->
     <header class="header">
       <div class="brand">
@@ -24,23 +24,44 @@
           <span class="badge aws-badge">AWS Bedrock (Claude 3.5 Sonnet)</span>
         </div>
       </div>
+
       <div class="header-status">
+        <!-- MCP Status -->
         <div class="status-indicator" id="mcpStatus">
           <span class="pulse-dot"></span>
           <span class="status-label">MCP Server Online</span>
         </div>
-        <div class="xp-pill" id="xpPill">
-          <span class="xp-icon">🏆</span>
-          <span class="xp-val" id="userXp">120 XP</span>
-          <span class="level-tag" id="userLevel">Lvl 1</span>
+
+        <!-- MCP Inspector Show/Hide Button -->
+        <button class="nav-toggle-btn active" id="toggleInspectorBtn" title="Toggle MCP Inspector Side Panel">
+          <span class="btn-icon">📡</span>
+          <span class="btn-text">MCP Inspector</span>
+        </button>
+
+        <!-- Settings Hub Button -->
+        <button class="nav-toggle-btn" id="settingsBtn" title="Open Settings & Study Hub">
+          <span class="btn-icon">⚙️</span>
+          <span class="btn-text">Settings</span>
+        </button>
+
+        <!-- User Profile & Sign-In/Up Pill -->
+        <div class="profile-pill" id="profilePillBtn" title="View Profile / Sign In / Sign Up">
+          <span class="user-avatar" id="navUserAvatar">👨‍💻</span>
+          <div class="profile-pill-info">
+            <span class="profile-name" id="navUserName">Alex Chen</span>
+            <div class="profile-stats-mini">
+              <span class="xp-val" id="navUserXp">120 XP</span>
+              <span class="level-tag" id="navUserLevel">Lvl 1</span>
+            </div>
+          </div>
         </div>
       </div>
     </header>
 
     <!-- Main Workspace Split View -->
-    <main class="main-layout">
+    <main class="main-layout" id="mainLayout">
       <!-- Left Panel: Simulated Alexa+ Device Experience -->
-      <section class="device-panel">
+      <section class="device-panel" id="devicePanel">
         <!-- Alexa Device Simulation Header -->
         <div class="device-card">
           <div class="device-top-bar">
@@ -51,6 +72,7 @@
             <div class="voice-controls">
               <button class="icon-btn" id="ttsToggleBtn" title="Toggle Alexa Speech Output">🔊 Voice: On</button>
               <button class="icon-btn" id="soundTestBtn" title="Test Voice Output">🔔 Test Sound</button>
+              <button class="icon-btn" id="quickProfileBtn" title="Switch User Profile">👤 Switch User</button>
             </div>
           </div>
 
@@ -86,6 +108,7 @@
           <div class="quick-chips">
             <button class="chip-btn" data-action="daily">📅 Daily Challenge</button>
             <button class="chip-btn" data-action="quiz-dp">⚡ DP Quiz (Medium)</button>
+            <button class="chip-btn" data-action="code-dsa">💻 Give Me DSA Code</button>
             <button class="chip-btn" data-action="explain-kadane">💡 Explain Kadane's</button>
             <button class="chip-btn" data-action="suggest">🧠 Next Due (SM-2)</button>
             <button class="chip-btn" data-action="streak">🔥 Check Streak</button>
@@ -103,7 +126,7 @@
               </svg>
               <span class="mic-text" id="micText">Tap to Speak</span>
             </button>
-            <input type="text" id="textInput" placeholder="Or type a question / answer..." autocomplete="off">
+            <input type="text" id="textInput" placeholder="Ask for code, a quiz, or type your answer..." autocomplete="off">
             <button class="send-btn" id="sendBtn" title="Send message">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -135,13 +158,14 @@
       </section>
 
       <!-- Right Panel: Live MCP Protocol Inspector & Learning Dashboards -->
-      <aside class="inspector-panel">
+      <aside class="inspector-panel" id="inspectorPanel">
         <!-- Tab Navigation -->
         <div class="tabs-nav">
           <button class="tab-btn active" data-tab="mcp-tab">📡 MCP Inspector</button>
           <button class="tab-btn" data-tab="flashcards-tab">📇 SM-2 Deck (<span id="deckCount">0</span>)</button>
           <button class="tab-btn" data-tab="streak-tab">🔥 Progress & XP</button>
           <button class="tab-btn" data-tab="catalog-tab">📚 10 Topics</button>
+          <button class="hide-inspector-btn" id="hideInspectorBtn" title="Hide MCP Inspector">✕</button>
         </div>
 
         <!-- Tab 1: Real-Time MCP Protocol Inspector -->
@@ -163,7 +187,7 @@
               <pre class="log-json"><code>{
   "jsonrpc": "2.0",
   "result": {
-    "tools": 8,
+    "tools": 9,
     "resources": 3,
     "prompts": 3
   }
@@ -236,6 +260,229 @@
         </div>
       </aside>
     </main>
+
+    <!-- Floating Show Inspector Button (Visible when Inspector is Hidden) -->
+    <button class="floating-inspector-btn hidden" id="floatingInspectorBtn" title="Show MCP Protocol Inspector">
+      <span>📡</span> Show MCP Inspector
+    </button>
+
+    <!-- Modal 1: User Profile, Sign-In & Sign-Up Modal -->
+    <div class="modal-overlay hidden" id="authModal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title">
+            <span class="modal-icon">👤</span>
+            <span id="authModalTitle">User Profile & Authentication</span>
+          </div>
+          <button class="modal-close-btn" id="closeAuthModalBtn">✕</button>
+        </div>
+
+        <!-- Auth Tabs: Sign In / Sign Up / My Profile -->
+        <div class="modal-tabs">
+          <button class="modal-tab-btn active" data-authtab="signin-tab">Sign In</button>
+          <button class="modal-tab-btn" data-authtab="signup-tab">Sign Up</button>
+          <button class="modal-tab-btn" data-authtab="profile-tab">My Profile</button>
+        </div>
+
+        <!-- Tab 1: Sign In -->
+        <div class="modal-tab-content active" id="signin-tab">
+          <form id="signinForm" class="auth-form">
+            <div class="form-group">
+              <label for="signinUsername">Username</label>
+              <input type="text" id="signinUsername" placeholder="e.g. alex" required autocomplete="username">
+            </div>
+            <div class="form-group">
+              <label for="signinPassword">Password</label>
+              <input type="password" id="signinPassword" placeholder="••••••••" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="primary-btn">Sign In to SkillForge</button>
+          </form>
+
+          <!-- Quick Demo Profiles Switcher -->
+          <div class="quick-profiles-section">
+            <div class="quick-profiles-label">⚡ Or 1-Click Switch Demo Profile:</div>
+            <div class="quick-profiles-grid">
+              <button class="quick-profile-btn" data-user="hackathon_judge" data-pass="judge2026">
+                <span>⚡</span>
+                <div>
+                  <strong>Amazon Reviewer</strong>
+                  <small>DevRel / Judge</small>
+                </div>
+              </button>
+              <button class="quick-profile-btn" data-user="alex" data-pass="alex123">
+                <span>👨‍💻</span>
+                <div>
+                  <strong>Alex Chen</strong>
+                  <small>Amazon SDE II Candidate</small>
+                </div>
+              </button>
+              <button class="quick-profile-btn" data-user="sarah" data-pass="sarah123">
+                <span>👩‍💻</span>
+                <div>
+                  <strong>Sarah Jenkins</strong>
+                  <small>Staff Systems Architect</small>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Sign Up -->
+        <div class="modal-tab-content" id="signup-tab">
+          <form id="signupForm" class="auth-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="signupUsername">Username</label>
+                <input type="text" id="signupUsername" placeholder="e.g. jdoe" required>
+              </div>
+              <div class="form-group">
+                <label for="signupDisplayName">Full Name</label>
+                <input type="text" id="signupDisplayName" placeholder="e.g. Jane Doe" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="signupEmail">Email</label>
+              <input type="email" id="signupEmail" placeholder="jane@example.com">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="signupRole">Target Interview Role</label>
+                <input type="text" id="signupRole" placeholder="e.g. Amazon SDE / Full-Stack" value="Amazon SDE Candidate">
+              </div>
+              <div class="form-group">
+                <label for="signupAvatar">Avatar</label>
+                <select id="signupAvatar">
+                  <option value="🚀">🚀 Rocket</option>
+                  <option value="👨‍💻">👨‍💻 Dev (M)</option>
+                  <option value="👩‍💻">👩‍💻 Dev (F)</option>
+                  <option value="⚡">⚡ Electric</option>
+                  <option value="🧠">🧠 Brain</option>
+                  <option value="🏆">🏆 Champion</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="signupPassword">Password</label>
+              <input type="password" id="signupPassword" placeholder="Create a password" required>
+            </div>
+            <button type="submit" class="primary-btn">Create Free Account</button>
+          </form>
+        </div>
+
+        <!-- Tab 3: Current Profile Info -->
+        <div class="modal-tab-content" id="profile-tab">
+          <div class="profile-card-display">
+            <div class="profile-avatar-large" id="modalProfileAvatar">👨‍💻</div>
+            <div class="profile-details">
+              <h3 id="modalProfileName">Alex Chen</h3>
+              <p class="profile-role" id="modalProfileRole">Amazon SDE II Candidate</p>
+              <p class="profile-email" id="modalProfileEmail">alex.chen@aws.dev</p>
+            </div>
+          </div>
+          <div class="profile-stats-grid">
+            <div class="stat-box">
+              <div class="stat-number" id="modalStatStreak">3</div>
+              <div class="stat-desc">Day Streak</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number" id="modalStatXp">120</div>
+              <div class="stat-desc">Total XP</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number" id="modalStatQuizzes">4</div>
+              <div class="stat-desc">Quizzes Completed</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number" id="modalStatAccuracy">90%</div>
+              <div class="stat-desc">SM-2 Accuracy</div>
+            </div>
+          </div>
+          <button class="secondary-btn" id="signOutBtn" style="margin-top:16px;">Sign Out / Switch Account</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 2: Settings & Study Hub Modal -->
+    <div class="modal-overlay hidden" id="settingsModal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title">
+            <span class="modal-icon">⚙️</span>
+            <span>SkillForge Settings & Study Hub</span>
+          </div>
+          <button class="modal-close-btn" id="closeSettingsModalBtn">✕</button>
+        </div>
+
+        <div class="settings-body">
+          <!-- Section 1: Audio & Voice Preferences -->
+          <div class="settings-section">
+            <h4>🔊 Alexa Voice & Audio Preferences</h4>
+            <div class="setting-item">
+              <div>
+                <div class="setting-label">Text-to-Speech Voice Output</div>
+                <div class="setting-desc">Alexa speaks quiz questions, analogies, and Socratic feedback aloud.</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="settingTtsToggle" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="setting-item">
+              <div>
+                <div class="setting-label">Speech Rate</div>
+                <div class="setting-desc">Adjust speaking speed for voice-first algorithmic learning.</div>
+              </div>
+              <input type="range" id="settingRateSlider" min="0.8" max="1.3" step="0.05" value="1.05">
+            </div>
+          </div>
+
+          <!-- Section 2: SM-2 Spaced Repetition Settings -->
+          <div class="settings-section">
+            <h4>🧠 SuperMemo SM-2 Spaced Repetition Parameters</h4>
+            <div class="setting-item">
+              <div>
+                <div class="setting-label">Default Initial Interval</div>
+                <div class="setting-desc">Interval for newly mastered cards: 1 day -> 6 days -> (I * EF).</div>
+              </div>
+              <span class="mcp-endpoint-tag">I(1)=1d, I(2)=6d</span>
+            </div>
+            <div class="setting-item">
+              <div>
+                <div class="setting-label">Ease Factor Floor</div>
+                <div class="setting-desc">Minimum ease factor prevents permanently difficult cards from over-accelerating.</div>
+              </div>
+              <span class="mcp-endpoint-tag">EF &ge; 1.30</span>
+            </div>
+          </div>
+
+          <!-- Section 3: Cloud & MCP Architecture Status -->
+          <div class="settings-section">
+            <h4>☁️ Amazon Developer & AWS Cloud Architecture</h4>
+            <div class="setting-item">
+              <div>
+                <div class="setting-label">Protocol Standard</div>
+                <div class="setting-desc">Streamable HTTP / SSE JSON-RPC 2.0</div>
+              </div>
+              <span class="badge alexa-badge">MCP Spec 2025-11-25</span>
+            </div>
+            <div class="setting-item">
+              <div>
+                <div class="setting-label">AI Foundation Model</div>
+                <div class="setting-desc">Amazon Bedrock Claude 3.5 Sonnet</div>
+              </div>
+              <span class="badge aws-badge">us-east-1</span>
+            </div>
+            <div class="setting-item">
+              <div>
+                <div class="setting-label">Persistent Storage Engine</div>
+                <div class="setting-desc">Dual-Mode: Amazon DynamoDB with Local Resilient Fallback</div>
+              </div>
+              <span class="mcp-endpoint-tag" id="settingStorageStatus">DynamoDB / Resilient Local</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Footer Bar -->
     <footer class="footer">
