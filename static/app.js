@@ -9,15 +9,25 @@ document.addEventListener('DOMContentLoaded', () => {
     ? 'http://localhost:8000'
     : window.location.origin;
 
+  const isInitiallyLoggedIn = localStorage.getItem('skillforge_is_logged_in') === 'true';
+  const savedActiveUser = localStorage.getItem('skillforge_active_user') || 'alex';
+
   // ── App State ────────────────────────────────────────────────────────────
   const state = {
-    userId: 'alex',
-    currentUser: {
-      username: 'alex',
-      display_name: 'Alex Chen',
-      email: 'alex.chen@aws.dev',
-      target_role: 'Amazon SDE II Candidate',
-      avatar: 'M',
+    isLoggedIn: isInitiallyLoggedIn,
+    userId: isInitiallyLoggedIn ? savedActiveUser : 'guest',
+    currentUser: isInitiallyLoggedIn ? {
+      username: savedActiveUser,
+      display_name: savedActiveUser === 'sarah' ? 'Sarah Jenkins' : savedActiveUser === 'david' ? 'David Park' : 'Alex Chen',
+      email: `${savedActiveUser}@skillforge.io`,
+      target_role: savedActiveUser === 'sarah' ? 'Google Principal Architect Prep' : savedActiveUser === 'david' ? 'Meta Staff Engineer Prep' : 'Amazon SDE II Candidate',
+      avatar: savedActiveUser === 'sarah' ? '👩‍💻' : savedActiveUser === 'david' ? '⚡' : '👨‍💻',
+    } : {
+      username: 'guest',
+      display_name: 'Guest Coder',
+      email: 'guest@skillforge.io',
+      target_role: 'Software Development Engineer',
+      avatar: '👤',
     },
     activeView: 'dashboard',
     activeModel: 'claude-3-5-sonnet',
@@ -654,8 +664,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (closeScorecardActionBtn) closeScorecardActionBtn.addEventListener('click', () => scorecardModal.classList.add('hidden'));
 
   // ── User Profile & Auth Modal Controller ──────────────────────────────────
+  const authNavGroup = document.getElementById('authNavGroup');
+  const userLoggedInGroup = document.getElementById('userLoggedInGroup');
   const headerSigninBtn = document.getElementById('headerSigninBtn');
   const headerSignupBtn = document.getElementById('headerSignupBtn');
+  const headerSignoutBtn = document.getElementById('headerSignoutBtn');
+  const menuSignOutBtn = document.getElementById('menuSignOutBtn');
   const userMenuDropdown = document.getElementById('userMenuDropdown');
   const userChipName = document.getElementById('userChipName');
   const menuUserName = document.getElementById('menuUserName');
@@ -666,6 +680,42 @@ document.addEventListener('DOMContentLoaded', () => {
   const menuSignInBtn = document.getElementById('menuSignInBtn');
   const menuSignUpBtn = document.getElementById('menuSignUpBtn');
   const menuSettingsBtn = document.getElementById('menuSettingsBtn');
+
+  function updateAuthStateUI() {
+    const isLoggedIn = !!state.isLoggedIn;
+    if (isLoggedIn) {
+      if (authNavGroup) authNavGroup.classList.add('hidden');
+      if (userLoggedInGroup) userLoggedInGroup.classList.remove('hidden');
+    } else {
+      if (authNavGroup) authNavGroup.classList.remove('hidden');
+      if (userLoggedInGroup) userLoggedInGroup.classList.add('hidden');
+      if (userMenuDropdown) userMenuDropdown.classList.add('hidden');
+    }
+    updateUserStats();
+  }
+
+  function handleSignOut() {
+    state.isLoggedIn = false;
+    state.userId = 'guest';
+    state.currentUser = {
+      username: 'guest',
+      display_name: 'Guest Coder',
+      email: 'guest@skillforge.io',
+      target_role: 'Software Development Engineer',
+      avatar: '👤',
+    };
+    localStorage.removeItem('skillforge_active_user');
+    localStorage.setItem('skillforge_is_logged_in', 'false');
+
+    updateAuthStateUI();
+    if (userMenuDropdown) userMenuDropdown.classList.add('hidden');
+    playAlexaChime();
+    showInAppToast('👋 Signed Out', 'You have been signed out. Sign in anytime to continue your streak!');
+    speak('You have been signed out. See you next session!');
+  }
+
+  if (headerSignoutBtn) headerSignoutBtn.addEventListener('click', handleSignOut);
+  if (menuSignOutBtn) menuSignOutBtn.addEventListener('click', handleSignOut);
   const tabSignInBtn = document.getElementById('tabSignInBtn');
   const tabSignUpBtn = document.getElementById('tabSignUpBtn');
   const linkToSignUp = document.getElementById('linkToSignUp');
@@ -775,13 +825,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const user = data.user;
+        state.isLoggedIn = true;
         state.userId = user.username;
         state.currentUser.display_name = user.display_name;
         state.currentUser.target_role = user.target_role;
         state.currentUser.avatar = user.avatar || '👨‍💻';
         localStorage.setItem('skillforge_active_user', user.username);
+        localStorage.setItem('skillforge_is_logged_in', 'true');
 
-        updateUserStats();
+        updateAuthStateUI();
         if (authModal) authModal.classList.add('hidden');
         playAlexaChime();
         showInAppToast(`🎉 Welcome back, ${user.display_name}!`, `Logged in as ${user.target_role}`);
@@ -826,13 +878,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const user = data.user;
+        state.isLoggedIn = true;
         state.userId = user.username;
         state.currentUser.display_name = user.display_name;
         state.currentUser.target_role = user.target_role;
         state.currentUser.avatar = user.avatar || '🚀';
         localStorage.setItem('skillforge_active_user', user.username);
+        localStorage.setItem('skillforge_is_logged_in', 'true');
 
-        updateUserStats();
+        updateAuthStateUI();
         if (authModal) authModal.classList.add('hidden');
         playAlexaChime();
         showInAppToast(`🚀 Profile Created!`, `Welcome to SkillForge, ${user.display_name}!`);
@@ -854,13 +908,15 @@ document.addEventListener('DOMContentLoaded', () => {
       david: { name: 'David Park', role: 'Meta Staff Engineer Prep', avatar: '⚡' },
     };
     const p = personas[userKey] || personas.alex;
+    state.isLoggedIn = true;
     state.userId = userKey;
     state.currentUser.display_name = p.name;
     state.currentUser.target_role = p.role;
     state.currentUser.avatar = p.avatar;
     localStorage.setItem('skillforge_active_user', userKey);
+    localStorage.setItem('skillforge_is_logged_in', 'true');
 
-    updateUserStats();
+    updateAuthStateUI();
     if (userMenuDropdown) userMenuDropdown.classList.add('hidden');
     speak(`Switched profile to ${p.name}`);
   }
@@ -1340,5 +1396,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initial Boot
   initVisualizer();
-  updateUserStats();
+  updateAuthStateUI();
 });

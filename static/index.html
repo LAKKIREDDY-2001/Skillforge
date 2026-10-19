@@ -169,57 +169,63 @@
             </div>
           </div>
 
-          <!-- Authentication Action Buttons -->
+          <!-- Authentication State: Logged Out View (Sign In / Sign Up) -->
           <div class="auth-nav-group" id="authNavGroup">
             <button class="nav-auth-btn nav-signin-btn" id="headerSigninBtn">Sign In</button>
             <button class="nav-auth-btn nav-signup-btn" id="headerSignupBtn">Sign Up</button>
           </div>
 
-          <!-- User Profile Avatar Pill & Dropdown -->
-          <div class="user-profile-menu-wrap" id="userProfileWrap">
-            <button class="user-profile-chip" id="userAvatarBtn" title="View Profile / Switch User">
-              <span class="user-avatar-circle" id="userAvatarLetter">👨‍💻</span>
-              <span class="user-chip-name" id="userChipName">Alex Chen</span>
-              <svg class="chevron-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </button>
+          <!-- Authentication State: Logged In View (Profile Chip + Sign Out) -->
+          <div class="user-logged-in-group hidden" id="userLoggedInGroup">
+            <!-- User Profile Avatar Pill & Dropdown -->
+            <div class="user-profile-menu-wrap" id="userProfileWrap">
+              <button class="user-profile-chip" id="userAvatarBtn" title="View Profile / Switch User">
+                <span class="user-avatar-circle" id="userAvatarLetter">👨‍💻</span>
+                <span class="user-chip-name" id="userChipName">Alex Chen</span>
+                <svg class="chevron-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
 
-            <!-- User Menu Dropdown -->
-            <div class="user-menu-dropdown hidden" id="userMenuDropdown">
-              <div class="user-menu-header">
-                <div class="user-menu-avatar" id="menuAvatar">👨‍💻</div>
-                <div class="user-menu-info">
-                  <div class="user-menu-name" id="menuUserName">Alex Chen</div>
-                  <div class="user-menu-role" id="menuUserRole">Amazon SDE II Candidate</div>
+              <!-- User Menu Dropdown -->
+              <div class="user-menu-dropdown hidden" id="userMenuDropdown">
+                <div class="user-menu-header">
+                  <div class="user-menu-avatar" id="menuAvatar">👨‍💻</div>
+                  <div class="user-menu-info">
+                    <div class="user-menu-name" id="menuUserName">Alex Chen</div>
+                    <div class="user-menu-role" id="menuUserRole">Amazon SDE II Candidate</div>
+                  </div>
+                </div>
+
+                <div class="user-menu-stats-bar">
+                  <span id="menuUserStreak">🔥 14-Day Streak</span>
+                  <span id="menuUserXp">⚡ 120 XP</span>
+                </div>
+
+                <div class="user-menu-divider"></div>
+
+                <div class="user-menu-section-title">Quick Switch Persona</div>
+                <div class="user-menu-personas">
+                  <button class="persona-chip active" data-user="alex">👨‍💻 Alex (Amazon)</button>
+                  <button class="persona-chip" data-user="sarah">👩‍💻 Sarah (Google)</button>
+                </div>
+
+                <div class="user-menu-divider"></div>
+
+                <div class="user-menu-actions">
+                  <button class="user-menu-btn" id="menuSettingsBtn">
+                    <span>⚙️</span> Settings & Benchmarks
+                  </button>
+                  <button class="user-menu-btn danger" id="menuSignOutBtn">
+                    <span>🚪</span> Sign Out
+                  </button>
                 </div>
               </div>
-
-              <div class="user-menu-stats-bar">
-                <span id="menuUserStreak">🔥 14-Day Streak</span>
-                <span id="menuUserXp">⚡ 120 XP</span>
-              </div>
-
-              <div class="user-menu-divider"></div>
-
-              <div class="user-menu-section-title">Quick Switch Persona</div>
-              <div class="user-menu-personas">
-                <button class="persona-chip active" data-user="alex">👨‍💻 Alex (Amazon)</button>
-                <button class="persona-chip" data-user="sarah">👩‍💻 Sarah (Google)</button>
-              </div>
-
-              <div class="user-menu-divider"></div>
-
-              <div class="user-menu-actions">
-                <button class="user-menu-btn" id="menuSignInBtn">
-                  <span>🔑</span> Sign In to Account
-                </button>
-                <button class="user-menu-btn highlight" id="menuSignUpBtn">
-                  <span>✨</span> + Create New Profile (Sign Up)
-                </button>
-                <button class="user-menu-btn" id="menuSettingsBtn">
-                  <span>⚙️</span> Settings & Benchmarks
-                </button>
-              </div>
             </div>
+
+            <!-- Prominent Sign Out Button -->
+            <button class="nav-auth-btn nav-signout-btn" id="headerSignoutBtn" title="Sign out of your account">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              Sign Out
+            </button>
           </div>
         </div>
       </header>

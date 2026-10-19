@@ -837,6 +837,34 @@ body {
   box-shadow: 0 6px 18px rgba(0, 195, 255, 0.45);
 }
 
+.user-logged-in-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-logged-in-group.hidden {
+  display: none !important;
+}
+
+.auth-nav-group.hidden {
+  display: none !important;
+}
+
+.nav-signout-btn {
+  background: rgba(239, 68, 68, 0.08);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  display: flex;
+  align-items: center;
+}
+
+.nav-signout-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #fff;
+}
+
 /* User Profile Chip */
 .user-profile-menu-wrap {
   position: relative;
@@ -1039,6 +1067,15 @@ body {
 .user-menu-btn.highlight:hover {
   background: rgba(0, 195, 255, 0.15);
   border-color: var(--alexa-cyan);
+}
+
+.user-menu-btn.danger {
+  color: #fca5a5;
+}
+
+.user-menu-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
 }
 
 /* Auth Modal Extras */
