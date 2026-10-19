@@ -653,42 +653,235 @@ document.addEventListener('DOMContentLoaded', () => {
   if (closeScorecardModalBtn) closeScorecardModalBtn.addEventListener('click', () => scorecardModal.classList.add('hidden'));
   if (closeScorecardActionBtn) closeScorecardActionBtn.addEventListener('click', () => scorecardModal.classList.add('hidden'));
 
-  // ── User Profile & Auth Modal ─────────────────────────────────────────────
-  if (userAvatarBtn) {
-    userAvatarBtn.addEventListener('click', () => {
+  // ── User Profile & Auth Modal Controller ──────────────────────────────────
+  const headerSigninBtn = document.getElementById('headerSigninBtn');
+  const headerSignupBtn = document.getElementById('headerSignupBtn');
+  const userMenuDropdown = document.getElementById('userMenuDropdown');
+  const userChipName = document.getElementById('userChipName');
+  const menuUserName = document.getElementById('menuUserName');
+  const menuUserRole = document.getElementById('menuUserRole');
+  const menuAvatar = document.getElementById('menuAvatar');
+  const menuUserStreak = document.getElementById('menuUserStreak');
+  const menuUserXp = document.getElementById('menuUserXp');
+  const menuSignInBtn = document.getElementById('menuSignInBtn');
+  const menuSignUpBtn = document.getElementById('menuSignUpBtn');
+  const menuSettingsBtn = document.getElementById('menuSettingsBtn');
+  const tabSignInBtn = document.getElementById('tabSignInBtn');
+  const tabSignUpBtn = document.getElementById('tabSignUpBtn');
+  const linkToSignUp = document.getElementById('linkToSignUp');
+  const linkToSignIn = document.getElementById('linkToSignIn');
+  const authErrorMsg = document.getElementById('authErrorMsg');
+  const authSuccessMsg = document.getElementById('authSuccessMsg');
+  const signinUsername = document.getElementById('signinUsername');
+  const signinPassword = document.getElementById('signinPassword');
+  const signupUsername = document.getElementById('signupUsername');
+  const signupDisplayName = document.getElementById('signupDisplayName');
+  const signupEmail = document.getElementById('signupEmail');
+  const signupRole = document.getElementById('signupRole');
+  const signupPassword = document.getElementById('signupPassword');
+
+  function openAuthModal(tab = 'signin') {
+    if (!authModal) return;
+    if (authErrorMsg) authErrorMsg.classList.add('hidden');
+    if (authSuccessMsg) authSuccessMsg.classList.add('hidden');
+    authModal.classList.remove('hidden');
+
+    if (tab === 'signup') {
+      if (tabSignUpBtn) tabSignUpBtn.classList.add('active');
+      if (tabSignInBtn) tabSignInBtn.classList.remove('active');
+      if (signupForm) signupForm.classList.remove('hidden');
+      if (signinForm) signinForm.classList.add('hidden');
+      if (signupUsername) signupUsername.focus();
+    } else {
+      if (tabSignInBtn) tabSignInBtn.classList.add('active');
+      if (tabSignUpBtn) tabSignUpBtn.classList.remove('active');
+      if (signinForm) signinForm.classList.remove('hidden');
+      if (signupForm) signupForm.classList.add('hidden');
+      if (signinUsername) signinUsername.focus();
+    }
+  }
+
+  // Header and Menu Openers
+  if (headerSigninBtn) headerSigninBtn.addEventListener('click', () => openAuthModal('signin'));
+  if (headerSignupBtn) headerSignupBtn.addEventListener('click', () => openAuthModal('signup'));
+  if (menuSignInBtn) {
+    menuSignInBtn.addEventListener('click', () => {
+      if (userMenuDropdown) userMenuDropdown.classList.add('hidden');
+      openAuthModal('signin');
+    });
+  }
+  if (menuSignUpBtn) {
+    menuSignUpBtn.addEventListener('click', () => {
+      if (userMenuDropdown) userMenuDropdown.classList.add('hidden');
+      openAuthModal('signup');
+    });
+  }
+  if (menuSettingsBtn) {
+    menuSettingsBtn.addEventListener('click', () => {
+      if (userMenuDropdown) userMenuDropdown.classList.add('hidden');
       switchView('settings');
     });
   }
 
-  const openAuthModalBtn = document.getElementById('openAuthModalBtn');
-  if (openAuthModalBtn) {
-    openAuthModalBtn.addEventListener('click', () => {
-      if (authModal) authModal.classList.remove('hidden');
+  // Toggle user dropdown on avatar chip click
+  if (userAvatarBtn) {
+    userAvatarBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (userMenuDropdown) {
+        userMenuDropdown.classList.toggle('hidden');
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (userMenuDropdown && !userMenuDropdown.classList.contains('hidden')) {
+        if (!userMenuDropdown.contains(e.target) && e.target !== userAvatarBtn && !userAvatarBtn.contains(e.target)) {
+          userMenuDropdown.classList.add('hidden');
+        }
+      }
     });
   }
-  if (closeAuthModalBtn) closeAuthModalBtn.addEventListener('click', () => authModal.classList.add('hidden'));
 
-  // Quick Switch Personas
-  document.querySelectorAll('.quick-user-btn').forEach(btn => {
+  // Modal Tab Switching
+  if (tabSignInBtn) tabSignInBtn.addEventListener('click', () => openAuthModal('signin'));
+  if (tabSignUpBtn) tabSignUpBtn.addEventListener('click', () => openAuthModal('signup'));
+  if (linkToSignUp) linkToSignUp.addEventListener('click', (e) => { e.preventDefault(); openAuthModal('signup'); });
+  if (linkToSignIn) linkToSignIn.addEventListener('click', (e) => { e.preventDefault(); openAuthModal('signin'); });
+
+  if (closeAuthModalBtn) {
+    closeAuthModalBtn.addEventListener('click', () => {
+      if (authModal) authModal.classList.add('hidden');
+    });
+  }
+
+  // Form Submissions
+  if (signinForm) {
+    signinForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (authErrorMsg) authErrorMsg.classList.add('hidden');
+
+      const username = signinUsername.value.trim();
+      const password = signinPassword.value.trim();
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/auth/signin`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        });
+        const data = await resp.json();
+
+        if (!resp.ok || data.error) {
+          throw new Error(data.detail || data.error || 'Invalid credentials');
+        }
+
+        const user = data.user;
+        state.userId = user.username;
+        state.currentUser.display_name = user.display_name;
+        state.currentUser.target_role = user.target_role;
+        state.currentUser.avatar = user.avatar || '👨‍💻';
+        localStorage.setItem('skillforge_active_user', user.username);
+
+        updateUserStats();
+        if (authModal) authModal.classList.add('hidden');
+        playAlexaChime();
+        showInAppToast(`🎉 Welcome back, ${user.display_name}!`, `Logged in as ${user.target_role}`);
+        speak(`Welcome back, ${user.display_name}! Ready for today's practice session?`);
+      } catch (err) {
+        if (authErrorMsg) {
+          authErrorMsg.textContent = `⚠️ ${err.message}`;
+          authErrorMsg.classList.remove('hidden');
+        }
+      }
+    });
+  }
+
+  if (signupForm) {
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (authErrorMsg) authErrorMsg.classList.add('hidden');
+
+      const username = signupUsername.value.trim();
+      const displayName = signupDisplayName.value.trim();
+      const email = signupEmail.value.trim();
+      const role = signupRole.value.trim();
+      const password = signupPassword.value.trim();
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/auth/signup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username,
+            password,
+            display_name: displayName,
+            email,
+            target_role: role,
+            avatar: '🚀',
+          }),
+        });
+        const data = await resp.json();
+
+        if (!resp.ok || data.error) {
+          throw new Error(data.detail || data.error || 'Failed to create account');
+        }
+
+        const user = data.user;
+        state.userId = user.username;
+        state.currentUser.display_name = user.display_name;
+        state.currentUser.target_role = user.target_role;
+        state.currentUser.avatar = user.avatar || '🚀';
+        localStorage.setItem('skillforge_active_user', user.username);
+
+        updateUserStats();
+        if (authModal) authModal.classList.add('hidden');
+        playAlexaChime();
+        showInAppToast(`🚀 Profile Created!`, `Welcome to SkillForge, ${user.display_name}!`);
+        speak(`Welcome to SkillForge, ${user.display_name}! Your developer profile is created.`);
+      } catch (err) {
+        if (authErrorMsg) {
+          authErrorMsg.textContent = `⚠️ ${err.message}`;
+          authErrorMsg.classList.remove('hidden');
+        }
+      }
+    });
+  }
+
+  // Quick Persona Switching
+  function switchPersona(userKey) {
+    const personas = {
+      alex: { name: 'Alex Chen', role: 'Amazon SDE II Prep', avatar: '👨‍💻' },
+      sarah: { name: 'Sarah Jenkins', role: 'Google Principal Architect Prep', avatar: '👩‍💻' },
+      david: { name: 'David Park', role: 'Meta Staff Engineer Prep', avatar: '⚡' },
+    };
+    const p = personas[userKey] || personas.alex;
+    state.userId = userKey;
+    state.currentUser.display_name = p.name;
+    state.currentUser.target_role = p.role;
+    state.currentUser.avatar = p.avatar;
+    localStorage.setItem('skillforge_active_user', userKey);
+
+    updateUserStats();
+    if (userMenuDropdown) userMenuDropdown.classList.add('hidden');
+    speak(`Switched profile to ${p.name}`);
+  }
+
+  document.querySelectorAll('.persona-chip').forEach(btn => {
     btn.addEventListener('click', () => {
-      const u = btn.dataset.user;
-      const names = {
-        alex: { name: 'Alex Chen', role: 'Amazon SDE II Prep', avatar: 'M' },
-        priya: { name: 'Priya Patel', role: 'Google L5 Candidate', avatar: 'P' },
-        marcus: { name: 'Marcus Vance', role: 'Meta Staff Engineer Prep', avatar: 'V' },
-      };
-      const user = names[u] || names.alex;
-      state.currentUser.display_name = user.name;
-      state.currentUser.target_role = user.role;
-      state.currentUser.avatar = user.avatar;
-
-      updateUserStats();
-      speak(`Switched profile to ${user.name}`);
+      document.querySelectorAll('.persona-chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      switchPersona(btn.dataset.user);
     });
   });
 
   function updateUserStats() {
-    if (userAvatarLetter) userAvatarLetter.textContent = state.currentUser.avatar;
+    if (userAvatarLetter) userAvatarLetter.textContent = state.currentUser.avatar || '👨‍💻';
+    if (userChipName) userChipName.textContent = state.currentUser.display_name || 'Alex Chen';
+    if (menuUserName) menuUserName.textContent = state.currentUser.display_name || 'Alex Chen';
+    if (menuUserRole) menuUserRole.textContent = state.currentUser.target_role || 'Amazon SDE II Candidate';
+    if (menuAvatar) menuAvatar.textContent = state.currentUser.avatar || '👨‍💻';
+    if (menuUserStreak) menuUserStreak.textContent = `🔥 ${state.streak}-Day Streak`;
+    if (menuUserXp) menuUserXp.textContent = `⚡ ${state.xp} XP`;
+
     const settingsUserName = document.getElementById('settingsUserName');
     const settingsUserRole = document.getElementById('settingsUserRole');
     if (settingsUserName) settingsUserName.textContent = state.currentUser.display_name;

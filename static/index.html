@@ -169,9 +169,57 @@
             </div>
           </div>
 
-          <!-- User Profile Avatar Pill -->
-          <div class="user-avatar-circle" id="userAvatarBtn" title="View Profile / Switch User">
-            <span id="userAvatarLetter">M</span>
+          <!-- Authentication Action Buttons -->
+          <div class="auth-nav-group" id="authNavGroup">
+            <button class="nav-auth-btn nav-signin-btn" id="headerSigninBtn">Sign In</button>
+            <button class="nav-auth-btn nav-signup-btn" id="headerSignupBtn">Sign Up</button>
+          </div>
+
+          <!-- User Profile Avatar Pill & Dropdown -->
+          <div class="user-profile-menu-wrap" id="userProfileWrap">
+            <button class="user-profile-chip" id="userAvatarBtn" title="View Profile / Switch User">
+              <span class="user-avatar-circle" id="userAvatarLetter">👨‍💻</span>
+              <span class="user-chip-name" id="userChipName">Alex Chen</span>
+              <svg class="chevron-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+
+            <!-- User Menu Dropdown -->
+            <div class="user-menu-dropdown hidden" id="userMenuDropdown">
+              <div class="user-menu-header">
+                <div class="user-menu-avatar" id="menuAvatar">👨‍💻</div>
+                <div class="user-menu-info">
+                  <div class="user-menu-name" id="menuUserName">Alex Chen</div>
+                  <div class="user-menu-role" id="menuUserRole">Amazon SDE II Candidate</div>
+                </div>
+              </div>
+
+              <div class="user-menu-stats-bar">
+                <span id="menuUserStreak">🔥 14-Day Streak</span>
+                <span id="menuUserXp">⚡ 120 XP</span>
+              </div>
+
+              <div class="user-menu-divider"></div>
+
+              <div class="user-menu-section-title">Quick Switch Persona</div>
+              <div class="user-menu-personas">
+                <button class="persona-chip active" data-user="alex">👨‍💻 Alex (Amazon)</button>
+                <button class="persona-chip" data-user="sarah">👩‍💻 Sarah (Google)</button>
+              </div>
+
+              <div class="user-menu-divider"></div>
+
+              <div class="user-menu-actions">
+                <button class="user-menu-btn" id="menuSignInBtn">
+                  <span>🔑</span> Sign In to Account
+                </button>
+                <button class="user-menu-btn highlight" id="menuSignUpBtn">
+                  <span>✨</span> + Create New Profile (Sign Up)
+                </button>
+                <button class="user-menu-btn" id="menuSettingsBtn">
+                  <span>⚙️</span> Settings & Benchmarks
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </header>
@@ -1026,44 +1074,65 @@
           <button class="modal-close-btn" id="closeAuthModalBtn">✕</button>
         </div>
         <div class="auth-tabs">
-          <button class="auth-tab-btn active" data-tab="signin-tab">Sign In</button>
-          <button class="auth-tab-btn" data-tab="signup-tab">Sign Up</button>
+          <button class="auth-tab-btn active" id="tabSignInBtn" data-tab="signin-tab">Sign In</button>
+          <button class="auth-tab-btn" id="tabSignUpBtn" data-tab="signup-tab">Sign Up</button>
         </div>
         <div class="auth-content">
+          <div class="auth-alert error hidden" id="authErrorMsg"></div>
+          <div class="auth-alert success hidden" id="authSuccessMsg"></div>
+
+          <!-- Sign In Form -->
           <form class="auth-form" id="signinForm">
             <div class="form-group">
               <label>Username</label>
-              <input type="text" id="signinUsername" placeholder="e.g. alex" value="alex" required>
+              <input type="text" id="signinUsername" placeholder="e.g. alex" value="alex" required autocomplete="username">
             </div>
             <div class="form-group">
               <label>Password</label>
-              <input type="password" id="signinPassword" value="alex123" required>
+              <input type="password" id="signinPassword" value="alex123" required autocomplete="current-password">
             </div>
-            <button type="submit" class="primary-btn full-width">Sign In to SkillForge</button>
+            <button type="submit" class="primary-btn full-width" id="btnSubmitSignIn">Sign In to SkillForge</button>
+            <div class="auth-footer-help">
+              <span>New to SkillForge?</span>
+              <button type="button" class="auth-link-btn" id="linkToSignUp">Create a new developer profile →</button>
+            </div>
           </form>
+
+          <!-- Sign Up Form -->
           <form class="auth-form hidden" id="signupForm">
-            <div class="form-group">
-              <label>Username</label>
-              <input type="text" id="signupUsername" placeholder="e.g. alex_aws" required>
+            <div class="form-row-2col">
+              <div class="form-group">
+                <label>Username *</label>
+                <input type="text" id="signupUsername" placeholder="e.g. lakkireddy" required autocomplete="username">
+              </div>
+              <div class="form-group">
+                <label>Display Name *</label>
+                <input type="text" id="signupDisplayName" placeholder="e.g. Venkat Reddy" required>
+              </div>
             </div>
             <div class="form-group">
-              <label>Display Name</label>
-              <input type="text" id="signupDisplayName" placeholder="e.g. Alex Chen" required>
+              <label>Email Address</label>
+              <input type="email" id="signupEmail" placeholder="developer@aws.dev" autocomplete="email">
             </div>
             <div class="form-group">
-              <label>Email</label>
-              <input type="email" id="signupEmail" placeholder="alex@skillforge.io">
+              <label>Target Dream Role</label>
+              <input type="text" id="signupRole" placeholder="e.g. Amazon SDE II" value="Amazon Software Development Engineer">
             </div>
             <div class="form-group">
-              <label>Target Role</label>
-              <input type="text" id="signupRole" placeholder="e.g. Amazon SDE II" value="Amazon SDE II Candidate">
+              <label>Password *</label>
+              <input type="password" id="signupPassword" placeholder="Choose a password" required autocomplete="new-password">
             </div>
-            <div class="form-group">
-              <label>Password</label>
-              <input type="password" id="signupPassword" required>
+            <button type="submit" class="primary-btn full-width" id="btnSubmitSignUp">Create Developer Account 🚀</button>
+            <div class="auth-footer-help">
+              <span>Already registered?</span>
+              <button type="button" class="auth-link-btn" id="linkToSignIn">Sign in with your username →</button>
             </div>
-            <button type="submit" class="primary-btn full-width">Create Developer Account</button>
           </form>
+
+          <!-- Demo Hint Box -->
+          <div class="auth-demo-hint">
+            <strong>💡 Quick Test:</strong> Sign in with <code>alex</code> / <code>alex123</code> or create your custom profile to test multi-user persistence!
+          </div>
         </div>
       </div>
     </div>
