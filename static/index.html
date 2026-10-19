@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillForge — Voice-First DSA Learning Companion (Alexa+ & AWS Bedrock)</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Header Bar -->
+    <header class="header">
+      <div class="brand">
+        <div class="brand-logo">
+          <div class="logo-ring"></div>
+          <span class="logo-icon">⚡</span>
+        </div>
+        <div class="brand-text">
+          <h1>SkillForge</h1>
+          <span class="badge alexa-badge">Alexa+ MCP Spec 2025-11-25</span>
+          <span class="badge aws-badge">AWS Bedrock (Claude 3.5 Sonnet)</span>
+        </div>
+      </div>
+      <div class="header-status">
+        <div class="status-indicator" id="mcpStatus">
+          <span class="pulse-dot"></span>
+          <span class="status-label">MCP Server Online</span>
+        </div>
+        <div class="xp-pill" id="xpPill">
+          <span class="xp-icon">🏆</span>
+          <span class="xp-val" id="userXp">120 XP</span>
+          <span class="level-tag" id="userLevel">Lvl 1</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Workspace Split View -->
+    <main class="main-layout">
+      <!-- Left Panel: Simulated Alexa+ Device Experience -->
+      <section class="device-panel">
+        <!-- Alexa Device Simulation Header -->
+        <div class="device-card">
+          <div class="device-top-bar">
+            <div class="device-name">
+              <span class="device-dot"></span>
+              <span>Alexa+ Echo Simulator</span>
+            </div>
+            <div class="voice-controls">
+              <button class="icon-btn" id="ttsToggleBtn" title="Toggle Alexa Speech Output">🔊 Voice: On</button>
+              <button class="icon-btn" id="soundTestBtn" title="Test Voice Output">🔔 Test Sound</button>
+            </div>
+          </div>
+
+          <!-- Alexa Glowing Ring / Waveform Display -->
+          <div class="alexa-orb-container">
+            <div class="alexa-ring" id="alexaRing">
+              <div class="ring-glow"></div>
+              <div class="ring-inner">
+                <div class="waveform" id="waveform">
+                  <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                  <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                  <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                </div>
+              </div>
+            </div>
+            <div class="orb-status" id="orbStatus">"Alexa, quiz me on dynamic programming"</div>
+          </div>
+
+          <!-- Spoken Transcript / Conversation Feed -->
+          <div class="conversation-feed" id="conversationFeed">
+            <div class="message assistant-msg">
+              <div class="msg-header">
+                <span class="msg-avatar">🎙️ Alexa+</span>
+                <span class="msg-time">Just now</span>
+              </div>
+              <div class="msg-body">
+                Welcome to <strong>SkillForge</strong>! I'm your voice-first DSA learning companion powered by Amazon Bedrock and the Model Context Protocol. You can tap the mic or choose a quick prompt to start your algorithmic training.
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Suggestion Chips -->
+          <div class="quick-chips">
+            <button class="chip-btn" data-action="daily">📅 Daily Challenge</button>
+            <button class="chip-btn" data-action="quiz-dp">⚡ DP Quiz (Medium)</button>
+            <button class="chip-btn" data-action="explain-kadane">💡 Explain Kadane's</button>
+            <button class="chip-btn" data-action="suggest">🧠 Next Due (SM-2)</button>
+            <button class="chip-btn" data-action="streak">🔥 Check Streak</button>
+            <button class="chip-btn" data-action="mock">🏢 Mock Interview</button>
+          </div>
+
+          <!-- Spoken / Text Input Bar -->
+          <div class="input-bar">
+            <button class="mic-btn" id="micBtn" title="Click to speak (Web Speech API)">
+              <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+              </svg>
+              <span class="mic-text" id="micText">Tap to Speak</span>
+            </button>
+            <input type="text" id="textInput" placeholder="Or type a question / answer..." autocomplete="off">
+            <button class="send-btn" id="sendBtn" title="Send message">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Socratic Answer Grader Card (Visible when answering) -->
+        <div class="grader-card hidden" id="graderCard">
+          <div class="grader-header">
+            <h3>🎯 Socratic Answer Grader (Amazon Bedrock)</h3>
+            <span class="score-badge" id="graderScoreBadge">90 / 100</span>
+          </div>
+          <div class="grader-body">
+            <div class="quality-stars" id="graderStars">⭐⭐⭐⭐☆</div>
+            <p class="grader-feedback" id="graderFeedback">Evaluating your response...</p>
+            <div class="key-points-section">
+              <div class="section-title">Key Points Evaluated:</div>
+              <div class="key-points-list" id="graderKeyPoints"></div>
+            </div>
+            <div class="sm2-pill" id="graderSm2Pill">
+              <span>SM-2 Spaced Repetition:</span>
+              <strong id="graderNextReview">Next review in 6 days</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Panel: Live MCP Protocol Inspector & Learning Dashboards -->
+      <aside class="inspector-panel">
+        <!-- Tab Navigation -->
+        <div class="tabs-nav">
+          <button class="tab-btn active" data-tab="mcp-tab">📡 MCP Inspector</button>
+          <button class="tab-btn" data-tab="flashcards-tab">📇 SM-2 Deck (<span id="deckCount">0</span>)</button>
+          <button class="tab-btn" data-tab="streak-tab">🔥 Progress & XP</button>
+          <button class="tab-btn" data-tab="catalog-tab">📚 10 Topics</button>
+        </div>
+
+        <!-- Tab 1: Real-Time MCP Protocol Inspector -->
+        <div class="tab-content active" id="mcp-tab">
+          <div class="inspector-header">
+            <div class="inspector-title">
+              <span>Live MCP Stream (Spec 2025-11-25)</span>
+              <span class="mcp-endpoint-tag">POST /mcp</span>
+            </div>
+            <button class="small-btn" id="clearMcpLogBtn">Clear Log</button>
+          </div>
+          <div class="mcp-log-container" id="mcpLog">
+            <div class="log-entry">
+              <div class="log-meta">
+                <span class="log-badge rpc">JSON-RPC 2.0</span>
+                <span class="log-method">tools/list</span>
+                <span class="log-time">Initialized</span>
+              </div>
+              <pre class="log-json"><code>{
+  "jsonrpc": "2.0",
+  "result": {
+    "tools": 8,
+    "resources": 3,
+    "prompts": 3
+  }
+}</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: SM-2 Spaced Repetition Flashcards -->
+        <div class="tab-content" id="flashcards-tab">
+          <div class="flashcards-container">
+            <div class="deck-header">
+              <div>
+                <h3>SM-2 Algorithmic Memory Deck</h3>
+                <p class="subtitle">Review intervals expand as you achieve mastery.</p>
+              </div>
+              <button class="small-btn" id="refreshDeckBtn">Refresh</button>
+            </div>
+            <div class="flashcard-list" id="flashcardList">
+              <p class="empty-state">No flashcards reviewed yet. Take a quiz to populate your SM-2 spaced repetition deck!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Gamification & Streak Dashboard -->
+        <div class="tab-content" id="streak-tab">
+          <div class="streak-dashboard">
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <span class="metric-icon">🔥</span>
+                <div class="metric-val" id="dashStreakDays">0</div>
+                <div class="metric-label">Day Streak</div>
+              </div>
+              <div class="metric-card">
+                <span class="metric-icon">⭐</span>
+                <div class="metric-val" id="dashAccuracy">0%</div>
+                <div class="metric-label">Retention Accuracy</div>
+              </div>
+              <div class="metric-card">
+                <span class="metric-icon">📈</span>
+                <div class="metric-val" id="dashQuizzes">0</div>
+                <div class="metric-label">Total Quizzes</div>
+              </div>
+              <div class="metric-card">
+                <span class="metric-icon">💾</span>
+                <div class="metric-val" id="dashStorage" style="font-size: 0.95rem;">Active</div>
+                <div class="metric-label">Storage Engine</div>
+              </div>
+            </div>
+
+            <div class="badges-section">
+              <h4>Unlocked Badges</h4>
+              <div class="badges-row" id="dashBadgesRow">
+                <span class="no-badge-hint">Complete study sessions to earn badges!</span>
+              </div>
+            </div>
+
+            <div class="topics-progress-section">
+              <h4>Topics Practiced</h4>
+              <div class="topics-progress-list" id="dashTopicsList"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: 10 Curated DSA Topics -->
+        <div class="tab-content" id="catalog-tab">
+          <div class="catalog-container">
+            <div class="catalog-grid" id="catalogGrid"></div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Footer Bar -->
+    <footer class="footer">
+      <span>Built for the <strong>Amazon Developer Hackathon 2026</strong></span>
+      <span>•</span>
+      <span>Primary: Alexa+ (MCP Spec 2025-11-25)</span>
+      <span>•</span>
+      <span>Mini: AWS Builder (Bedrock + DynamoDB + ECS) & Open Source</span>
+      <span>•</span>
+      <a href="/docs" target="_blank" class="footer-link">Interactive Swagger Docs</a>
+    </footer>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

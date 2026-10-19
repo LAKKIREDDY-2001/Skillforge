@@ -1,0 +1,133 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'SkillForge — ECS Fargate, Amazon Bedrock IAM Role, and DynamoDB Tables'
+
+Parameters:
+  ContainerImage:
+    Type: String
+    Default: 'public.ecr.aws/amazonlinux/amazonlinux:latest'
+    Description: 'ECR container image URI for SkillForge'
+  BedrockModelArn:
+    Type: String
+    Default: 'arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-5-sonnet-20241022-v2:0'
+    Description: 'Amazon Bedrock Model ARN'
+
+Resources:
+  # ── DynamoDB: Users & Progress Table ───────────────────────────────────────
+  UsersProgressTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: SkillForge_Users
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: user_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: user_id
+          KeyType: HASH
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+
+  # ── DynamoDB: Spaced Repetition Reviews Table ──────────────────────────────
+  ReviewsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: SkillForge_Reviews
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: user_id
+          AttributeType: S
+        - AttributeName: question_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: user_id
+          KeyType: HASH
+        - AttributeName: question_id
+          KeyType: RANGE
+
+  # ── IAM Role: ECS Task Role with Bedrock & DynamoDB Permissions ────────────
+  SkillForgeTaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: SkillForgeTaskRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: BedrockInvokePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - bedrock:InvokeModel
+                  - bedrock:InvokeModelWithResponseStream
+                Resource:
+                  - !Sub 'arn:aws:bedrock:${AWS::Region}::foundation-model/*'
+        - PolicyName: DynamoDBAccessPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                Resource:
+                  - !GetAtt UsersProgressTable.Arn
+                  - !GetAtt ReviewsTable.Arn
+
+  # ── ECS Cluster & Task Definition ──────────────────────────────────────────
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: SkillForge-Cluster
+
+  SkillForgeTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: skillforge-mcp
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      Cpu: '512'
+      Memory: '1024'
+      TaskRoleArn: !GetAtt SkillForgeTaskRole.Arn
+      ExecutionRoleArn: !GetAtt SkillForgeTaskRole.Arn
+      ContainerDefinitions:
+        - Name: skillforge-app
+          Image: !Ref ContainerImage
+          PortMappings:
+            - ContainerPort: 8000
+              Protocol: tcp
+          Environment:
+            - Name: AWS_REGION
+              Value: !Ref 'AWS::Region'
+            - Name: DYNAMODB_USERS_TABLE
+              Value: !Ref UsersProgressTable
+            - Name: DYNAMODB_REVIEWS_TABLE
+              Value: !Ref ReviewsTable
+            - Name: BEDROCK_MODEL_ID
+              Value: 'anthropic.claude-3-5-sonnet-20241022-v2:0'
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: /ecs/skillforge-mcp
+              awslogs-region: !Ref 'AWS::Region'
+              awslogs-stream-prefix: ecs
+
+Outputs:
+  UsersTableName:
+    Description: 'DynamoDB table for user study progress'
+    Value: !Ref UsersProgressTable
+  ReviewsTableName:
+    Description: 'DynamoDB table for SM-2 reviews'
+    Value: !Ref ReviewsTable
+  TaskDefinitionArn:
+    Description: 'ECS Fargate Task Definition ARN'
+    Value: !Ref SkillForgeTaskDefinition

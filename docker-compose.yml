@@ -1,0 +1,26 @@
+services:
+  skillforge:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: skillforge-mcp:latest
+    container_name: skillforge_mcp_server
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      - AWS_REGION=us-east-1
+      - BEDROCK_MODEL_ID=anthropic.claude-3-5-sonnet-20241022-v2:0
+      - BEDROCK_FALLBACK_MODEL_ID=anthropic.claude-3-sonnet-20240229-v1:0
+      - ENABLE_DYNAMODB=auto
+      - DYNAMODB_USERS_TABLE=SkillForge_Users
+      - DYNAMODB_REVIEWS_TABLE=SkillForge_Reviews
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
