@@ -830,7 +830,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (toastCloseBtn) {
-    toastCloseBtn.addEventListener('click', () => {
+    toastCloseBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (toastTimeout) clearTimeout(toastTimeout);
       if (inAppToast) inAppToast.classList.add('hidden');
     });
   }
@@ -838,6 +841,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Toggle Notifications Dropdown
   if (bellBtn && notificationDropdown) {
     bellBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       e.stopPropagation();
       notificationDropdown.classList.toggle('hidden');
       if (!notificationDropdown.classList.contains('hidden')) {
@@ -846,17 +850,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.addEventListener('click', (e) => {
-      if (!notificationDropdown.contains(e.target) && e.target !== bellBtn && !bellBtn.contains(e.target)) {
-        notificationDropdown.classList.add('hidden');
+      if (notificationDropdown && !notificationDropdown.classList.contains('hidden')) {
+        if (!notificationDropdown.contains(e.target) && e.target !== bellBtn && !bellBtn.contains(e.target)) {
+          notificationDropdown.classList.add('hidden');
+        }
       }
     });
   }
 
   if (closeNotifBtn) {
-    closeNotifBtn.addEventListener('click', () => {
+    closeNotifBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       if (notificationDropdown) notificationDropdown.classList.add('hidden');
     });
   }
+
+  // Escape key to dismiss any open notifications or toasts
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (notificationDropdown) notificationDropdown.classList.add('hidden');
+      if (inAppToast) {
+        if (toastTimeout) clearTimeout(toastTimeout);
+        inAppToast.classList.add('hidden');
+      }
+    }
+  });
 
   // Protect Streak Button
   if (defensePracticeBtn) {

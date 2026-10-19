@@ -54,6 +54,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ── Global Utility: Hidden Elements ─────────────────────────────────────── */
+.hidden {
+  display: none !important;
+}
+
 /* ── App Shell Layout (Sidebar + Main Content) ───────────────────────────── */
 .app-shell {
   display: flex;
@@ -365,6 +370,10 @@ body {
   flex-direction: column;
   overflow: hidden;
   animation: dropdown-fade-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.notification-dropdown.hidden {
+  display: none !important;
 }
 
 @keyframes dropdown-fade-in {
@@ -718,6 +727,10 @@ body {
   align-items: center;
   gap: 12px;
   animation: toast-slide-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.in-app-toast.hidden {
+  display: none !important;
 }
 
 @keyframes toast-slide-in {
