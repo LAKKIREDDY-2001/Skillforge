@@ -83,7 +83,7 @@ flowchart TD
 
 SkillForge exposes a compliant **Streamable HTTP & SSE transport** (`/mcp/sse`, `/mcp/messages`, and `/mcp`) compatible with Alexa+, Claude Desktop, and modern AI coding assistants.
 
-### 1. Registered MCP Tools (8 Tools)
+### 1. Registered MCP Tools (10 Tools)
 | Tool Name | Description | Key Arguments |
 |-----------|-------------|---------------|
 | `quiz_me` | Generates interactive voice quiz questions on any DSA topic | `topic`, `difficulty`, `num_questions` |
@@ -94,11 +94,14 @@ SkillForge exposes a compliant **Streamable HTTP & SSE transport** (`/mcp/sse`, 
 | `daily_challenge` | Deterministic daily rotating algorithmic problem | `user_id` |
 | `get_hint` | Delivers progressive Socratic hints without spoiling answers | `question_id`, `hint_level` |
 | `mock_interview` | Simulates a FAANG voice technical screen | `company`, `role`, `topic` |
+| `get_code_solution` | Full Python/Java/C++ runnable reference solution with step-by-step walkthrough | `question_id`, `language` |
+| `export_apl_document` | Exports native Echo Show 15 Alexa Presentation Language (APL 2026) JSON layout | `screen_type`, `topic` |
 
-### 2. Registered MCP Resources (3 Resources)
+### 2. Registered MCP Resources (4 Resources)
 * `skillforge://progress/overview`: Real-time user progress, streak, XP, and badge breakdown.
 * `skillforge://topics/catalog`: All 10 curated DSA topics with question inventory.
 * `skillforge://reviews/due`: Flashcards due for spaced repetition review today.
+* `skillforge://interview/scorecard`: Bar Raiser 4-pillar interview scorecard (Communication, Problem Solving, Code Efficiency, Mastery).
 
 ### 3. Registered MCP Prompts (3 Prompts)
 * `study_session`: Structured 15-30 minute focused algorithmic review session.
@@ -165,7 +168,7 @@ Open your browser at **`http://localhost:8000`** to launch the **Simulated Alexa
 - 📇 **SM-2 Deck:** Review flashcards and watch intervals update live.
 - 📖 **Interactive API Docs:** Visit `http://localhost:8000/docs`.
 
-### 3. Run the Test Suite (31/31 Passing)
+### 3. Run the Test Suite (41/41 Passing)
 ```bash
 pytest -v
 ```
