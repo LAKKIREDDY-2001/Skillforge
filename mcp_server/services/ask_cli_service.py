@@ -72,7 +72,8 @@ class AskCliService:
 
         # 3. Validate Manifest
         manifest = skill_package.get("manifest", {})
-        if not manifest.get("manifestVersion"):
+        m = manifest.get("manifest", manifest)
+        if not m.get("manifestVersion"):
             errors.append("skill.json must define manifestVersion '1.0'")
 
         is_valid = len(errors) == 0
