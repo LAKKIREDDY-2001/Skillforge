@@ -1,38 +1,39 @@
-# Multi-stage optimized Dockerfile for SkillForge MCP Server
-FROM python:3.11-slim AS base
+# Multi-stage Dockerfile for SkillForge MCP Server
+# Pinned to Node.js 18 LTS & Python 3.11 to resolve ASK CLI compatibility (FP #7)
+
+FROM python:3.11-slim
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PORT=8000 \
-    HOST=0.0.0.0
+    PIP_NO_CACHE_DIR=1 \
+    NODE_VERSION=18
+
+# Install system dependencies, curl, and Node.js 18 LTS
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    git \
+    build-essential \
+    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g ask-cli \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install python dependencies
+# Install Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Copy source code and static assets
-COPY skillforge/ ./skillforge/
-COPY static/ ./static/
-COPY main.py .
+# Copy source code and assets
+COPY . .
 
-# Create non-root user for security
-RUN useradd -m -u 1000 appuser && \
-    chown -R appuser:appuser /app
-USER appuser
-
+# Expose FastAPI & MCP Streamable HTTP port
 EXPOSE 8000
 
-# Container healthcheck
+# Healthcheck
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+  CMD curl -f http://localhost:8000/health || exit 1
 
-# Run FastAPI app via uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start MCP Server
+CMD ["uvicorn", "mcp_server.main:app", "--host", "0.0.0.0", "--port", "8000"]
