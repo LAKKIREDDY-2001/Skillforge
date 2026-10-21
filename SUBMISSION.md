@@ -68,8 +68,15 @@ SkillForge solves this in 60 seconds: Describe what you want in plain English. A
 
 ## 8. GitHub Repository & Reviewer Access
 - **Repository URL:** [https://github.com/LAKKIREDDY-2001/Skillforge](https://github.com/LAKKIREDDY-2001/Skillforge)
-- **Visibility:** Private (as required by the hackathon submission rules).
-- **Invited Reviewers:** `chris-trag`, `knmeiss`, `giolaq`, `anishamalde`, `mosesroth`, `emersonsklar`, and `testing@devpost.com`.
+- **License:** Apache License 2.0 (detectable in About section & repository root).
+- **Access Options:**
+  - **Public & Open-Source:** Includes official Apache-2.0 license file detectable by GitHub and Devpost automated validators for the Open Source Mini Challenge.
+  - **Collaborators Invited:** `chris-trag`, `knmeiss`, `giolaq`, `anishamalde`, `mosesroth`, `emersonsklar`, and `testing@devpost.com`.
+- **Reviewer Demo Login Credentials (if testing the web interface):**
+  - **Username:** `judge` | **Password:** `password123` (Amazon DevRel Reviewer Profile)
+  - **Username:** `alex` | **Password:** `alex123` (Developer Profile with active streak)
+  - **Instant Account Creation:** Click **Sign Up** with any username/password.
+  - **Automated API / MCP Calls:** No login required for any tool endpoint (`/mcp/tools`, `/tools/*`).
 
 ---
 

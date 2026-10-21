@@ -25,6 +25,21 @@ An AI-powered MCP tool server that lets developers describe an Alexa skill in pl
 
 ---
 
+## 🔑 Reviewer Access & Demo Login Instructions
+
+If testing the interactive web simulator (`http://localhost:8000`), authentication is pre-configured with instant demo credentials as well as open guest access:
+
+| Role | Username | Password | Access Level |
+|---|---|---|---|
+| **Hackathon Judge / Devpost Reviewer** | `judge` | `password123` | Pre-configured Amazon DevRel reviewer profile |
+| **Amazon SDE II Candidate** | `alex` | `alex123` | Seeded developer profile with 14-day streak |
+| **Google Architect Prep** | `sarah` | `password123` | Seeded systems design profile |
+| **Instant New Account** | *Any username* | *Any password* | Click **Sign Up** for instant local & cloud registration |
+
+> **Direct API & MCP Access:** The MCP server endpoints (`/mcp/tools`, `/tools/generate_skill`, `/tools/refine_skill`, etc.) require **no login** and are fully open for automated evaluators and Alexa+ agent discovery.
+
+---
+
 ## 💡 The Problem
 
 Building an Alexa skill today requires:
