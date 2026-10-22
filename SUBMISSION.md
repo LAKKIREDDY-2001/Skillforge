@@ -27,7 +27,13 @@ SkillForge is an AI-powered MCP tool server that lets developers describe an Ale
 
 ---
 
-## 4. Inspiration & The Problem
+## 4. About the Project (Devpost Project Story)
+
+> 🌐 **Live Render Cloud Deployment:** [https://skillforge-scoz.onrender.com/](https://skillforge-scoz.onrender.com/)  
+> 📱 **Live GitHub Pages Showcase:** [https://lakkireddy-2001.github.io/Skillforge/](https://lakkireddy-2001.github.io/Skillforge/)  
+> 📡 **Live Streamable MCP Protocol Server:** [https://skillforge-scoz.onrender.com/mcp/tools](https://skillforge-scoz.onrender.com/mcp/tools)
+
+### 💡 Inspiration & The Problem
 Building an Alexa skill today requires:
 1. **3–5 hours** to manually configure interaction models, intents, slot types, and sample utterances.
 2. **Deep ASK SDK knowledge** — most developers give up at the Lambda handler, session persistence, and error handling layers.

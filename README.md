@@ -439,6 +439,10 @@ No tool exists today that generates complete, deployable Alexa skills from plain
 
 ## ℹ️ About the Project
 
+> 🌐 **Live Render Cloud Deployment:** [https://skillforge-scoz.onrender.com/](https://skillforge-scoz.onrender.com/)  
+> 📱 **Live GitHub Pages Showcase:** [https://lakkireddy-2001.github.io/Skillforge/](https://lakkireddy-2001.github.io/Skillforge/)  
+> 📡 **Live Streamable MCP Protocol Server:** [https://skillforge-scoz.onrender.com/mcp/tools](https://skillforge-scoz.onrender.com/mcp/tools)
+
 ### 💡 Inspiration
 Voice development for ambient computing should be as frictionless as writing a tweet. Today, developers spend hours configuring fragmented CLI tools, drafting repetitive JSON manifests, and debugging Lambda session wrappers. SkillForge was created to eliminate voice development friction by connecting Amazon Bedrock with the open Model Context Protocol (MCP Spec 2025-11-25).
 
