@@ -8,18 +8,23 @@ An AI-powered MCP tool server that lets developers describe an Alexa skill in pl
 
 [![Amazon Hackathon](https://img.shields.io/badge/Amazon%20Developer%20Hackathon-2026-FF9900?logo=amazon&logoColor=white)](https://amazonappdev2026.devpost.com/)
 [![Track](https://img.shields.io/badge/Primary%20Track-Alexa%2B%20MCP-00CAFF?logo=amazon-alexa&logoColor=white)](https://amazonappdev2026.devpost.com/)
+[![Live Deployment](https://img.shields.io/badge/Live%20Deployment-Render%20Online-10b981?logo=render&logoColor=white)](https://skillforge-scoz.onrender.com/)
 [![AWS Bedrock](https://img.shields.io/badge/Amazon%20Bedrock-Claude%203%20Haiku-232F3E?logo=amazon-aws&logoColor=white)](https://aws.amazon.com/bedrock/)
 [![Protocol](https://img.shields.io/badge/MCP%20Spec-2025--11--25%20Streamable%20HTTP-34D399)](https://modelcontextprotocol.io/)
-[![Tests](https://img.shields.io/badge/Tests-12%2F12%20Passing-brightgreen)](tests/)
+[![Tests](https://img.shields.io/badge/Tests-55%2F55%20Passing-brightgreen)](tests/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+
+> 🌐 **Live Cloud Deployment:** [https://skillforge-scoz.onrender.com/](https://skillforge-scoz.onrender.com/)  
+> 📡 **Live Streamable MCP Protocol Server:** [https://skillforge-scoz.onrender.com/mcp/tools](https://skillforge-scoz.onrender.com/mcp/tools)
 
 ---
 
-## 🎬 Live Demo & Video
+## 🎬 Live Demo, Deployment & Video
 
-- **Live MCP Server:** `http://localhost:8000/mcp/tools` (Streamable HTTP & SSE)
-- **Interactive Simulator:** `http://localhost:8000/` or `http://localhost:8000/simulator`
-- **3-Minute Video Script:** [docs/DEMO_VIDEO_SCRIPT.md](docs/DEMO_VIDEO_SCRIPT.md)
+- 🌐 **Live Cloud Deployment (Web Application & MCP):** [https://skillforge-scoz.onrender.com/](https://skillforge-scoz.onrender.com/)
+- 📡 **Live MCP Server Endpoint:** [`https://skillforge-scoz.onrender.com/mcp/tools`](https://skillforge-scoz.onrender.com/mcp/tools) (Streamable HTTP & SSE)
+- 💻 **Interactive Code Practice & Simulator:** [https://skillforge-scoz.onrender.com/](https://skillforge-scoz.onrender.com/) (Local mirror: `http://localhost:8000/`)
+- 🎥 **3-Minute Video Script:** [docs/DEMO_VIDEO_SCRIPT.md](docs/DEMO_VIDEO_SCRIPT.md)
 
 *Describe a skill in plain English $\rightarrow$ AI generates complete Alexa skill package $\rightarrow$ Deploy in one click.*
 
@@ -27,7 +32,7 @@ An AI-powered MCP tool server that lets developers describe an Alexa skill in pl
 
 ## 🔑 Reviewer Access & Demo Login Instructions
 
-If testing the interactive web simulator (`http://localhost:8000`), authentication is pre-configured with instant demo credentials as well as open guest access:
+When reviewing the live deployment ([https://skillforge-scoz.onrender.com/](https://skillforge-scoz.onrender.com/)) or local mirror (`http://localhost:8000`), authentication is pre-configured with instant demo credentials as well as open guest access:
 
 | Role | Username | Password | Access Level |
 |---|---|---|---|
@@ -36,7 +41,7 @@ If testing the interactive web simulator (`http://localhost:8000`), authenticati
 | **Google Architect Prep** | `sarah` | `password123` | Seeded systems design profile |
 | **Instant New Account** | *Any username* | *Any password* | Click **Sign Up** for instant local & cloud registration |
 
-> **Direct API & MCP Access:** The MCP server endpoints (`/mcp/tools`, `/tools/generate_skill`, `/tools/refine_skill`, etc.) require **no login** and are fully open for automated evaluators and Alexa+ agent discovery.
+> **Direct API & MCP Access:** The MCP server endpoints (`/mcp/tools`, `/tools/generate_skill`, `/tools/refine_skill`, etc.) require **no login** and are fully open for automated evaluators and Alexa+ agent discovery at [https://skillforge-scoz.onrender.com/mcp/tools](https://skillforge-scoz.onrender.com/mcp/tools).
 
 ---
 
@@ -398,6 +403,26 @@ No tool exists today that generates complete, deployable Alexa skills from plain
 | **Saathi** (Alexa+ Prize) | Voice-first innovation | AI-powered voice skill creation |
 | **FrictionHunter** (DX Feedback) | Developer friction docs | 10-point friction log for 10% bonus |
 | **BeeFluent** (Grand Prize) | AI coaching personality | Iterative refinement with AI suggestions |
+
+---
+
+## ℹ️ About the Project
+
+### 💡 Inspiration
+Voice development for ambient computing should be as frictionless as writing a tweet. Today, developers spend hours configuring fragmented CLI tools, drafting repetitive JSON manifests, and debugging Lambda session wrappers. SkillForge was created to eliminate voice development friction by connecting Amazon Bedrock with the open Model Context Protocol (MCP Spec 2025-11-25).
+
+### 🛠️ How We Built It
+- **Live Deployment URL:** [https://skillforge-scoz.onrender.com/](https://skillforge-scoz.onrender.com/)
+- **Live MCP Endpoint:** [https://skillforge-scoz.onrender.com/mcp/tools](https://skillforge-scoz.onrender.com/mcp/tools)
+- **Code Repository:** [https://github.com/LAKKIREDDY-2001/Skillforge](https://github.com/LAKKIREDDY-2001/Skillforge)
+- **AI Engine:** Amazon Bedrock with Claude 3 Haiku for sub-second intent and Lambda generation.
+- **Protocol:** FastAPI with Model Context Protocol Streamable HTTP & Server-Sent Events (SSE).
+- **Voice Simulator & LMS:** Interactive frontend in vanilla JavaScript with Web Speech API audio synthesis, multi-language coding sandboxes (Python, C++, C, Java, SQL, JS), and SuperMemo SM-2 spaced repetition.
+
+### 🧗 Challenges & Key Learnings
+- **Tool Protocol Strictness:** Adhering strictly to the MCP Spec 2025-11-25 streaming schemas and ensuring seamless interoperability with Alexa+ agents.
+- **Dual-State Gating:** Designing an intuitive Level 1 guest experience that keeps foundational learning open while unlocking pro tracks, company sheets, and XP tracking upon authentication.
+- **Low-Latency Audio:** Integrating responsive Speech Synthesis with mid-stream pausing so learners can halt voice playback at any point to inspect code.
 
 ---
 

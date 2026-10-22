@@ -4405,3 +4405,37 @@ input:checked + .slider:before { transform: translateX(20px); }
   color: #34d399 !important;
   box-shadow: 0 0 16px rgba(16, 185, 129, 0.3) !important;
 }
+
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ABOUT & LIVE DEPLOYMENT PILL STYLING
+   ══════════════════════════════════════════════════════════════════════════════ */
+.about-settings-box {
+  border-color: rgba(0, 243, 255, 0.25) !important;
+  background: rgba(13, 21, 39, 0.9) !important;
+}
+
+.link-external-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 243, 255, 0.08);
+  border: 1px solid rgba(0, 243, 255, 0.35);
+  color: #38bdf8;
+  font-size: 0.82rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.link-external-pill:hover {
+  background: rgba(0, 243, 255, 0.2);
+  border-color: var(--alexa-cyan);
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(0, 243, 255, 0.3);
+  transform: translateY(-1px);
+}

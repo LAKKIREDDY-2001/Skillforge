@@ -2,7 +2,8 @@
 
 > **Server:** SkillForge MCP Server  
 > **Protocol Version:** MCP Spec 2025-11-25+ (Streamable HTTP & SSE)  
-> **Base URL:** `http://localhost:8000` (or self-hosted endpoint)
+> **Live Cloud Base URL:** `https://skillforge-scoz.onrender.com`  
+> **Local Base URL:** `http://localhost:8000`
 
 ---
 

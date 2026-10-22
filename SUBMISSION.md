@@ -11,6 +11,13 @@ SkillForge is an AI-powered MCP tool server that lets developers describe an Ale
 
 ---
 
+## 2.1 "Try It Out" Links & Live Deployment
+* **Live Web Application & Curriculum Hub:** [https://skillforge-scoz.onrender.com/](https://skillforge-scoz.onrender.com/)
+* **Live MCP Tool Server (Spec 2025-11-25):** [https://skillforge-scoz.onrender.com/mcp/tools](https://skillforge-scoz.onrender.com/mcp/tools)
+* **Open Source GitHub Repository:** [https://github.com/LAKKIREDDY-2001/Skillforge](https://github.com/LAKKIREDDY-2001/Skillforge)
+
+---
+
 ## 3. Tracks & Challenges Entered
 * **Primary Track:** **Alexa+** (Self-hosted Model Context Protocol server compliant with MCP Spec 2025-11-25 over Streamable HTTP & SSE, offering 6 compliant developer tools).
 * **Mini Challenge 1:** **AWS Builder** (Amazon Bedrock Claude 3 Haiku for rapid architecture generation, Amazon DynamoDB for skill packages & session persistence, AWS Lambda, and CloudWatch metrics).
@@ -66,7 +73,9 @@ SkillForge solves this in 60 seconds: Describe what you want in plain English. A
 
 ---
 
-## 8. GitHub Repository & Reviewer Access
+## 8. GitHub Repository, Live Deployment & Reviewer Access
+- **Live Cloud Deployment URL:** [https://skillforge-scoz.onrender.com/](https://skillforge-scoz.onrender.com/)
+- **Live MCP Endpoint:** [https://skillforge-scoz.onrender.com/mcp/tools](https://skillforge-scoz.onrender.com/mcp/tools)
 - **Repository URL:** [https://github.com/LAKKIREDDY-2001/Skillforge](https://github.com/LAKKIREDDY-2001/Skillforge)
 - **License:** Apache License 2.0 (detectable in About section & repository root).
 - **Access Options:**
