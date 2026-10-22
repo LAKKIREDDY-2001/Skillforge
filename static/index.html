@@ -421,83 +421,192 @@
           </div>
         </div>
 
-        <div class="quiz-layout-split">
-          <!-- Main Quiz Card -->
-          <div class="quiz-main-card">
-            <div class="quiz-tags-row">
-              <span class="quiz-topic-pill" id="quizTopicPill">Linked List</span>
-              <span class="quiz-difficulty-pill" id="quizDiffPill">Medium</span>
+        <!-- Mode Switcher: Voice Concept Quiz vs In-Browser Code Practice -->
+        <div class="quiz-mode-switch-bar">
+          <button class="quiz-mode-pill active" id="quizModeVoiceBtn">
+            <span>🎙️ Voice Concept Quiz</span>
+          </button>
+          <button class="quiz-mode-pill" id="quizModeCodeBtn">
+            <span>💻 NeetCode Code Practice</span>
+            <span class="mode-badge-new">18 Tracks</span>
+          </button>
+        </div>
+
+        <!-- MODE 1: Voice Concept Quiz Container -->
+        <div id="quizVoiceModeContainer">
+          <div class="quiz-layout-split">
+            <!-- Main Quiz Card -->
+            <div class="quiz-main-card">
+              <div class="quiz-tags-row">
+                <span class="quiz-topic-pill" id="quizTopicPill">Linked List</span>
+                <span class="quiz-difficulty-pill" id="quizDiffPill">Medium</span>
+              </div>
+
+              <!-- Question Headline -->
+              <h1 class="quiz-question-title" id="quizQuestionText">
+                How do you detect a cycle in a linked list?
+              </h1>
+
+              <!-- Big Glowing Circular Voice Mic Button -->
+              <div class="quiz-voice-center">
+                <button class="hero-voice-button" id="quizVoiceBtn" title="Tap to Speak (Web Speech API)">
+                  <div class="voice-ripple-ring ripple-1"></div>
+                  <div class="voice-ripple-ring ripple-2"></div>
+                  <div class="voice-button-core">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                  </div>
+                </button>
+                <div class="voice-instruction-label" id="quizVoiceInstruction">Click to speak</div>
+                <button class="type-instead-btn" id="typeInsteadBtn">⌨️ or type instead</button>
+              </div>
+
+              <!-- Answer Input Bar -->
+              <div class="quiz-input-bar">
+                <input type="text" id="quizAnswerInput" placeholder="Type your answer here..." autocomplete="off">
+                <button class="send-arrow-btn" id="quizSendBtn" title="Submit Answer">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+              </div>
+
+              <!-- Bottom Skip / Next Controls -->
+              <div class="quiz-bottom-controls">
+                <button class="quiz-skip-btn" id="quizSkipBtn">Skip</button>
+                <button class="quiz-next-btn" id="quizNextBtn">
+                  <span>Next</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
+              </div>
             </div>
 
-            <!-- Question Headline -->
-            <h1 class="quiz-question-title" id="quizQuestionText">
-              How do you detect a cycle in a linked list?
-            </h1>
-
-            <!-- Big Glowing Circular Voice Mic Button -->
-            <div class="quiz-voice-center">
-              <button class="hero-voice-button" id="quizVoiceBtn" title="Tap to Speak (Web Speech API)">
-                <div class="voice-ripple-ring ripple-1"></div>
-                <div class="voice-ripple-ring ripple-2"></div>
-                <div class="voice-button-core">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+            <!-- Right Sidebar Drawers (Hints & Key Points) -->
+            <aside class="quiz-sidebar-drawers">
+              <!-- Hints Accordion -->
+              <div class="drawer-card hints-card">
+                <div class="drawer-header">
+                  <div class="drawer-title">
+                    <span class="drawer-icon">💡</span>
+                    <span>Hints</span>
+                  </div>
+                  <span class="drawer-toggle-icon">▾</span>
                 </div>
-              </button>
-              <div class="voice-instruction-label" id="quizVoiceInstruction">Click to speak</div>
-              <button class="type-instead-btn" id="typeInsteadBtn">⌨️ or type instead</button>
+                <p class="drawer-body" id="quizHintText">
+                  Think about two pointers moving at different speeds. What happens when there is a cycle?
+                </p>
+              </div>
+
+              <!-- Key Points Checklist -->
+              <div class="drawer-card keypoints-card">
+                <div class="drawer-header">
+                  <div class="drawer-title">
+                    <span class="drawer-icon">📋</span>
+                    <span>Key Points</span>
+                  </div>
+                  <span class="drawer-toggle-icon">▾</span>
+                </div>
+                <ul class="keypoints-list" id="quizKeyPointsList">
+                  <li><span class="bullet-dot"></span> Tortoise & hare approach</li>
+                  <li><span class="bullet-dot"></span> Two pointers</li>
+                  <li><span class="bullet-dot"></span> O(n) time complexity</li>
+                  <li><span class="bullet-dot"></span> O(1) space complexity</li>
+                </ul>
+              </div>
+            </aside>
+          </div>
+        </div>
+
+        <!-- MODE 2: In-Browser Code Practice Sandbox (Full DSA Prep) -->
+        <div id="quizCodeModeContainer" class="hidden">
+          <div class="code-sandbox-wrapper">
+            <!-- Sandbox Header Toolbar -->
+            <div class="sandbox-toolbar">
+              <div class="sandbox-track-select-wrap">
+                <label for="sandboxTrackSelect">DSA Track:</label>
+                <select id="sandboxTrackSelect" class="sandbox-select">
+                  <!-- Dynamically populated 18 tracks -->
+                </select>
+              </div>
+              <div class="sandbox-diff-selector" id="sandboxDiffSelector">
+                <button class="sandbox-diff-btn active" data-diff="easy">🟢 Easy</button>
+                <button class="sandbox-diff-btn" data-diff="medium">🟡 Medium</button>
+                <button class="sandbox-diff-btn" data-diff="hard">🔴 Hard</button>
+              </div>
+              <div class="sandbox-header-tools">
+                <button class="btn-tool-sm" id="sandboxSpeakBtn" title="Listen with Alexa">🔊 Read Problem</button>
+                <button class="btn-tool-sm" id="sandboxHintBtn">💡 Hint</button>
+                <button class="btn-tool-sm" id="sandboxSolutionBtn">👁️ Solution</button>
+                <button class="btn-tool-sm" id="sandboxResetBtn">↺ Reset</button>
+              </div>
             </div>
 
-            <!-- Answer Input Bar -->
-            <div class="quiz-input-bar">
-              <input type="text" id="quizAnswerInput" placeholder="Type your answer here..." autocomplete="off">
-              <button class="send-arrow-btn" id="quizSendBtn" title="Submit Answer">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-              </button>
+            <!-- Problem Card -->
+            <div class="sandbox-problem-card">
+              <div class="sandbox-problem-meta-row">
+                <div class="sp-title-group">
+                  <h3 id="sandboxProblemTitle">Two Sum</h3>
+                  <span class="neetcode-badge" id="sandboxNeetcodeBadge">NeetCode 150 #1</span>
+                  <span class="diff-badge easy" id="sandboxDiffBadge">Easy</span>
+                </div>
+              </div>
+              <p class="sandbox-problem-desc" id="sandboxProblemDesc">
+                Given an array of integers <code>nums</code> and an integer <code>target</code>, return indices of the two numbers such that they add up to <code>target</code>.
+              </p>
+              <div class="sandbox-io-sample" id="sandboxIoSample">
+                <code>Input: nums = [2,7,11,15], target = 9</code> → <code>Output: [0,1]</code>
+              </div>
             </div>
 
-            <!-- Bottom Skip / Next Controls -->
-            <div class="quiz-bottom-controls">
-              <button class="quiz-skip-btn" id="quizSkipBtn">Skip</button>
-              <button class="quiz-next-btn" id="quizNextBtn">
-                <span>Next</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            <!-- Code Editor Space -->
+            <div class="sandbox-editor-card">
+              <div class="editor-header-bar">
+                <div class="editor-lang-tabs">
+                  <button class="editor-lang-tab active" data-lang="python">Python 3</button>
+                  <button class="editor-lang-tab" data-lang="javascript">JavaScript</button>
+                </div>
+                <span class="editor-hint-tip">In-Browser Test Engine • Instant Execution</span>
+              </div>
+              <textarea class="sandbox-code-area" id="sandboxCodeArea" spellcheck="false" autocomplete="off"></textarea>
+            </div>
+
+            <!-- Run & Submit Bar -->
+            <div class="sandbox-action-bar">
+              <button class="run-test-pill-btn" id="sandboxRunBtn">
+                <span>▶ Run Test Cases</span>
               </button>
+              <button class="submit-pill-btn" id="sandboxSubmitBtn">
+                <span>🚀 Submit to SM-2 Review (+50 XP)</span>
+              </button>
+              <span class="run-result-summary" id="sandboxStatusMsg">Write your solution above and click Run</span>
+            </div>
+
+            <!-- Test Cases Console Output -->
+            <div class="sandbox-console-pane" id="sandboxConsolePane">
+              <div class="console-head">
+                <span>Test Execution Output</span>
+                <span class="console-timer" id="sandboxConsoleTimer"></span>
+              </div>
+              <div class="console-output-list" id="sandboxOutputList">
+                <div class="console-empty">Click 'Run Test Cases' to run against test inputs.</div>
+              </div>
+            </div>
+
+            <!-- Reveal Drawers for Hint and Optimal NeetCode Solution -->
+            <div class="solution-reveal-card hidden" id="sandboxSolDrawer">
+              <div class="solution-header">
+                <strong>Optimal NeetCode Solution:</strong>
+                <button class="btn-micro-close" id="closeSandboxSolBtn">✕</button>
+              </div>
+              <pre><code id="sandboxSolCode"></code></pre>
+              <p class="solution-notes" id="sandboxSolNotes"></p>
+            </div>
+
+            <div class="hint-reveal-card hidden" id="sandboxHintDrawer">
+              <div class="hint-header">
+                <strong>💡 Progressive Hint:</strong>
+                <button class="btn-micro-close" id="closeSandboxHintBtn">✕</button>
+              </div>
+              <p id="sandboxHintText"></p>
             </div>
           </div>
-
-          <!-- Right Sidebar Drawers (Hints & Key Points) -->
-          <aside class="quiz-sidebar-drawers">
-            <!-- Hints Accordion -->
-            <div class="drawer-card hints-card">
-              <div class="drawer-header">
-                <div class="drawer-title">
-                  <span class="drawer-icon">💡</span>
-                  <span>Hints</span>
-                </div>
-                <span class="drawer-toggle-icon">▾</span>
-              </div>
-              <p class="drawer-body" id="quizHintText">
-                Think about two pointers moving at different speeds. What happens when there is a cycle?
-              </p>
-            </div>
-
-            <!-- Key Points Checklist -->
-            <div class="drawer-card keypoints-card">
-              <div class="drawer-header">
-                <div class="drawer-title">
-                  <span class="drawer-icon">📋</span>
-                  <span>Key Points</span>
-                </div>
-                <span class="drawer-toggle-icon">▾</span>
-              </div>
-              <ul class="keypoints-list" id="quizKeyPointsList">
-                <li><span class="bullet-dot"></span> Tortoise & hare approach</li>
-                <li><span class="bullet-dot"></span> Two pointers</li>
-                <li><span class="bullet-dot"></span> O(n) time complexity</li>
-                <li><span class="bullet-dot"></span> O(1) space complexity</li>
-              </ul>
-            </div>
-          </aside>
         </div>
       </section>
 
@@ -705,8 +814,14 @@
           </button>
         </div>
 
-        <!-- Full 10 Topics Curriculum Grid -->
-        <h3 class="curriculum-title">All 10 Algorithmic Tracks</h3>
+        <!-- Full 18 NeetCode Topics Curriculum Grid -->
+        <div class="curriculum-header-row">
+          <div>
+            <h3 class="curriculum-title">Full DSA Curriculum (18 NeetCode Tracks)</h3>
+            <p class="curriculum-subtitle">Master all 18 algorithmic patterns from NeetCode 150 & Blind 75 with voice analogies and runnable code practice.</p>
+          </div>
+          <span class="curriculum-counter-badge" id="curriculumBadgeCount">18 Patterns • 150+ Problems</span>
+        </div>
         <div class="topics-cards-grid" id="topicsCurriculumGrid">
           <!-- Populated dynamically via JS -->
         </div>
@@ -719,8 +834,11 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
             <span>Back</span>
           </button>
-          <h2 class="view-title-center" id="topicDetailTitle">Dynamic Programming</h2>
-          <button class="favorite-icon-btn" id="favoriteTopicBtn" title="Save Topic">♡</button>
+          <div class="topic-detail-center-head">
+            <h2 class="view-title-center" id="topicDetailTitle">Dynamic Programming</h2>
+            <span class="topic-detail-tag" id="topicDetailBadge">NeetCode Pattern</span>
+          </div>
+          <button class="favorite-icon-btn" id="favoriteTopicBtn" title="Bookmark Track">♡</button>
         </div>
 
         <!-- Audio Player Waveform Bar -->
@@ -737,28 +855,189 @@
         </div>
 
         <!-- Content Tabs -->
-        <div class="content-tabs-row">
-          <button class="content-tab-btn active" data-tab="explanation">Explanation</button>
-          <button class="content-tab-btn" data-tab="examples">Examples</button>
-          <button class="content-tab-btn" data-tab="keypoints">Key Points</button>
-          <button class="content-tab-btn" data-tab="practice">Practice</button>
+        <div class="content-tabs-row" id="topicDetailTabsRow">
+          <button class="content-tab-btn active" data-tab="explanation">
+            <span class="tab-btn-icon">📖</span> Explanation
+          </button>
+          <button class="content-tab-btn" data-tab="examples">
+            <span class="tab-btn-icon">💻</span> Examples
+          </button>
+          <button class="content-tab-btn" data-tab="keypoints">
+            <span class="tab-btn-icon">🎯</span> Key Points
+          </button>
+          <button class="content-tab-btn" data-tab="practice">
+            <span class="tab-btn-icon">⚡</span> Practice
+          </button>
         </div>
 
-        <!-- Main Body Content -->
+        <!-- Main Body Content Panes -->
         <div class="topic-content-body">
-          <p class="topic-prose" id="topicDetailProse">
-            Dynamic Programming (DP) is a problem solving technique where we break a large problem into smaller subproblems, solve each subproblem once, store their results, and combine them to get the final answer. It is mainly used when the problem has overlapping subproblems and optimal substructure.
-          </p>
-
-          <!-- Key Analogy Callout Card (Amber / Gold) -->
-          <div class="key-analogy-callout">
-            <div class="analogy-header">
-              <span class="bulb-icon">💡</span>
-              <strong>Key Analogy</strong>
-            </div>
-            <p class="analogy-text" id="topicDetailAnalogy">
-              Think of DP like a recipe book: you solve small sub-recipes, save them, and combine for the full meal. Each block (subproblem) is built once and reused many times.
+          <!-- TAB 1: Explanation Pane -->
+          <div class="topic-tab-pane active" id="tabContentExplanation">
+            <p class="topic-prose" id="topicDetailProse">
+              Dynamic Programming (DP) is a problem solving technique where we break a large problem into smaller subproblems, solve each subproblem once, store their results, and combine them to get the final answer. It is mainly used when the problem has overlapping subproblems and optimal substructure.
             </p>
+
+            <!-- Key Analogy Callout Card (Amber / Gold) -->
+            <div class="key-analogy-callout">
+              <div class="analogy-header">
+                <span class="bulb-icon">💡</span>
+                <strong>Intuitive Analogy</strong>
+              </div>
+              <p class="analogy-text" id="topicDetailAnalogy">
+                Think of DP like a recipe book: you solve small sub-recipes, save them in memory, and combine them for the full feast. Each subproblem is solved once and reused hundreds of times.
+              </p>
+            </div>
+
+            <!-- Big-O Complexity & Pattern Matrix -->
+            <div class="topic-complexity-grid" id="topicDetailComplexityGrid">
+              <div class="complexity-stat-card">
+                <span class="c-label">Time Complexity</span>
+                <strong class="c-val" id="topicDetailTimeComp">O(n) to O(n·W)</strong>
+                <span class="c-sub">Subproblems × transition time</span>
+              </div>
+              <div class="complexity-stat-card">
+                <span class="c-label">Space Complexity</span>
+                <strong class="c-val" id="topicDetailSpaceComp">O(n) / O(1)</strong>
+                <span class="c-sub">Tabulation / State reduction</span>
+              </div>
+              <div class="complexity-stat-card">
+                <span class="c-label">Mental Model</span>
+                <strong class="c-val" id="topicDetailMentalModel">Overlapping Subproblems</strong>
+                <span class="c-sub">Memoization vs Tabulation</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: Examples Pane (Real NeetCode Code Solutions) -->
+          <div class="topic-tab-pane hidden" id="tabContentExamples">
+            <div class="tab-examples-header">
+              <div class="example-diff-group" id="exampleDiffGroup">
+                <button class="example-diff-btn active" data-diff="easy">🟢 Easy</button>
+                <button class="example-diff-btn" data-diff="medium">🟡 Medium</button>
+                <button class="example-diff-btn" data-diff="hard">🔴 Hard</button>
+              </div>
+              <div class="example-lang-group" id="exampleLangGroup">
+                <button class="example-lang-btn active" data-lang="python">Python 3</button>
+                <button class="example-lang-btn" data-lang="javascript">JavaScript</button>
+              </div>
+            </div>
+
+            <!-- Example Problem Title & Summary -->
+            <div class="example-problem-meta" id="exampleProblemMeta">
+              <div class="example-meta-row">
+                <h4 id="exampleProblemTitle">Climbing Stairs</h4>
+                <span class="neetcode-badge" id="exampleNeetcodeBadge">NeetCode 150</span>
+              </div>
+              <p class="example-problem-desc" id="exampleProblemDesc">
+                You are climbing a staircase. It takes n steps to reach the top. Each time you can climb 1 or 2 steps. How many distinct ways can you climb to the top?
+              </p>
+            </div>
+
+            <!-- Syntax Highlighted Code Viewer -->
+            <div class="example-code-viewer">
+              <div class="code-viewer-bar">
+                <span class="viewer-file-tag" id="exampleViewerLangTag">solution.py</span>
+                <button class="copy-code-pill" id="copyExampleCodeBtn">📋 Copy Code</button>
+              </div>
+              <pre class="code-pre-box"><code id="exampleCodeText"># Loading code example...</code></pre>
+            </div>
+
+            <!-- Walkthrough & Complexity Breakdown -->
+            <div class="example-walkthrough-box">
+              <div class="walkthrough-title">
+                <span>🔍 Walkthrough & Big-O Analysis</span>
+              </div>
+              <p class="walkthrough-text" id="exampleWalkthroughText">
+                We observe that to reach step n, we could either jump from step (n-1) or (n-2). Thus ways(n) = ways(n-1) + ways(n-2), which mirrors Fibonacci! By maintaining only two variables `a` and `b`, we achieve O(n) time and O(1) space.
+              </p>
+            </div>
+          </div>
+
+          <!-- TAB 3: Key Points Pane -->
+          <div class="topic-tab-pane hidden" id="tabContentKeypoints">
+            <div class="keypoints-cards-grid" id="topicKeypointsGrid">
+              <!-- Dynamically populated key points -->
+            </div>
+          </div>
+
+          <!-- TAB 4: Practice Pane (In-Browser Code Sandbox) -->
+          <div class="topic-tab-pane hidden" id="tabContentPractice">
+            <div class="practice-box-header">
+              <div class="practice-diff-picker" id="topicPracticeDiffPicker">
+                <button class="practice-diff-tag active" data-diff="easy">🟢 Easy</button>
+                <button class="practice-diff-tag" data-diff="medium">🟡 Medium</button>
+                <button class="practice-diff-tag" data-diff="hard">🔴 Hard</button>
+              </div>
+              <div class="practice-header-tools">
+                <button class="btn-tool-sm" id="topicPracticeHintBtn">💡 Hint</button>
+                <button class="btn-tool-sm" id="topicPracticeSolBtn">👁️ Optimal Solution</button>
+                <button class="btn-tool-sm" id="topicPracticeResetBtn">↺ Reset</button>
+              </div>
+            </div>
+
+            <!-- Practice Challenge Statement -->
+            <div class="practice-challenge-card">
+              <div class="practice-challenge-top">
+                <h4 id="topicPracticeTitle">Climbing Stairs (Easy)</h4>
+                <span class="badge-nc" id="topicPracticeBadge">NeetCode 150 #70</span>
+              </div>
+              <p id="topicPracticePrompt">
+                You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+              </p>
+              <div class="practice-io-sample" id="topicPracticeIoSample">
+                <strong>Example 1:</strong> <code>Input: n = 2</code> → <code>Output: 2</code> (1+1 or 2)<br>
+                <strong>Example 2:</strong> <code>Input: n = 3</code> → <code>Output: 3</code> (1+1+1, 1+2, 2+1)
+              </div>
+            </div>
+
+            <!-- In-Browser Code Editor -->
+            <div class="live-editor-box">
+              <div class="live-editor-top">
+                <span class="editor-lang-name">Python 3 (Sandbox)</span>
+                <span class="editor-status-tag" id="topicEditorStatus">Ready</span>
+              </div>
+              <textarea class="live-code-textarea" id="topicPracticeTextarea" spellcheck="false" autocomplete="off"></textarea>
+            </div>
+
+            <!-- Run & Submit Actions Bar -->
+            <div class="practice-action-bar">
+              <button class="run-test-pill-btn" id="topicPracticeRunBtn">
+                <span>▶ Run Test Cases</span>
+              </button>
+              <button class="submit-pill-btn" id="topicPracticeSubmitBtn">
+                <span>🚀 Submit Solution (+50 XP)</span>
+              </button>
+              <span class="run-result-summary" id="topicPracticeStatusMsg">Press 'Run Test Cases' to test your code</span>
+            </div>
+
+            <!-- Test Cases Console Output -->
+            <div class="test-console-pane" id="topicPracticeConsole">
+              <div class="console-head">
+                <span>Test Execution Results</span>
+              </div>
+              <div class="console-output-list" id="topicPracticeOutputList">
+                <div class="console-empty">Test outputs will appear here after clicking 'Run Test Cases'.</div>
+              </div>
+            </div>
+
+            <!-- Hint & Solution Reveal Drawers -->
+            <div class="solution-reveal-card hidden" id="topicPracticeSolDrawer">
+              <div class="solution-header">
+                <strong>Optimal NeetCode Solution:</strong>
+                <button class="btn-micro-close" id="closeTopicPracticeSolBtn">✕</button>
+              </div>
+              <pre><code id="topicPracticeSolCode"></code></pre>
+              <p class="solution-notes" id="topicPracticeSolNotes"></p>
+            </div>
+
+            <div class="hint-reveal-card hidden" id="topicPracticeHintDrawer">
+              <div class="hint-header">
+                <strong>💡 Progressive Hint:</strong>
+                <button class="btn-micro-close" id="closeTopicPracticeHintBtn">✕</button>
+              </div>
+              <p id="topicPracticeHintText"></p>
+            </div>
           </div>
         </div>
 
@@ -1161,6 +1440,7 @@
 
   </div><!-- /.app-shell -->
 
+  <script src="/static/neetcode_data.js"></script>
   <script src="/static/app.js"></script>
 </body>
 </html>
