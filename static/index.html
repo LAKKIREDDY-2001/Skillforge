@@ -4,12 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SkillForge — Voice-First DSA Learning Companion</title>
-  <link rel="icon" type="image/png" href="/static/icon.png">
-  <link rel="apple-touch-icon" href="/static/icon.png">
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="icon" type="image/png" href="static/icon.png">
+  <link rel="apple-touch-icon" href="static/icon.png">
+  <link rel="stylesheet" href="static/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    // GitHub Pages trailing-slash normalization
+    if (window.location.hostname.includes('github.io') && !window.location.pathname.endsWith('/') && !window.location.pathname.includes('.')) {
+      window.location.replace(window.location.pathname + '/' + window.location.search + window.location.hash);
+    }
+  </script>
 </head>
 <body>
   <div class="app-shell" id="appShell">
@@ -18,7 +24,7 @@
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-brand">
         <a href="#" class="brand-link" id="brandHomeLink" title="SkillForge Home">
-          <img src="/static/logo.png" alt="SkillForge" class="sidebar-logo-img">
+          <img src="static/logo.png" alt="SkillForge" class="sidebar-logo-img">
         </a>
       </div>
 
@@ -1328,6 +1334,15 @@
             </div>
             <div class="setting-row">
               <div>
+                <strong>GitHub Pages Showcase</strong>
+                <p>Global static deployment hosted on GitHub Pages with connected live MCP client API.</p>
+              </div>
+              <a href="https://lakkireddy-2001.github.io/Skillforge/" target="_blank" rel="noopener noreferrer" class="link-external-pill">
+                https://lakkireddy-2001.github.io/Skillforge/ ↗
+              </a>
+            </div>
+            <div class="setting-row">
+              <div>
                 <strong>Live MCP Tool Server Spec 2025-11-25</strong>
                 <p>Self-hosted tool discovery for Alexa+ agents & Bedrock Claude 3 Haiku.</p>
               </div>
@@ -1601,7 +1616,7 @@
     <div class="in-app-toast hidden" id="inAppToast">
       <div class="toast-glow-border"></div>
       <div class="toast-icon-wrap">
-        <img src="/static/icon.png" alt="SkillForge" class="toast-logo-icon">
+        <img src="static/icon.png" alt="SkillForge" class="toast-logo-icon">
       </div>
       <div class="toast-body">
         <div class="toast-title" id="toastTitle">🔥 SkillForge Streak Reminder</div>
@@ -1615,8 +1630,8 @@
 
   </div><!-- /.app-shell -->
 
-  <script src="/static/neetcode_data.js"></script>
-  <script src="/static/expanded_curriculum.js"></script>
-  <script src="/static/app.js"></script>
+  <script src="static/neetcode_data.js"></script>
+  <script src="static/expanded_curriculum.js"></script>
+  <script src="static/app.js"></script>
 </body>
 </html>

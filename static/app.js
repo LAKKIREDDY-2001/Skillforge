@@ -6,9 +6,12 @@
 document.addEventListener('DOMContentLoaded', () => {
   // ── Configuration & Base URL ─────────────────────────────────────────────
   const isCustomPort = window.location.port && !['8000', '80', '443'].includes(window.location.port);
-  const API_BASE = (window.location.protocol === 'file:' || isCustomPort)
-    ? 'http://localhost:8000'
-    : window.location.origin;
+  const isGitHubPages = window.location.hostname.includes('github.io');
+  const API_BASE = isGitHubPages
+    ? 'https://skillforge-scoz.onrender.com'
+    : (window.location.protocol === 'file:' || isCustomPort)
+      ? 'http://localhost:8000'
+      : window.location.origin;
 
   // Safe JSON Fetch helper that never throws Unexpected End of JSON
   async function safeFetchJson(url, options = {}) {
@@ -2348,10 +2351,11 @@ document.addEventListener('DOMContentLoaded', () => {
               'We will alert you daily so you never break your 14-day coding streak.'
             );
             try {
+              const iconUrl = new URL('static/icon.png', window.location.href).href;
               new Notification('🔥 SkillForge: Daily Streak Reminders Active!', {
                 body: "We will alert you daily so you never break your 14-day coding streak. Tap to practice anytime!",
-                icon: '/static/icon.png',
-                badge: '/static/icon.png',
+                icon: iconUrl,
+                badge: iconUrl,
               });
             } catch (e) { console.warn(e); }
           }
@@ -2409,10 +2413,11 @@ document.addEventListener('DOMContentLoaded', () => {
       // 2. Dispatch native OS/Browser notification
       if ('Notification' in window && Notification.permission === 'granted') {
         try {
+          const iconUrl = new URL('static/icon.png', window.location.href).href;
           const notif = new Notification(title, {
             body: body,
-            icon: '/static/icon.png',
-            badge: '/static/icon.png',
+            icon: iconUrl,
+            badge: iconUrl,
             tag: 'skillforge-streak-alert',
           });
           notif.onclick = () => {

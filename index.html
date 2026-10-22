@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillForge — Voice-First DSA Learning Companion</title>
+  <link rel="icon" type="image/png" href="static/icon.png">
+  <link rel="apple-touch-icon" href="static/icon.png">
+  <link rel="stylesheet" href="static/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    // GitHub Pages trailing-slash normalization
+    if (window.location.hostname.includes('github.io') && !window.location.pathname.endsWith('/') && !window.location.pathname.includes('.')) {
+      window.location.replace(window.location.pathname + '/' + window.location.search + window.location.hash);
+    }
+  </script>
+</head>
+<body>
+  <div class="app-shell" id="appShell">
+    
+    <!-- ── Left Sidebar Navigation ─────────────────────────────────────────── -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <a href="#" class="brand-link" id="brandHomeLink" title="SkillForge Home">
+          <img src="static/logo.png" alt="SkillForge" class="sidebar-logo-img">
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-view="dashboard" id="navDashboard">
+          <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          <span>Dashboard</span>
+        </button>
+
+        <button class="nav-item" data-view="quiz" id="navQuiz">
+          <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><line x1="9" y1="7" x2="15" y2="7"></line><line x1="9" y1="11" x2="13" y2="11"></line></svg>
+          <span>Quizzes</span>
+        </button>
+
+        <button class="nav-item" data-view="topics" id="navTopics">
+          <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>Topics</span>
+        </button>
+
+        <button class="nav-item" data-view="progress" id="navProgress">
+          <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          <span>Progress</span>
+        </button>
+
+        <button class="nav-item" data-view="mcp" id="navMcp">
+          <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>
+          <span>MCP Inspector</span>
+          <span class="nav-tag live">LIVE</span>
+        </button>
+
+        <button class="nav-item" data-view="cheatsheets" id="navCheatsheets">
+          <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <span>Cheatsheets</span>
+          <span class="nav-tag new">LIVE</span>
+        </button>
+
+        <button class="nav-item" data-view="settings" id="navSettings">
+          <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Settings</span>
+        </button>
+      </nav>
+
+      <!-- Bottom Floating Voice Orb Button -->
+      <div class="sidebar-footer">
+        <button class="voice-mode-pill-btn" id="voiceModeBtn" title="Activate Alexa+ Voice Assistant">
+          <div class="voice-mic-glow-circle">
+            <svg class="mic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+          </div>
+          <div class="voice-pill-text">
+            <strong>Ask anything</strong>
+            <span>(Voice mode)</span>
+          </div>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ── Main App Content Area ─────────────────────────────────────────── -->
+    <div class="main-wrapper">
+      
+      <!-- Top Global Bar -->
+      <header class="top-nav-bar">
+        <div class="search-container">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="globalSearchInput" placeholder="Search topics, questions, algorithms..." autocomplete="off">
+        </div>
+
+        <div class="top-nav-actions">
+          <!-- Active Model Chip -->
+          <div class="model-badge-chip" id="topModelChip" title="Amazon Bedrock AI Model">
+            <span class="model-dot"></span>
+            <span id="topModelName">Claude 3.5 Sonnet</span>
+          </div>
+
+          <!-- Notification Bell Wrap -->
+          <div class="notification-bell-wrap">
+            <button class="icon-circle-btn" id="bellBtn" title="Streak & Study Notifications">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+              <span class="notification-indicator" id="notifIndicator"></span>
+            </button>
+
+            <!-- Notifications Dropdown Panel -->
+            <div class="notification-dropdown hidden" id="notificationDropdown">
+              <!-- Header -->
+              <div class="notif-header">
+                <div class="notif-title-wrap">
+                  <span class="notif-title-icon">🔔</span>
+                  <div>
+                    <div class="notif-head-title">Streak & Daily Reminders</div>
+                    <div class="notif-head-sub" id="notifHeadSub">Stay consistent, never miss a streak</div>
+                  </div>
+                </div>
+                <div class="notif-header-actions">
+                  <span class="notif-count-badge" id="notifBadgeCount">3 New</span>
+                  <button class="notif-close-btn" id="closeNotifBtn" title="Close">✕</button>
+                </div>
+              </div>
+
+              <!-- Streak Defense Banner -->
+              <div class="streak-defense-card" id="streakDefenseCard">
+                <div class="defense-top">
+                  <div class="defense-flame-icon">🔥</div>
+                  <div class="defense-info">
+                    <div class="defense-title" id="defenseTitle">14-Day Streak Defense Active</div>
+                    <div class="defense-timer" id="defenseTimer">⏰ <span id="defenseHours">7</span> hours left today</div>
+                  </div>
+                  <button class="btn-micro-fire" id="defensePracticeBtn">Practice Now 🔥</button>
+                </div>
+                <p class="defense-desc" id="defenseDesc">Complete 1 quick voice challenge before midnight to protect your 14-day study streak!</p>
+              </div>
+
+              <!-- Desktop Push Permission Banner -->
+              <div class="push-permission-card" id="pushPermissionCard">
+                <div class="push-icon">⚡</div>
+                <div class="push-content">
+                  <div class="push-title">Desktop Push Reminders</div>
+                  <div class="push-subtitle" id="pushSubtitle">Get daily reminders on your Mac/PC even when this tab is closed.</div>
+                </div>
+                <button class="btn-push-enable" id="enablePushBtn">Enable Push 🔔</button>
+              </div>
+
+              <!-- Daily Scheduler Controls -->
+              <div class="notif-scheduler-box">
+                <div class="scheduler-row">
+                  <label for="reminderTimeSelect">⏰ Daily Alert Time:</label>
+                  <select id="reminderTimeSelect" class="scheduler-select">
+                    <option value="09:00">09:00 AM (Morning Boost)</option>
+                    <option value="13:00">01:00 PM (Lunch Break)</option>
+                    <option value="18:00">06:00 PM (After Work)</option>
+                    <option value="20:00" selected>08:00 PM (Streak Defense)</option>
+                    <option value="22:00">10:00 PM (Night Owl / Last Call)</option>
+                  </select>
+                </div>
+                <div class="scheduler-row scheduler-toggle-row">
+                  <label for="dailyReminderToggle">Daily Reminders Enabled:</label>
+                  <input type="checkbox" id="dailyReminderToggle" checked class="modern-toggle">
+                </div>
+                <div class="scheduler-actions">
+                  <button class="btn-test-reminder" id="testReminderBtn" title="Test instant browser notification & Alexa voice chime">
+                    🔔 Send Test Daily Reminder
+                  </button>
+                </div>
+              </div>
+
+              <!-- Notification Feed Items -->
+              <div class="notif-feed-container" id="notifFeedContainer">
+                <!-- Dynamically populated -->
+              </div>
+
+              <!-- Footer -->
+              <div class="notif-footer">
+                <button class="notif-footer-link" id="markAllReadBtn">Mark All Read</button>
+                <button class="notif-footer-link" id="clearAllNotifsBtn">Clear All</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Authentication State: Logged Out View (Sign In / Sign Up) -->
+          <div class="auth-nav-group" id="authNavGroup">
+            <button class="nav-auth-btn nav-signin-btn" id="headerSigninBtn">Sign In</button>
+            <button class="nav-auth-btn nav-signup-btn" id="headerSignupBtn">Sign Up</button>
+          </div>
+
+          <!-- Authentication State: Logged In View (Profile Chip + Sign Out) -->
+          <div class="user-logged-in-group hidden" id="userLoggedInGroup">
+            <!-- User Profile Avatar Pill & Dropdown -->
+            <div class="user-profile-menu-wrap" id="userProfileWrap">
+              <button class="user-profile-chip" id="userAvatarBtn" title="View Profile / Switch User">
+                <span class="user-avatar-circle" id="userAvatarLetter">👨‍💻</span>
+                <span class="user-chip-name" id="userChipName">Alex Chen</span>
+                <svg class="chevron-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
+
+              <!-- User Menu Dropdown -->
+              <div class="user-menu-dropdown hidden" id="userMenuDropdown">
+                <div class="user-menu-header">
+                  <div class="user-menu-avatar" id="menuAvatar">👨‍💻</div>
+                  <div class="user-menu-info">
+                    <div class="user-menu-name" id="menuUserName">Alex Chen</div>
+                    <div class="user-menu-role" id="menuUserRole">Amazon SDE II Candidate</div>
+                  </div>
+                </div>
+
+                <div class="user-menu-stats-bar">
+                  <span id="menuUserStreak">🔥 14-Day Streak</span>
+                  <span id="menuUserXp">⚡ 120 XP</span>
+                </div>
+
+                <div class="user-menu-divider"></div>
+
+                <div class="user-menu-section-title">Quick Switch Persona</div>
+                <div class="user-menu-personas">
+                  <button class="persona-chip active" data-user="alex">👨‍💻 Alex (Amazon)</button>
+                  <button class="persona-chip" data-user="sarah">👩‍💻 Sarah (Google)</button>
+                </div>
+
+                <div class="user-menu-divider"></div>
+
+                <div class="user-menu-actions">
+                  <button class="user-menu-btn" id="menuSettingsBtn">
+                    <span>⚙️</span> Settings & Benchmarks
+                  </button>
+                  <button class="user-menu-btn danger" id="menuSignOutBtn">
+                    <span>🚪</span> Sign Out
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Prominent Sign Out Button -->
+            <button class="nav-auth-btn nav-signout-btn" id="headerSignoutBtn" title="Sign out of your account">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- ── VIEW 1: Dashboard (Matches Screen 1) ─────────────────────────── -->
+      <section class="view-panel active" id="viewDashboard">
+        <div class="view-header">
+          <div class="header-greeting">
+            <h2>Good to see you back!</h2>
+            <p>Keep learning. Small steps lead to big results.</p>
+          </div>
+        </div>
+
+        <!-- Top 3 Stat Cards -->
+        <div class="dashboard-stats-grid">
+          <!-- Stat 1: Streak -->
+          <div class="stat-card streak-stat-card">
+            <div class="stat-icon-wrap streak-icon-wrap">🔥</div>
+            <div class="stat-content">
+              <div class="stat-number-row">
+                <span class="stat-hero-number" id="dashStreakNumber">14</span>
+              </div>
+              <div class="stat-hero-label">day streak</div>
+              <div class="stat-hero-sub">Keep it going!</div>
+            </div>
+          </div>
+
+          <!-- Stat 2: Level & XP -->
+          <div class="stat-card level-stat-card">
+            <div class="stat-icon-wrap level-icon-wrap">🎖️</div>
+            <div class="stat-content">
+              <div class="stat-number-row">
+                <span class="stat-hero-number" id="dashLevelTitle">Level 3</span>
+              </div>
+              <div class="stat-hero-sub" id="dashXpProgressText">450 / 1000 XP</div>
+              <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="dashXpFill" style="width: 45%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stat 3: Accuracy Ring -->
+          <div class="stat-card accuracy-stat-card">
+            <div class="accuracy-ring-wrap">
+              <svg class="ring-svg" viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="32" class="ring-bg"></circle>
+                <circle cx="40" cy="40" r="32" class="ring-fg" id="dashAccuracyRing" stroke-dasharray="201" stroke-dashoffset="26"></circle>
+              </svg>
+              <div class="accuracy-pct-label" id="dashAccuracyPct">87%</div>
+            </div>
+            <div class="stat-content">
+              <div class="stat-hero-label">Accuracy</div>
+              <div class="stat-hero-sub">Great progress!</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Cards Grid (3 Cards) -->
+        <div class="action-cards-grid">
+          <!-- Card 1: Daily Challenge -->
+          <div class="action-card daily-action-card" id="cardDailyChallenge">
+            <div class="action-card-header">
+              <div class="action-icon-circle purple-circle">🎯</div>
+              <div class="action-title-block">
+                <h3>Daily Challenge</h3>
+                <span class="action-difficulty-badge hard" id="dashDailyDiff">Hard • Graphs</span>
+              </div>
+            </div>
+            <p class="action-card-desc">Solve a curated problem today and boost your skills.</p>
+            <button class="action-arrow-btn" title="Start Daily Challenge">→</button>
+          </div>
+
+          <!-- Card 2: Continue Review -->
+          <div class="action-card review-action-card" id="cardContinueReview">
+            <div class="action-card-header">
+              <div class="action-icon-circle cyan-circle">📖</div>
+              <div class="action-title-block">
+                <h3>Continue Review</h3>
+                <span class="action-difficulty-badge due" id="dashReviewDueBadge">3 questions due</span>
+              </div>
+            </div>
+            <p class="action-card-desc">Strengthen what you've learned with spaced repetition.</p>
+            <button class="action-arrow-btn" title="Continue Review">→</button>
+          </div>
+
+          <!-- Card 3: New Topic -->
+          <div class="action-card topic-action-card" id="cardNewTopic">
+            <div class="action-card-header">
+              <div class="action-icon-circle amber-circle">🧩</div>
+              <div class="action-title-block">
+                <h3>New Topic</h3>
+                <span class="action-difficulty-badge suggest" id="dashSuggestTopicBadge">Suggested: Strings</span>
+              </div>
+            </div>
+            <p class="action-card-desc">Start a new topic based on your algorithmic progress.</p>
+            <button class="action-arrow-btn" title="Explore New Topic">→</button>
+          </div>
+        </div>
+
+        <!-- Bottom Activity & Heatmap Grid -->
+        <div class="bottom-activity-grid">
+          <!-- Card 1: Last 7 Days Activity (GitHub Squares) -->
+          <div class="activity-card">
+            <h4>Last 7 Days Activity</h4>
+            <div class="days-squares-row">
+              <div class="day-col">
+                <span class="day-label">Mon</span>
+                <span class="activity-square active"></span>
+              </div>
+              <div class="day-col">
+                <span class="day-label">Tue</span>
+                <span class="activity-square active"></span>
+              </div>
+              <div class="day-col">
+                <span class="day-label">Wed</span>
+                <span class="activity-square active"></span>
+              </div>
+              <div class="day-col">
+                <span class="day-label">Thu</span>
+                <span class="activity-square active"></span>
+              </div>
+              <div class="day-col">
+                <span class="day-label">Fri</span>
+                <span class="activity-square active"></span>
+              </div>
+              <div class="day-col">
+                <span class="day-label">Sat</span>
+                <span class="activity-square inactive"></span>
+              </div>
+              <div class="day-col">
+                <span class="day-label">Sun</span>
+                <span class="activity-square active"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Topic Heatmap -->
+          <div class="activity-card heatmap-card">
+            <h4>Topic Heatmap</h4>
+            <div class="heatmap-grid-compact">
+              <div class="heatmap-row">
+                <span class="topic-name">Arrays</span>
+                <div class="heatmap-blocks">
+                  <span class="heat-block lvl-3"></span>
+                  <span class="heat-block lvl-4"></span>
+                  <span class="heat-block lvl-4"></span>
+                </div>
+              </div>
+              <div class="heatmap-row">
+                <span class="topic-name">Trees</span>
+                <div class="heatmap-blocks">
+                  <span class="heat-block lvl-2"></span>
+                  <span class="heat-block lvl-3"></span>
+                  <span class="heat-block lvl-1"></span>
+                </div>
+              </div>
+              <div class="heatmap-row">
+                <span class="topic-name">Linked Lists</span>
+                <div class="heatmap-blocks">
+                  <span class="heat-block lvl-4"></span>
+                  <span class="heat-block lvl-4"></span>
+                  <span class="heat-block lvl-3"></span>
+                </div>
+              </div>
+              <div class="heatmap-row">
+                <span class="topic-name">Graphs</span>
+                <div class="heatmap-blocks">
+                  <span class="heat-block lvl-1"></span>
+                  <span class="heat-block lvl-3"></span>
+                  <span class="heat-block lvl-2"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── VIEW 2: Active Voice Quiz (Matches Screen 2) ────────────────── -->
+      <section class="view-panel" id="viewQuiz">
+        <!-- Top Navigation & Progress -->
+        <div class="quiz-top-nav">
+          <button class="back-link-btn" id="quizBackBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <span>Back</span>
+          </button>
+
+          <div class="quiz-progress-section">
+            <span class="question-count-label" id="quizProgressCount">Question 2 of 5</span>
+            <div class="quiz-progress-track">
+              <div class="quiz-progress-fill" id="quizProgressFill" style="width: 40%;"></div>
+            </div>
+            <span class="progress-pct-tag" id="quizProgressPct">40%</span>
+          </div>
+        </div>
+
+        <!-- Mode Switcher: Voice Concept Quiz vs In-Browser Code Practice -->
+        <div class="quiz-mode-switch-bar">
+          <button class="quiz-mode-pill active" id="quizModeVoiceBtn">
+            <span>🎙️ Voice Concept Quiz</span>
+          </button>
+          <button class="quiz-mode-pill" id="quizModeCodeBtn">
+            <span>💻 NeetCode Code Practice</span>
+            <span class="mode-badge-new">18 Tracks</span>
+          </button>
+        </div>
+
+        <!-- MODE 1: Voice Concept Quiz Container -->
+        <div id="quizVoiceModeContainer">
+          <div class="quiz-layout-split">
+            <!-- Main Quiz Card -->
+            <div class="quiz-main-card">
+              <div class="quiz-tags-row">
+                <span class="quiz-topic-pill" id="quizTopicPill">Linked List</span>
+                <span class="quiz-difficulty-pill" id="quizDiffPill">Medium</span>
+              </div>
+
+              <!-- Question Headline -->
+              <h1 class="quiz-question-title" id="quizQuestionText">
+                How do you detect a cycle in a linked list?
+              </h1>
+
+              <!-- Big Glowing Circular Voice Mic Button -->
+              <div class="quiz-voice-center">
+                <button class="hero-voice-button" id="quizVoiceBtn" title="Tap to Speak (Web Speech API)">
+                  <div class="voice-ripple-ring ripple-1"></div>
+                  <div class="voice-ripple-ring ripple-2"></div>
+                  <div class="voice-button-core">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                  </div>
+                </button>
+                <div class="voice-instruction-label" id="quizVoiceInstruction">Click to speak</div>
+                <button class="type-instead-btn" id="typeInsteadBtn">⌨️ or type instead</button>
+              </div>
+
+              <!-- Answer Input Bar -->
+              <div class="quiz-input-bar">
+                <input type="text" id="quizAnswerInput" placeholder="Type your answer here..." autocomplete="off">
+                <button class="send-arrow-btn" id="quizSendBtn" title="Submit Answer">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+              </div>
+
+              <!-- Bottom Skip / Next Controls -->
+              <div class="quiz-bottom-controls">
+                <button class="quiz-skip-btn" id="quizSkipBtn">Skip</button>
+                <button class="quiz-next-btn" id="quizNextBtn">
+                  <span>Next</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Right Sidebar Drawers (Hints & Key Points) -->
+            <aside class="quiz-sidebar-drawers">
+              <!-- Hints Accordion -->
+              <div class="drawer-card hints-card">
+                <div class="drawer-header">
+                  <div class="drawer-title">
+                    <span class="drawer-icon">💡</span>
+                    <span>Hints</span>
+                  </div>
+                  <span class="drawer-toggle-icon">▾</span>
+                </div>
+                <p class="drawer-body" id="quizHintText">
+                  Think about two pointers moving at different speeds. What happens when there is a cycle?
+                </p>
+              </div>
+
+              <!-- Key Points Checklist -->
+              <div class="drawer-card keypoints-card">
+                <div class="drawer-header">
+                  <div class="drawer-title">
+                    <span class="drawer-icon">📋</span>
+                    <span>Key Points</span>
+                  </div>
+                  <span class="drawer-toggle-icon">▾</span>
+                </div>
+                <ul class="keypoints-list" id="quizKeyPointsList">
+                  <li><span class="bullet-dot"></span> Tortoise & hare approach</li>
+                  <li><span class="bullet-dot"></span> Two pointers</li>
+                  <li><span class="bullet-dot"></span> O(n) time complexity</li>
+                  <li><span class="bullet-dot"></span> O(1) space complexity</li>
+                </ul>
+              </div>
+            </aside>
+          </div>
+        </div>
+
+        <!-- MODE 2: In-Browser Code Practice Sandbox (Full DSA Prep) -->
+        <div id="quizCodeModeContainer" class="hidden">
+          <div class="code-sandbox-wrapper">
+            <!-- Sandbox Header Toolbar -->
+            <div class="sandbox-toolbar">
+              <div class="sandbox-track-select-wrap">
+                <label for="sandboxTrackSelect">DSA Track:</label>
+                <select id="sandboxTrackSelect" class="sandbox-select">
+                  <!-- Dynamically populated 18 tracks -->
+                </select>
+              </div>
+              <div class="sandbox-diff-selector" id="sandboxDiffSelector">
+                <button class="sandbox-diff-btn active" data-diff="easy">🟢 Easy</button>
+                <button class="sandbox-diff-btn" data-diff="medium">🟡 Medium</button>
+                <button class="sandbox-diff-btn" data-diff="hard">🔴 Hard</button>
+              </div>
+              <div class="sandbox-header-tools">
+                <button class="btn-tool-sm" id="sandboxSpeakBtn" title="Listen with Alexa">🔊 Read Problem</button>
+                <button class="btn-tool-sm" id="sandboxHintBtn">💡 Hint</button>
+                <button class="btn-tool-sm" id="sandboxSolutionBtn">👁️ Solution</button>
+                <button class="btn-tool-sm" id="sandboxResetBtn">↺ Reset</button>
+              </div>
+            </div>
+
+            <!-- Problem Card -->
+            <div class="sandbox-problem-card">
+              <div class="sandbox-problem-meta-row">
+                <div class="sp-title-group">
+                  <h3 id="sandboxProblemTitle">Two Sum</h3>
+                  <span class="neetcode-badge" id="sandboxNeetcodeBadge">NeetCode 150 #1</span>
+                  <span class="diff-badge easy" id="sandboxDiffBadge">Easy</span>
+                </div>
+              </div>
+              <p class="sandbox-problem-desc" id="sandboxProblemDesc">
+                Given an array of integers <code>nums</code> and an integer <code>target</code>, return indices of the two numbers such that they add up to <code>target</code>.
+              </p>
+              <div class="sandbox-io-sample" id="sandboxIoSample">
+                <code>Input: nums = [2,7,11,15], target = 9</code> → <code>Output: [0,1]</code>
+              </div>
+            </div>
+
+            <!-- Code Editor Space -->
+            <div class="sandbox-editor-card">
+              <div class="editor-header-bar">
+                <div class="editor-lang-tabs" id="sandboxLangTabs">
+                  <button class="editor-lang-tab active" data-lang="python">Python 3</button>
+                  <button class="editor-lang-tab" data-lang="cpp">C++17</button>
+                  <button class="editor-lang-tab" data-lang="c">C11</button>
+                  <button class="editor-lang-tab" data-lang="java">Java 17</button>
+                  <button class="editor-lang-tab" data-lang="sql">SQL / Query</button>
+                  <button class="editor-lang-tab" data-lang="javascript">JavaScript</button>
+                </div>
+                <span class="editor-hint-tip">In-Browser Test Engine • Instant Execution</span>
+              </div>
+              <textarea class="sandbox-code-area" id="sandboxCodeArea" spellcheck="false" autocomplete="off"></textarea>
+            </div>
+
+            <!-- Run & Submit Bar -->
+            <div class="sandbox-action-bar">
+              <button class="run-test-pill-btn" id="sandboxRunBtn">
+                <span>▶ Run Test Cases</span>
+              </button>
+              <button class="submit-pill-btn" id="sandboxSubmitBtn">
+                <span>🚀 Submit to SM-2 Review (+50 XP)</span>
+              </button>
+              <span class="run-result-summary" id="sandboxStatusMsg">Write your solution above and click Run</span>
+            </div>
+
+            <!-- Test Cases Console Output -->
+            <div class="sandbox-console-pane" id="sandboxConsolePane">
+              <div class="console-head">
+                <span>Test Execution Output</span>
+                <span class="console-timer" id="sandboxConsoleTimer"></span>
+              </div>
+              <div class="console-output-list" id="sandboxOutputList">
+                <div class="console-empty">Click 'Run Test Cases' to run against test inputs.</div>
+              </div>
+            </div>
+
+            <!-- Reveal Drawers for Hint and Optimal NeetCode Solution -->
+            <div class="solution-reveal-card hidden" id="sandboxSolDrawer">
+              <div class="solution-header">
+                <strong>Optimal NeetCode Solution:</strong>
+                <button class="btn-micro-close" id="closeSandboxSolBtn">✕</button>
+              </div>
+              <pre><code id="sandboxSolCode"></code></pre>
+              <p class="solution-notes" id="sandboxSolNotes"></p>
+            </div>
+
+            <div class="hint-reveal-card hidden" id="sandboxHintDrawer">
+              <div class="hint-header">
+                <strong>💡 Progressive Hint:</strong>
+                <button class="btn-micro-close" id="closeSandboxHintBtn">✕</button>
+              </div>
+              <p id="sandboxHintText"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── VIEW 3: Answer Feedback (Matches Screen 3) ──────────────────── -->
+      <section class="view-panel" id="viewFeedback">
+        <div class="quiz-top-nav">
+          <button class="back-link-btn" id="feedbackBackBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <span>Back</span>
+          </button>
+          <h2 class="view-title-center">Answer Feedback</h2>
+          <div style="width: 60px;"></div>
+        </div>
+
+        <div class="feedback-grid-split">
+          <!-- Left Column: Circular Radial Score & Checklist -->
+          <div class="feedback-col-left">
+            <!-- Circular Gauge Card -->
+            <div class="feedback-score-card">
+              <div class="radial-gauge-container">
+                <svg class="radial-svg" viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="50" class="radial-bg"></circle>
+                  <circle cx="60" cy="60" r="50" class="radial-fg" id="feedbackScoreArc" stroke-dasharray="314" stroke-dashoffset="56"></circle>
+                </svg>
+                <div class="radial-score-content">
+                  <div class="score-number-big" id="feedbackScoreValue">82<span class="score-denom">/100</span></div>
+                  <div class="score-quality-badge" id="feedbackQualityTag">✅ Good!</div>
+                </div>
+              </div>
+
+              <!-- Robot Comment Box -->
+              <div class="robot-critique-box">
+                <span class="robot-avatar">🤖</span>
+                <p id="feedbackCritiqueText">
+                  Solid use of Floyd's algorithm. You missed mentioning the time complexity, but overall a great explanation!
+                </p>
+              </div>
+
+              <!-- Key Points Checklist Table -->
+              <div class="keypoints-eval-table">
+                <div class="eval-table-header">Key Points Evaluated:</div>
+                <div class="eval-row">
+                  <div class="eval-point-title">
+                    <span class="eval-status-icon pass">✔</span>
+                    <span>Tortoise & hare approach</span>
+                  </div>
+                  <span class="eval-tag pass">Correctly explained</span>
+                </div>
+                <div class="eval-row">
+                  <div class="eval-point-title">
+                    <span class="eval-status-icon pass">✔</span>
+                    <span>Two pointers</span>
+                  </div>
+                  <span class="eval-tag pass">Well described</span>
+                </div>
+                <div class="eval-row">
+                  <div class="eval-point-title">
+                    <span class="eval-status-icon fail">✖</span>
+                    <span>O(n) time complexity</span>
+                  </div>
+                  <span class="eval-tag fail">Missing</span>
+                </div>
+                <div class="eval-row">
+                  <div class="eval-point-title">
+                    <span class="eval-status-icon pass">✔</span>
+                    <span>O(1) space complexity</span>
+                  </div>
+                  <span class="eval-tag pass">Mentioned</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Correct Answer & Audio Explanation -->
+          <div class="feedback-col-right">
+            <!-- Correct Answer Card -->
+            <div class="feedback-answer-card">
+              <div class="answer-card-header">
+                <div class="answer-card-title">
+                  <span class="green-check-badge">✔</span>
+                  <strong>Correct Answer</strong>
+                </div>
+                <button class="copy-code-icon-btn" id="copyFeedbackCodeBtn" title="Copy Code">📋</button>
+              </div>
+              <p class="answer-card-intro">Use Floyd's Cycle Detection (Tortoise and Hare algorithm):</p>
+              <pre class="answer-code-box"><code id="feedbackCodeSnippet">def hasCycle(head):
+    slow = head
+    fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        if slow == fast:
+            return True
+    return False</code></pre>
+            </div>
+
+            <!-- Audio Explanation Player Card -->
+            <div class="feedback-explanation-card">
+              <div class="explanation-card-header">
+                <div class="explanation-card-title">
+                  <span class="speaker-icon-cyan">🔊</span>
+                  <strong>Explanation</strong>
+                </div>
+                <div class="mini-waveform-player" id="feedbackAudioWave">
+                  <span class="mini-bar"></span><span class="mini-bar"></span><span class="mini-bar"></span>
+                  <span class="mini-bar"></span><span class="mini-bar"></span><span class="mini-bar"></span>
+                  <span class="mini-bar"></span><span class="mini-bar"></span><span class="mini-bar"></span>
+                </div>
+                <button class="play-audio-btn" id="playExplanationBtn">Play explanation</button>
+              </div>
+              <p class="explanation-text-body" id="feedbackExplanationText">
+                We use two pointers, one moving slow and the other fast. If there is a cycle, they will eventually meet inside the loop in linear time with constant auxiliary memory.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Action Row -->
+        <div class="feedback-bottom-row">
+          <button class="secondary-pill-btn" id="feedbackReviewAgainBtn">🔄 Review Again</button>
+          <button class="primary-pill-btn" id="feedbackNextQuestionBtn">Next Question ➔</button>
+        </div>
+      </section>
+
+      <!-- ── VIEW 4: Spaced Repetition / What to Study Next (Screen 4) ───── -->
+      <section class="view-panel" id="viewTopics">
+        <div class="view-header">
+          <div class="header-greeting">
+            <h2>What to study next?</h2>
+            <p>Based on your progress and spaced repetition retention schedule.</p>
+          </div>
+        </div>
+
+        <!-- Featured Recommended Review Card -->
+        <div class="featured-recommendation-card" id="featuredReviewCard">
+          <div class="featured-card-content">
+            <div class="featured-badge-row">
+              <span class="sparkle-badge">✨ Recommended Review</span>
+            </div>
+            <h1 class="featured-topic-title" id="featuredTopicTitle">Dynamic Programming</h1>
+            <div class="featured-pills-row">
+              <span class="diff-pill medium">Medium</span>
+              <span class="overdue-pill">⚠️ Overdue by 2 days</span>
+            </div>
+            <div class="focus-topic-link" id="featuredFocusTopic">
+              <span>Focus Topic: <strong>Edit Distance (DP)</strong></span>
+              <span class="arrow-right">›</span>
+            </div>
+          </div>
+
+          <!-- 3D Geometric Cube Visual -->
+          <div class="featured-card-graphic">
+            <div class="isometric-cube">
+              <div class="cube-face top"></div>
+              <div class="cube-face left"></div>
+              <div class="cube-face right"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7-Day Activity & Summary Strip -->
+        <div class="study-activity-summary-card">
+          <div class="activity-strip-left">
+            <h4>Last 7 Days Study Activity</h4>
+            <div class="days-squares-row">
+              <div class="day-col"><span class="day-label">Mon</span><span class="activity-square active"></span></div>
+              <div class="day-col"><span class="day-label">Tue</span><span class="activity-square active"></span></div>
+              <div class="day-col"><span class="day-label">Wed</span><span class="activity-square active"></span></div>
+              <div class="day-col"><span class="day-label">Thu</span><span class="activity-square active"></span></div>
+              <div class="day-col"><span class="day-label">Fri</span><span class="activity-square active"></span></div>
+              <div class="day-col"><span class="day-label">Sat</span><span class="activity-square inactive"></span></div>
+              <div class="day-col"><span class="day-label">Sun</span><span class="activity-square active"></span></div>
+            </div>
+          </div>
+
+          <div class="activity-strip-right">
+            <div class="mini-stat-item">
+              <span class="mini-stat-icon">🔥</span>
+              <div class="mini-stat-info">
+                <strong>14</strong>
+                <span>Day Streak</span>
+              </div>
+            </div>
+            <div class="mini-stat-item">
+              <span class="mini-stat-icon">🎯</span>
+              <div class="mini-stat-info">
+                <strong>28</strong>
+                <span>Questions Solved</span>
+              </div>
+            </div>
+            <div class="mini-stat-item">
+              <span class="mini-stat-icon">📊</span>
+              <div class="mini-stat-info">
+                <strong>87%</strong>
+                <span>Accuracy</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Start Review Action Button -->
+        <div class="start-review-cta-wrap">
+          <button class="hero-start-review-btn" id="startReviewBtn">
+            <span>▶ Start Review</span>
+          </button>
+        </div>
+
+        <!-- Course Tracks Filter Tabs -->
+        <div class="topics-filter-group">
+          <div class="filter-group-title">📚 Course Track:</div>
+          <div class="filter-pills-row" id="courseTrackFilters">
+            <button class="filter-pill-btn active" data-course="all">All Disciplines (22)</button>
+            <button class="filter-pill-btn" data-course="dsa">🧠 DSA Patterns (18)</button>
+            <button class="filter-pill-btn" data-course="system_design">🏗️ System Design</button>
+            <button class="filter-pill-btn" data-course="oops">🧱 OOPS & SOLID</button>
+            <button class="filter-pill-btn" data-course="networks">🌐 Computer Networks</button>
+            <button class="filter-pill-btn" data-course="dbms_sql">💾 DBMS & SQL</button>
+          </div>
+        </div>
+
+        <!-- Curated Sheets & Company Packs Filter Bar -->
+        <div class="topics-filter-group">
+          <div class="filter-group-title">🎯 Interview Sheets & Company Packs:</div>
+          <div class="filter-pills-row" id="companyTrackFilters">
+            <button class="filter-pill-btn active" data-collection="all">All Packs</button>
+            <button class="filter-pill-btn tag-curated" data-collection="top_50">🔥 Top 50</button>
+            <button class="filter-pill-btn tag-curated" data-collection="top_100">⭐ Top 100</button>
+            <button class="filter-pill-btn tag-curated" data-collection="top_150">🏆 Top 150</button>
+            <button class="filter-pill-btn tag-amazon" data-collection="amazon">📦 Amazon</button>
+            <button class="filter-pill-btn tag-google" data-collection="google">🔍 Google</button>
+            <button class="filter-pill-btn tag-microsoft" data-collection="microsoft">💻 Microsoft</button>
+            <button class="filter-pill-btn tag-meta" data-collection="meta">♾️ Meta</button>
+          </div>
+        </div>
+
+        <!-- Difficulty Level Filter Bar -->
+        <div class="topics-filter-group">
+          <div class="filter-group-title">⚡ Difficulty & Access Level:</div>
+          <div class="filter-pills-row" id="difficultyTrackFilters">
+            <button class="filter-pill-btn active" data-diff="all">All Levels</button>
+            <button class="filter-pill-btn diff-open" data-diff="easy">🟢 Level 1 (Easy • Open)</button>
+            <button class="filter-pill-btn diff-locked" data-diff="medium">🟡 Level 2 (Medium • Member)</button>
+            <button class="filter-pill-btn diff-locked" data-diff="hard">🔴 Level 3 (Hard • Pro)</button>
+          </div>
+        </div>
+
+        <!-- Curriculum Grid Header -->
+        <div class="curriculum-header-row">
+          <div>
+            <h3 class="curriculum-title" id="curriculumTitleText">Full Engineering Curriculum & Interview Tracks</h3>
+            <p class="curriculum-subtitle" id="curriculumSubtitleText">Master all 18 algorithmic patterns, System Design, OOPS, Computer Networks, and DBMS with runnable code in 5 languages.</p>
+          </div>
+          <span class="curriculum-counter-badge" id="curriculumBadgeCount">22 Tracks • 66+ Problems</span>
+        </div>
+        <div class="topics-cards-grid" id="topicsCurriculumGrid">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </section>
+
+      <!-- ── VIEW 5: Topic Deep Dive & Audio Analogy (Screen 5) ──────────── -->
+      <section class="view-panel" id="viewTopicDetail">
+        <div class="topic-detail-top-bar">
+          <button class="back-link-btn" id="topicDetailBackBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <span>Back</span>
+          </button>
+          <div class="topic-detail-center-head">
+            <h2 class="view-title-center" id="topicDetailTitle">Dynamic Programming</h2>
+            <span class="topic-detail-tag" id="topicDetailBadge">NeetCode Pattern</span>
+          </div>
+          <button class="favorite-icon-btn" id="favoriteTopicBtn" title="Bookmark Track">♡</button>
+        </div>
+
+        <!-- Audio Player Waveform Bar with Mid-Speech Pause & Stop -->
+        <div class="audio-player-bar" id="audioPlayerBar">
+          <div class="audio-controls-wrap">
+            <button class="audio-ctrl-btn audio-play-btn" id="audioPlayerToggleBtn" title="Play or Resume Continuous Voice Explanation">
+              <span class="btn-ctrl-icon">▶</span>
+              <span class="btn-ctrl-text" id="audioPlayBtnText">Play</span>
+            </button>
+            <button class="audio-ctrl-btn audio-pause-btn" id="audioPauseBtn" title="Pause Mid-Speech to Study Problem">
+              <span class="btn-ctrl-icon">⏸</span>
+              <span class="btn-ctrl-text">Pause & Study</span>
+            </button>
+            <button class="audio-ctrl-btn audio-stop-btn" id="audioStopBtn" title="Stop Audio">
+              <span class="btn-ctrl-icon">⏹</span>
+              <span class="btn-ctrl-text">Stop</span>
+            </button>
+          </div>
+          <div class="audio-waveform-bars" id="audioPlayerWaveform">
+            <span class="spectrum-bar"></span><span class="spectrum-bar"></span><span class="spectrum-bar"></span>
+            <span class="spectrum-bar"></span><span class="spectrum-bar"></span><span class="spectrum-bar"></span>
+            <span class="spectrum-bar"></span><span class="spectrum-bar"></span><span class="spectrum-bar"></span>
+            <span class="spectrum-bar"></span><span class="spectrum-bar"></span><span class="spectrum-bar"></span>
+          </div>
+          <div class="audio-meta-wrap">
+            <span class="audio-status-label" id="audioPlayerStatus">Ready to play</span>
+            <span class="audio-time-label" id="audioPlayerTime">0:00 / 2:30</span>
+          </div>
+          <div class="audio-study-badge">
+            <span>💡 Tap <strong>Pause & Study</strong> anytime to pause audio and study the problem at your own pace!</span>
+          </div>
+        </div>
+
+        <!-- Content Tabs -->
+        <div class="content-tabs-row" id="topicDetailTabsRow">
+          <button class="content-tab-btn active" data-tab="explanation">
+            <span class="tab-btn-icon">📖</span> Explanation
+          </button>
+          <button class="content-tab-btn" data-tab="examples">
+            <span class="tab-btn-icon">💻</span> Examples
+          </button>
+          <button class="content-tab-btn" data-tab="keypoints">
+            <span class="tab-btn-icon">🎯</span> Key Points
+          </button>
+          <button class="content-tab-btn" data-tab="practice">
+            <span class="tab-btn-icon">⚡</span> Practice
+          </button>
+        </div>
+
+        <!-- Main Body Content Panes -->
+        <div class="topic-content-body">
+          <!-- TAB 1: Explanation Pane -->
+          <div class="topic-tab-pane active" id="tabContentExplanation">
+            <p class="topic-prose" id="topicDetailProse">
+              Dynamic Programming (DP) is a problem solving technique where we break a large problem into smaller subproblems, solve each subproblem once, store their results, and combine them to get the final answer. It is mainly used when the problem has overlapping subproblems and optimal substructure.
+            </p>
+
+            <!-- Key Analogy Callout Card (Amber / Gold) -->
+            <div class="key-analogy-callout">
+              <div class="analogy-header">
+                <span class="bulb-icon">💡</span>
+                <strong>Intuitive Analogy</strong>
+              </div>
+              <p class="analogy-text" id="topicDetailAnalogy">
+                Think of DP like a recipe book: you solve small sub-recipes, save them in memory, and combine them for the full feast. Each subproblem is solved once and reused hundreds of times.
+              </p>
+            </div>
+
+            <!-- Big-O Complexity & Pattern Matrix -->
+            <div class="topic-complexity-grid" id="topicDetailComplexityGrid">
+              <div class="complexity-stat-card">
+                <span class="c-label">Time Complexity</span>
+                <strong class="c-val" id="topicDetailTimeComp">O(n) to O(n·W)</strong>
+                <span class="c-sub">Subproblems × transition time</span>
+              </div>
+              <div class="complexity-stat-card">
+                <span class="c-label">Space Complexity</span>
+                <strong class="c-val" id="topicDetailSpaceComp">O(n) / O(1)</strong>
+                <span class="c-sub">Tabulation / State reduction</span>
+              </div>
+              <div class="complexity-stat-card">
+                <span class="c-label">Mental Model</span>
+                <strong class="c-val" id="topicDetailMentalModel">Overlapping Subproblems</strong>
+                <span class="c-sub">Memoization vs Tabulation</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: Examples Pane (Real NeetCode Code Solutions) -->
+          <div class="topic-tab-pane hidden" id="tabContentExamples">
+            <div class="tab-examples-header">
+              <div class="example-diff-group" id="exampleDiffGroup">
+                <button class="example-diff-btn active" data-diff="easy">🟢 Easy</button>
+                <button class="example-diff-btn" data-diff="medium">🟡 Medium</button>
+                <button class="example-diff-btn" data-diff="hard">🔴 Hard</button>
+              </div>
+              <div class="example-lang-group" id="exampleLangGroup">
+                <button class="example-lang-btn active" data-lang="python">Python 3</button>
+                <button class="example-lang-btn" data-lang="cpp">C++17</button>
+                <button class="example-lang-btn" data-lang="c">C11</button>
+                <button class="example-lang-btn" data-lang="java">Java 17</button>
+                <button class="example-lang-btn" data-lang="sql">SQL / Query</button>
+                <button class="example-lang-btn" data-lang="javascript">JavaScript</button>
+              </div>
+            </div>
+
+            <!-- Example Problem Title & Summary -->
+            <div class="example-problem-meta" id="exampleProblemMeta">
+              <div class="example-meta-row">
+                <h4 id="exampleProblemTitle">Climbing Stairs</h4>
+                <span class="neetcode-badge" id="exampleNeetcodeBadge">NeetCode 150</span>
+              </div>
+              <p class="example-problem-desc" id="exampleProblemDesc">
+                You are climbing a staircase. It takes n steps to reach the top. Each time you can climb 1 or 2 steps. How many distinct ways can you climb to the top?
+              </p>
+            </div>
+
+            <!-- Syntax Highlighted Code Viewer -->
+            <div class="example-code-viewer">
+              <div class="code-viewer-bar">
+                <span class="viewer-file-tag" id="exampleViewerLangTag">solution.py</span>
+                <button class="copy-code-pill" id="copyExampleCodeBtn">📋 Copy Code</button>
+              </div>
+              <pre class="code-pre-box"><code id="exampleCodeText"># Loading code example...</code></pre>
+            </div>
+
+            <!-- Walkthrough & Complexity Breakdown -->
+            <div class="example-walkthrough-box">
+              <div class="walkthrough-title">
+                <span>🔍 Walkthrough & Big-O Analysis</span>
+              </div>
+              <p class="walkthrough-text" id="exampleWalkthroughText">
+                We observe that to reach step n, we could either jump from step (n-1) or (n-2). Thus ways(n) = ways(n-1) + ways(n-2), which mirrors Fibonacci! By maintaining only two variables `a` and `b`, we achieve O(n) time and O(1) space.
+              </p>
+            </div>
+          </div>
+
+          <!-- TAB 3: Key Points Pane -->
+          <div class="topic-tab-pane hidden" id="tabContentKeypoints">
+            <div class="keypoints-cards-grid" id="topicKeypointsGrid">
+              <!-- Dynamically populated key points -->
+            </div>
+          </div>
+
+          <!-- TAB 4: Practice Pane (In-Browser Code Sandbox) -->
+          <div class="topic-tab-pane hidden" id="tabContentPractice">
+            <div class="practice-box-header">
+              <div class="practice-diff-picker" id="topicPracticeDiffPicker">
+                <button class="practice-diff-tag active" data-diff="easy">🟢 Easy</button>
+                <button class="practice-diff-tag" data-diff="medium">🟡 Medium</button>
+                <button class="practice-diff-tag" data-diff="hard">🔴 Hard</button>
+              </div>
+              <div class="practice-header-tools">
+                <button class="btn-tool-sm" id="topicPracticeHintBtn">💡 Hint</button>
+                <button class="btn-tool-sm" id="topicPracticeSolBtn">👁️ Optimal Solution</button>
+                <button class="btn-tool-sm" id="topicPracticeResetBtn">↺ Reset</button>
+              </div>
+            </div>
+
+            <!-- Practice Challenge Statement -->
+            <div class="practice-challenge-card">
+              <div class="practice-challenge-top">
+                <h4 id="topicPracticeTitle">Climbing Stairs (Easy)</h4>
+                <span class="badge-nc" id="topicPracticeBadge">NeetCode 150 #70</span>
+              </div>
+              <p id="topicPracticePrompt">
+                You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+              </p>
+              <div class="practice-io-sample" id="topicPracticeIoSample">
+                <strong>Example 1:</strong> <code>Input: n = 2</code> → <code>Output: 2</code> (1+1 or 2)<br>
+                <strong>Example 2:</strong> <code>Input: n = 3</code> → <code>Output: 3</code> (1+1+1, 1+2, 2+1)
+              </div>
+            </div>
+
+            <!-- In-Browser Code Editor -->
+            <div class="live-editor-box">
+              <div class="live-editor-top">
+                <div class="practice-lang-picker" id="topicPracticeLangPicker">
+                  <button class="practice-lang-btn active" data-lang="python">Python 3</button>
+                  <button class="practice-lang-btn" data-lang="cpp">C++17</button>
+                  <button class="practice-lang-btn" data-lang="c">C11</button>
+                  <button class="practice-lang-btn" data-lang="java">Java 17</button>
+                  <button class="practice-lang-btn" data-lang="sql">SQL / Query</button>
+                  <button class="practice-lang-btn" data-lang="javascript">JavaScript</button>
+                </div>
+                <span class="editor-status-tag" id="topicEditorStatus">Ready</span>
+              </div>
+              <textarea class="live-code-textarea" id="topicPracticeTextarea" spellcheck="false" autocomplete="off"></textarea>
+            </div>
+
+            <!-- Run & Submit Actions Bar -->
+            <div class="practice-action-bar">
+              <button class="run-test-pill-btn" id="topicPracticeRunBtn">
+                <span>▶ Run Test Cases</span>
+              </button>
+              <button class="submit-pill-btn" id="topicPracticeSubmitBtn">
+                <span>🚀 Submit Solution (+50 XP)</span>
+              </button>
+              <span class="run-result-summary" id="topicPracticeStatusMsg">Press 'Run Test Cases' to test your code</span>
+            </div>
+
+            <!-- Test Cases Console Output -->
+            <div class="test-console-pane" id="topicPracticeConsole">
+              <div class="console-head">
+                <span>Test Execution Results</span>
+              </div>
+              <div class="console-output-list" id="topicPracticeOutputList">
+                <div class="console-empty">Test outputs will appear here after clicking 'Run Test Cases'.</div>
+              </div>
+            </div>
+
+            <!-- Hint & Solution Reveal Drawers -->
+            <div class="solution-reveal-card hidden" id="topicPracticeSolDrawer">
+              <div class="solution-header">
+                <strong>Optimal NeetCode Solution:</strong>
+                <button class="btn-micro-close" id="closeTopicPracticeSolBtn">✕</button>
+              </div>
+              <pre><code id="topicPracticeSolCode"></code></pre>
+              <p class="solution-notes" id="topicPracticeSolNotes"></p>
+            </div>
+
+            <div class="hint-reveal-card hidden" id="topicPracticeHintDrawer">
+              <div class="hint-header">
+                <strong>💡 Progressive Hint:</strong>
+                <button class="btn-micro-close" id="closeTopicPracticeHintBtn">✕</button>
+              </div>
+              <p id="topicPracticeHintText"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Action Row -->
+        <div class="topic-detail-bottom-row">
+          <button class="primary-pill-btn" id="topicDetailQuizBtn">🎯 Quiz Me on This</button>
+          <button class="secondary-pill-btn" id="topicDetailSaveBtn">🔖 Save to Review</button>
+        </div>
+      </section>
+
+      <!-- ── VIEW 5.5: Technical Cheatsheet Hub (Dynamic Real-Time Synced) ── -->
+      <section class="view-panel" id="viewCheatsheets">
+        <div class="view-header cheatsheets-header">
+          <div class="header-greeting">
+            <div class="cheatsheet-live-indicator">
+              <span class="live-pulse-dot"></span>
+              <span class="live-badge-text">LIVE REPOSITORY SYNC</span>
+              <span class="live-timestamp" id="cheatsheetLiveTimestamp">Live Date & Time</span>
+            </div>
+            <h2>Full Technical Interview Cheatsheet Hub</h2>
+            <p>Comprehensive, battle-tested cheatsheets synthesized across DSA patterns, System Design, OOPS, Computer Networks, and SQL query tuning.</p>
+          </div>
+          <div class="cheatsheet-search-wrap">
+            <input type="text" id="cheatsheetSearchInput" class="cheatsheet-search-input" placeholder="🔍 Search patterns, Big-O, commands..." autocomplete="off">
+          </div>
+        </div>
+
+        <!-- Cheatsheet Category Filter Tabs -->
+        <div class="cheatsheet-cat-tabs" id="cheatsheetCatTabs">
+          <button class="cheatsheet-cat-btn active" data-cat="all">📚 All Cheatsheets</button>
+          <button class="cheatsheet-cat-btn" data-cat="dsa">🧠 DSA Patterns & Big-O</button>
+          <button class="cheatsheet-cat-btn" data-cat="system_design">🏗️ System Design & Latency</button>
+          <button class="cheatsheet-cat-btn" data-cat="oops">🧱 OOPS & SOLID</button>
+          <button class="cheatsheet-cat-btn" data-cat="networks">🌐 Computer Networks</button>
+          <button class="cheatsheet-cat-btn" data-cat="sql">💾 DBMS & SQL</button>
+        </div>
+
+        <!-- Cheatsheet Cards Container -->
+        <div class="cheatsheets-cards-grid" id="cheatsheetsCardsContainer">
+          <!-- Dynamically populated from window.SKILLFORGE_CHEATSHEETS -->
+        </div>
+      </section>
+
+      <!-- ── VIEW 6: Live MCP Inspector & APL Studio (Hackathon Judge View) ── -->
+      <section class="view-panel" id="viewMcp">
+        <div class="view-header">
+          <div class="header-greeting">
+            <h2>📡 MCP Inspector (Spec 2025-11-25) & APL Studio</h2>
+            <p>Live JSON-RPC 2.0 streaming, Amazon Bedrock latency telemetry, and Echo Show 15 APL exporter.</p>
+          </div>
+          <button class="small-btn" id="clearMcpLogBtn">Clear Log</button>
+        </div>
+
+        <div class="mcp-two-col-layout">
+          <!-- Left: Live Protocol Logs -->
+          <div class="mcp-col-left">
+            <div class="mcp-log-container" id="mcpLog">
+              <div class="log-entry">
+                <div class="log-meta">
+                  <span class="log-badge rpc">INITIALIZE</span>
+                  <span class="log-method">protocolVersion: "2025-11-25"</span>
+                  <span class="log-time">Just now</span>
+                </div>
+                <pre class="log-json"><code>{
+  "protocolVersion": "2025-11-25",
+  "capabilities": { "tools": {}, "resources": {}, "prompts": {} },
+  "serverInfo": { "name": "SkillForge", "version": "1.0.0" }
+}</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Architecture & Telemetry -->
+          <div class="mcp-col-right">
+            <div class="telemetry-card">
+              <h4>⚡ Bedrock & Hardware Telemetry</h4>
+              <div class="telemetry-row">
+                <span>Selected Model</span>
+                <strong id="mcpModelActive">Claude 3.5 Sonnet v2</strong>
+              </div>
+              <div class="telemetry-row">
+                <span>Target Voice Latency</span>
+                <strong style="color:var(--alexa-cyan);">&lt; 350 ms</strong>
+              </div>
+              <div class="telemetry-row">
+                <span>Spaced Repetition Engine</span>
+                <strong style="color:#a78bfa;">SuperMemo SM-2 (Active)</strong>
+              </div>
+              <div class="telemetry-row">
+                <span>Persistence Storage</span>
+                <strong id="mcpStorageActive">DynamoDB Dual-Mode</strong>
+              </div>
+            </div>
+
+            <div class="telemetry-card" style="margin-top:16px;">
+              <h4>📱 Echo Show 15 APL 2026 Studio</h4>
+              <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:12px;">
+                Export production-grade Alexa Presentation Language documents ready for Alexa Console.
+              </p>
+              <button class="primary-pill-btn" id="mcpOpenAplBtn" style="width:100%;">Inspect APL 2026 JSON</button>
+              <button class="secondary-pill-btn" id="mcpOpenScorecardBtn" style="width:100%; margin-top:8px;">Open Bar Raiser Scorecard</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── VIEW 7: Progress & Mastery View ─────────────────────────────── -->
+      <section class="view-panel" id="viewProgress">
+        <div class="view-header">
+          <div class="header-greeting">
+            <h2>Your Algorithmic Mastery</h2>
+            <p>Track your Spaced Repetition deck, retention intervals, and unlocked skill achievements.</p>
+          </div>
+        </div>
+
+        <div class="progress-details-grid">
+          <div class="stat-card">
+            <div class="stat-icon-wrap streak-icon-wrap">🔥</div>
+            <div class="stat-content">
+              <div class="stat-hero-number" id="progStreak">14 Days</div>
+              <div class="stat-hero-sub">Current Study Streak</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-wrap level-icon-wrap">💎</div>
+            <div class="stat-content">
+              <div class="stat-hero-number" id="progTotalXp">450 XP</div>
+              <div class="stat-hero-sub">Rank: Algorithm Specialist</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-wrap accuracy-stat-card">🎯</div>
+            <div class="stat-content">
+              <div class="stat-hero-number" id="progQuizzes">28 Solved</div>
+              <div class="stat-hero-sub">Total Questions Practiced</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Flashcards Due Section -->
+        <h3 class="curriculum-title" style="margin-top:24px;">Active SM-2 Spaced Repetition Cards</h3>
+        <div class="flashcards-deck-container" id="progressFlashcardsList">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+
+      <!-- ── VIEW 8: Settings View ────────────────────────────────────────── -->
+      <section class="view-panel" id="viewSettings">
+        <div class="view-header">
+          <div class="header-greeting">
+            <h2>SkillForge Settings & Accounts</h2>
+            <p>Customize Alexa+ speech output, switch developer personas, and view AWS configuration.</p>
+          </div>
+        </div>
+
+        <div class="settings-cards-col">
+          <!-- Voice Settings -->
+          <div class="settings-box">
+            <h4>🔊 Alexa Voice & Audio Preferences</h4>
+            <div class="setting-row">
+              <div>
+                <strong>Text-to-Speech Voice Output</strong>
+                <p>Alexa speaks quiz questions, analogies, and Socratic feedback aloud.</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="settingTtsCheckbox" checked>
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <div class="setting-row">
+              <div>
+                <strong>Speech Rate</strong>
+                <p>Adjust speaking cadence for algorithmic comprehension.</p>
+              </div>
+              <input type="range" id="settingRateRange" min="0.8" max="1.3" step="0.05" value="1.05">
+            </div>
+          </div>
+
+          <!-- User Profile & Switcher -->
+          <div class="settings-box">
+            <h4>👤 Developer Profiles & Accounts</h4>
+            <div class="account-current-banner">
+              <span class="account-avatar" id="settingsUserAvatar">👨‍💻</span>
+              <div class="account-info">
+                <strong id="settingsUserName">Alex Chen</strong>
+                <span id="settingsUserRole">Amazon SDE II Prep • alex.chen@aws.dev</span>
+              </div>
+            </div>
+            <div class="account-switch-row">
+              <button class="quick-user-btn" data-user="alex" data-pass="alex123">Alex Chen (Lvl 3)</button>
+              <button class="quick-user-btn" data-user="priya" data-pass="priya123">Priya Patel (Lvl 5)</button>
+              <button class="quick-user-btn" data-user="marcus" data-pass="marcus123">Marcus Vance (Lvl 7)</button>
+              <button class="secondary-btn" id="openAuthModalBtn">+ Add New Account</button>
+            </div>
+          </div>
+
+          <!-- About & Live Deployment Link Box -->
+          <div class="settings-box about-settings-box">
+            <h4>ℹ️ About SkillForge & Live Deployment</h4>
+            <div class="setting-row">
+              <div>
+                <strong>Cloud Deployment (Render)</strong>
+                <p>Live production instance with Streamable HTTP & SSE Model Context Protocol endpoints.</p>
+              </div>
+              <a href="https://skillforge-scoz.onrender.com/" target="_blank" rel="noopener noreferrer" class="link-external-pill">
+                https://skillforge-scoz.onrender.com/ ↗
+              </a>
+            </div>
+            <div class="setting-row">
+              <div>
+                <strong>GitHub Pages Showcase</strong>
+                <p>Global static deployment hosted on GitHub Pages with connected live MCP client API.</p>
+              </div>
+              <a href="https://lakkireddy-2001.github.io/Skillforge/" target="_blank" rel="noopener noreferrer" class="link-external-pill">
+                https://lakkireddy-2001.github.io/Skillforge/ ↗
+              </a>
+            </div>
+            <div class="setting-row">
+              <div>
+                <strong>Live MCP Tool Server Spec 2025-11-25</strong>
+                <p>Self-hosted tool discovery for Alexa+ agents & Bedrock Claude 3 Haiku.</p>
+              </div>
+              <a href="https://skillforge-scoz.onrender.com/mcp/tools" target="_blank" rel="noopener noreferrer" class="link-external-pill">
+                /mcp/tools ↗
+              </a>
+            </div>
+            <div class="setting-row">
+              <div>
+                <strong>Open Source Codebase</strong>
+                <p>Apache 2.0 licensed public GitHub repository for Amazon Developer Hackathon 2026.</p>
+              </div>
+              <a href="https://github.com/LAKKIREDDY-2001/Skillforge" target="_blank" rel="noopener noreferrer" class="link-external-pill">
+                GitHub Repository ↗
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /.main-wrapper -->
+
+    <!-- ── FLOATING VOICE ASSISTANT MODAL (Triggered by bottom mic button) ── -->
+    <div class="modal-overlay hidden" id="voiceModal">
+      <div class="modal-card voice-assistant-card">
+        <div class="modal-header">
+          <div class="modal-title">
+            <span class="modal-icon">🎙️</span>
+            <span>Alexa+ Voice Assistant (Live MCP)</span>
+          </div>
+          <button class="modal-close-btn" id="closeVoiceModalBtn">✕</button>
+        </div>
+
+        <div class="voice-modal-body">
+          <!-- Alexa Glowing Ring Orb -->
+          <div class="alexa-orb-container">
+            <div class="alexa-ring" id="alexaRing">
+              <div class="ring-glow"></div>
+              <div class="ring-inner">
+                <div class="waveform" id="waveform">
+                  <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                  <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                  <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                </div>
+              </div>
+            </div>
+            <canvas id="audioVisualizer" class="audio-visualizer-canvas" width="320" height="36"></canvas>
+            <div class="orb-status" id="orbStatus">"Alexa, quiz me on dynamic programming"</div>
+          </div>
+
+          <!-- Spoken Transcript / Conversation Feed -->
+          <div class="conversation-feed" id="conversationFeed">
+            <div class="message assistant-msg">
+              <div class="msg-header">
+                <span class="msg-avatar">🎙️ Alexa+</span>
+                <span class="msg-time">Just now</span>
+              </div>
+              <div class="msg-body">
+                Welcome to <strong>SkillForge</strong>! I'm your voice-first DSA learning companion. Tap the mic below or type a question.
+              </div>
+            </div>
+          </div>
+
+          <!-- Voice Input Bar -->
+          <div class="input-bar">
+            <button class="mic-btn" id="modalMicBtn" title="Speak to Alexa">
+              <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+              </svg>
+            </button>
+            <input type="text" id="modalTextInput" placeholder="Ask for code, a quiz, or an analogy...">
+            <button class="send-btn" id="modalSendBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MODAL: Amazon Bar Raiser Scorecard ────────────────────────────── -->
+    <div class="modal-overlay hidden" id="scorecardModal">
+      <div class="modal-card wide-modal">
+        <div class="modal-header">
+          <div class="modal-title">
+            <span class="modal-icon">🏢</span>
+            <span>Amazon Bar Raiser — SDE II Technical Evaluation</span>
+          </div>
+          <button class="modal-close-btn" id="closeScorecardModalBtn">✕</button>
+        </div>
+        <div class="scorecard-body">
+          <div class="verdict-banner">
+            <div class="verdict-pill" id="scorecardVerdict">STRONG HIRE</div>
+            <div class="verdict-meta">
+              <span class="verdict-role">Role: Amazon Software Development Engineer II (L5)</span>
+              <span class="verdict-score" id="scorecardOverallRating">Overall: 4.9 / 5.0</span>
+            </div>
+          </div>
+          <p class="scorecard-summary" id="scorecardSummary">
+            Candidate demonstrated outstanding algorithmic rigor, proactively discussing Big-O trade-offs, handling boundary constraints, and strongly exemplifying Amazon Leadership Principles.
+          </p>
+          <div class="scorecard-grid">
+            <div class="metric-card">
+              <div class="metric-val">9.5/10</div>
+              <div class="metric-name">Algorithmic Depth</div>
+              <div class="metric-bar"><div class="metric-fill" style="width: 95%;"></div></div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val">9.2/10</div>
+              <div class="metric-name">Code Modularity</div>
+              <div class="metric-bar"><div class="metric-fill" style="width: 92%;"></div></div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val">9.4/10</div>
+              <div class="metric-name">Edge Cases</div>
+              <div class="metric-bar"><div class="metric-fill" style="width: 94%;"></div></div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val">9.8/10</div>
+              <div class="metric-name">Voice Articulation</div>
+              <div class="metric-bar"><div class="metric-fill" style="width: 98%;"></div></div>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button class="primary-btn" id="printScorecardBtn">📋 Copy Scorecard</button>
+            <button class="secondary-btn" id="closeScorecardActionBtn">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MODAL: Alexa Presentation Language (APL 2026) ─────────────────── -->
+    <div class="modal-overlay hidden" id="aplModal">
+      <div class="modal-card wide-modal">
+        <div class="modal-header">
+          <div class="modal-title">
+            <span class="modal-icon">📱</span>
+            <span>Alexa Presentation Language (APL 2026 / Echo Show 15)</span>
+          </div>
+          <button class="modal-close-btn" id="closeAplModalBtn">✕</button>
+        </div>
+        <div class="apl-body">
+          <p class="apl-intro">
+            Production-ready APL 2026 JSON specification generated by SkillForge MCP Server for Echo Show smart displays.
+          </p>
+          <div class="code-tabs-row">
+            <button class="code-tab-btn active" id="aplTabDoc">APL Document (JSON)</button>
+            <button class="code-tab-btn" id="aplTabData">Data Sources (JSON)</button>
+          </div>
+          <pre class="apl-code-box"><code id="aplCodeDisplay">// Loading APL...</code></pre>
+          <div class="modal-actions">
+            <button class="primary-btn" id="copyAplBtn">📋 Copy APL JSON for Alexa Console</button>
+            <button class="secondary-btn" id="closeAplActionBtn">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MODAL: User Auth (Sign In / Sign Up) ───────────────────────────── -->
+    <div class="modal-overlay hidden" id="authModal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title">
+            <span class="modal-icon">👤</span>
+            <span>SkillForge Developer Profile</span>
+          </div>
+          <button class="modal-close-btn" id="closeAuthModalBtn">✕</button>
+        </div>
+        <div class="auth-tabs">
+          <button class="auth-tab-btn active" id="tabSignInBtn" data-tab="signin-tab">Sign In</button>
+          <button class="auth-tab-btn" id="tabSignUpBtn" data-tab="signup-tab">Sign Up</button>
+        </div>
+        <div class="auth-content">
+          <div class="auth-alert error hidden" id="authErrorMsg"></div>
+          <div class="auth-alert success hidden" id="authSuccessMsg"></div>
+
+          <!-- Sign In Form -->
+          <form class="auth-form" id="signinForm">
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" id="signinUsername" placeholder="e.g. alex" value="alex" required autocomplete="username">
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" id="signinPassword" value="alex123" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="primary-btn full-width" id="btnSubmitSignIn">Sign In to SkillForge</button>
+            <div class="auth-footer-help">
+              <span>New to SkillForge?</span>
+              <button type="button" class="auth-link-btn" id="linkToSignUp">Create a new developer profile →</button>
+            </div>
+          </form>
+
+          <!-- Sign Up Form -->
+          <form class="auth-form hidden" id="signupForm">
+            <div class="form-row-2col">
+              <div class="form-group">
+                <label>Username *</label>
+                <input type="text" id="signupUsername" placeholder="e.g. lakkireddy" required autocomplete="username">
+              </div>
+              <div class="form-group">
+                <label>Display Name *</label>
+                <input type="text" id="signupDisplayName" placeholder="e.g. Venkat Reddy" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" id="signupEmail" placeholder="developer@aws.dev" autocomplete="email">
+            </div>
+            <div class="form-group">
+              <label>Target Dream Role</label>
+              <input type="text" id="signupRole" placeholder="e.g. Amazon SDE II" value="Amazon Software Development Engineer">
+            </div>
+            <div class="form-group">
+              <label>Password *</label>
+              <input type="password" id="signupPassword" placeholder="Choose a password" required autocomplete="new-password">
+            </div>
+            <button type="submit" class="primary-btn full-width" id="btnSubmitSignUp">Create Developer Account 🚀</button>
+            <div class="auth-footer-help">
+              <span>Already registered?</span>
+              <button type="button" class="auth-link-btn" id="linkToSignIn">Sign in with your username →</button>
+            </div>
+          </form>
+
+          <!-- Demo Hint Box -->
+          <div class="auth-demo-hint">
+            <strong>💡 Quick Test:</strong> Sign in with <code>alex</code> / <code>alex123</code> or create your custom profile to test multi-user persistence!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Level & Member Lock Prompt Modal ────────────────────────────── -->
+    <div class="modal-overlay hidden" id="lockPromptModal">
+      <div class="modal-card lock-modal-card">
+        <div class="modal-header">
+          <div class="lock-modal-badge">
+            <span class="lock-icon-hero">🔒</span>
+            <div>
+              <h3 id="lockModalTitle">Level 2 & Member Tracks Locked</h3>
+              <span class="lock-modal-sub">Sign in or create an account to unlock all levels & earn XP!</span>
+            </div>
+          </div>
+          <button class="close-modal-btn" id="closeLockPromptBtn">✕</button>
+        </div>
+        <div class="modal-body lock-modal-body">
+          <p id="lockModalDesc">
+            Guests start at <strong>Level 1 (Easy tracks open)</strong>. Level 2 (Medium), Level 3 (Hard), and Company Packs (Amazon, Google, Microsoft, Meta) are reserved for registered engineers.
+          </p>
+          <div class="lock-benefits-list">
+            <div class="benefit-item"><span>🔓</span> Complete access to all 22 Courses & 66 FAANG Problems</div>
+            <div class="benefit-item"><span>📦</span> Unrestricted Amazon, Google, Meta & Microsoft Packs</div>
+            <div class="benefit-item"><span>⚡</span> XP, Leaderboard Points & Daily Streak Persistence</div>
+            <div class="benefit-item"><span>🧠</span> SuperMemo SM-2 Spaced Repetition Auto-Scheduler</div>
+          </div>
+          <div class="lock-modal-actions">
+            <button class="primary-pill-btn full-width" id="lockModalSigninBtn">Sign In to Unlock Everything</button>
+            <button class="secondary-pill-btn full-width" id="lockModalSignupBtn">Create Free Account (30 seconds)</button>
+            <button class="text-pill-btn" id="lockModalDemoBtn">⚡ Continue as Demo User (Alex Chen)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Floating In-App Streak Notification Toast ──────────────────────── -->
+    <div class="in-app-toast hidden" id="inAppToast">
+      <div class="toast-glow-border"></div>
+      <div class="toast-icon-wrap">
+        <img src="static/icon.png" alt="SkillForge" class="toast-logo-icon">
+      </div>
+      <div class="toast-body">
+        <div class="toast-title" id="toastTitle">🔥 SkillForge Streak Reminder</div>
+        <div class="toast-desc" id="toastDesc">Don't break your 14-day streak! Complete 1 quick voice challenge today.</div>
+      </div>
+      <div class="toast-actions">
+        <button class="toast-action-btn" id="toastActionBtn">Practice Now 🔥</button>
+        <button class="toast-close-btn" id="toastCloseBtn">✕</button>
+      </div>
+    </div>
+
+  </div><!-- /.app-shell -->
+
+  <script src="static/neetcode_data.js"></script>
+  <script src="static/expanded_curriculum.js"></script>
+  <script src="static/app.js"></script>
+</body>
+</html>
