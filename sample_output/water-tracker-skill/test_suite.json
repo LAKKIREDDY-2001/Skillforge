@@ -1,0 +1,260 @@
+{
+  "skill_name": "water tracker",
+  "tests": [
+    {
+      "id": "tc_001",
+      "utterance": "I drank 500 milliliters of water",
+      "expected_intent": "LogWaterIntent",
+      "expected_slots": {
+        "amount": "500",
+        "unit": "milliliters"
+      },
+      "expected_ssml": "<speak>Successfully handled LogWaterIntent</speak>",
+      "edge_case": false,
+      "category": "positive_sample"
+    },
+    {
+      "id": "tc_002",
+      "utterance": "log 500 milliliters",
+      "expected_intent": "LogWaterIntent",
+      "expected_slots": {
+        "amount": "500",
+        "unit": "milliliters"
+      },
+      "expected_ssml": "<speak>Successfully handled LogWaterIntent</speak>",
+      "edge_case": false,
+      "category": "positive_sample"
+    },
+    {
+      "id": "tc_003",
+      "utterance": "add 500 milliliters of water",
+      "expected_intent": "LogWaterIntent",
+      "expected_slots": {
+        "amount": "500",
+        "unit": "milliliters"
+      },
+      "expected_ssml": "<speak>Successfully handled LogWaterIntent</speak>",
+      "edge_case": false,
+      "category": "positive_sample"
+    },
+    {
+      "id": "tc_004",
+      "utterance": "record 500 milliliters",
+      "expected_intent": "LogWaterIntent",
+      "expected_slots": {
+        "amount": "500",
+        "unit": "milliliters"
+      },
+      "expected_ssml": "<speak>Successfully handled LogWaterIntent</speak>",
+      "edge_case": false,
+      "category": "positive_sample"
+    },
+    {
+      "id": "tc_005",
+      "utterance": "I just drank 500 milliliters",
+      "expected_intent": "LogWaterIntent",
+      "expected_slots": {
+        "amount": "500",
+        "unit": "milliliters"
+      },
+      "expected_ssml": "<speak>Successfully handled LogWaterIntent</speak>",
+      "edge_case": false,
+      "category": "positive_sample"
+    },
+    {
+      "id": "tc_006",
+      "utterance": "track 500 milliliters of water",
+      "expected_intent": "LogWaterIntent",
+      "expected_slots": {
+        "amount": "500",
+        "unit": "milliliters"
+      },
+      "expected_ssml": "<speak>Successfully handled LogWaterIntent</speak>",
+      "edge_case": false,
+      "category": "positive_sample"
+    },
+    {
+      "id": "tc_007",
+      "utterance": "how much water have I had today",
+      "expected_intent": "CheckDailyIntakeIntent",
+      "expected_slots": {},
+      "expected_ssml": "<speak>Successfully handled CheckDailyIntakeIntent</speak>",
+      "edge_case": false,
+      "category": "positive_sample"
+    },
+    {
+      "id": "tc_008",
+      "utterance": "what is my daily intake",
+      "expected_intent": "CheckDailyIntakeIntent",
+      "expected_slots": {},
+      "expected_ssml": "<speak>Successfully handled CheckDailyIntakeIntent</speak>",
+      "edge_case": false,
+      "category": "positive_sample"
+    },
+    {
+      "id": "tc_009",
+      "utterance": "check my water intake",
+      "expected_intent": "CheckDailyIntakeIntent",
+      "expected_slots": {},
+      "expected_ssml": "<speak>Successfully handled CheckDailyIntakeIntent</speak>",
+      "edge_case": false,
+      "category": "positive_sample"
+    },
+    {
+      "id": "tc_010",
+      "utterance": "how much did I drink",
+      "expected_intent": "CheckDailyIntakeIntent",
+      "expected_slots": {},
+      "expected_ssml": "<speak>Successfully handled CheckDailyIntakeIntent</speak>",
+      "edge_case": false,
+      "category": "positive_sample"
+    },
+    {
+      "id": "tc_011",
+      "utterance": "give me today's hydration status",
+      "expected_intent": "CheckDailyIntakeIntent",
+      "expected_slots": {},
+      "expected_ssml": "<speak>Successfully handled CheckDailyIntakeIntent</speak>",
+      "edge_case": false,
+      "category": "positive_sample"
+    },
+    {
+      "id": "tc_012",
+      "utterance": "what's my total so far",
+      "expected_intent": "CheckDailyIntakeIntent",
+      "expected_slots": {},
+      "expected_ssml": "<speak>Successfully handled CheckDailyIntakeIntent</speak>",
+      "edge_case": false,
+      "category": "positive_sample"
+    },
+    {
+      "id": "tc_013",
+      "utterance": "remind me to drink every 2 hours",
+      "expected_intent": "SetReminderIntent",
+      "expected_slots": {
+        "interval": "2"
+      },
+      "expected_ssml": "<speak>Successfully handled SetReminderIntent</speak>",
+      "edge_case": false,
+      "category": "positive_sample"
+    },
+    {
+      "id": "tc_014",
+      "utterance": "set a reminder for 2 hours",
+      "expected_intent": "SetReminderIntent",
+      "expected_slots": {
+        "interval": "2"
+      },
+      "expected_ssml": "<speak>Successfully handled SetReminderIntent</speak>",
+      "edge_case": false,
+      "category": "positive_sample"
+    },
+    {
+      "id": "tc_015",
+      "utterance": "create a hydration alert every 2 hours",
+      "expected_intent": "SetReminderIntent",
+      "expected_slots": {
+        "interval": "2"
+      },
+      "expected_ssml": "<speak>Successfully handled SetReminderIntent</speak>",
+      "edge_case": false,
+      "category": "positive_sample"
+    },
+    {
+      "id": "tc_016",
+      "utterance": "schedule a drink reminder every 2 hours",
+      "expected_intent": "SetReminderIntent",
+      "expected_slots": {
+        "interval": "2"
+      },
+      "expected_ssml": "<speak>Successfully handled SetReminderIntent</speak>",
+      "edge_case": false,
+      "category": "positive_sample"
+    },
+    {
+      "id": "tc_017",
+      "utterance": "notify me every 2 hours",
+      "expected_intent": "SetReminderIntent",
+      "expected_slots": {
+        "interval": "2"
+      },
+      "expected_ssml": "<speak>Successfully handled SetReminderIntent</speak>",
+      "edge_case": false,
+      "category": "positive_sample"
+    },
+    {
+      "id": "tc_018",
+      "utterance": "set reminder interval to 2 hours",
+      "expected_intent": "SetReminderIntent",
+      "expected_slots": {
+        "interval": "2"
+      },
+      "expected_ssml": "<speak>Successfully handled SetReminderIntent</speak>",
+      "edge_case": false,
+      "category": "positive_sample"
+    },
+    {
+      "id": "tc_019",
+      "utterance": "help me please",
+      "expected_intent": "AMAZON.HelpIntent",
+      "expected_slots": {},
+      "expected_ssml": "<speak>How can I help?</speak>",
+      "edge_case": false,
+      "category": "built_in"
+    },
+    {
+      "id": "tc_020",
+      "utterance": "stop",
+      "expected_intent": "AMAZON.StopIntent",
+      "expected_slots": {},
+      "expected_ssml": "<speak>Goodbye</speak>",
+      "edge_case": false,
+      "category": "built_in"
+    },
+    {
+      "id": "tc_021",
+      "utterance": "cancel that",
+      "expected_intent": "AMAZON.CancelIntent",
+      "expected_slots": {},
+      "expected_ssml": "<speak>Cancelled</speak>",
+      "edge_case": false,
+      "category": "built_in"
+    },
+    {
+      "id": "tc_022",
+      "utterance": "what is the weather in Seattle",
+      "expected_intent": "AMAZON.FallbackIntent",
+      "expected_slots": {},
+      "expected_ssml": "<speak>Sorry, I did not catch that</speak>",
+      "edge_case": true,
+      "category": "out_of_domain"
+    },
+    {
+      "id": "tc_023",
+      "utterance": "play classical music on spotify",
+      "expected_intent": "AMAZON.FallbackIntent",
+      "expected_slots": {},
+      "expected_ssml": "<speak>Sorry, I did not catch that</speak>",
+      "edge_case": true,
+      "category": "out_of_domain"
+    },
+    {
+      "id": "tc_024",
+      "utterance": "asdfghjkl random noise",
+      "expected_intent": "AMAZON.FallbackIntent",
+      "expected_slots": {},
+      "expected_ssml": "<speak>Sorry, I did not catch that</speak>",
+      "edge_case": true,
+      "category": "unintelligible_noise"
+    },
+    {
+      "id": "tc_025",
+      "utterance": "set an alarm for seven am",
+      "expected_intent": "AMAZON.FallbackIntent",
+      "expected_slots": {},
+      "expected_ssml": "<speak>Sorry, I did not catch that</speak>",
+      "edge_case": true,
+      "category": "clock_intent_collision"
+    }
+  ]
+}

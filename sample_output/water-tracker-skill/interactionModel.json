@@ -1,0 +1,208 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "build alexa",
+      "intents": [
+        {
+          "name": "LogWaterIntent",
+          "slots": [
+            {
+              "name": "amount",
+              "type": "AMAZON.NUMBER"
+            },
+            {
+              "name": "unit",
+              "type": "VolumeUnitType"
+            }
+          ],
+          "samples": [
+            "I drank {amount} {unit} of water",
+            "log {amount} {unit}",
+            "add {amount} {unit} of water",
+            "record {amount} {unit}",
+            "I just drank {amount} {unit}",
+            "track {amount} {unit} of water",
+            "please log {amount} {unit} to my daily intake",
+            "put down {amount} {unit} of water",
+            "add {amount} {unit} to my log",
+            "register {amount} {unit} of fresh water",
+            "I consumed {amount} {unit}",
+            "log a drink of {amount} {unit}"
+          ]
+        },
+        {
+          "name": "CheckDailyIntakeIntent",
+          "slots": [],
+          "samples": [
+            "how much water have I had today",
+            "what is my daily intake",
+            "check my water intake",
+            "how much did I drink",
+            "give me today's hydration status",
+            "what's my total so far",
+            "did I reach my water goal today",
+            "how many ounces left to drink",
+            "what is my progress today",
+            "tell me my water level",
+            "show my daily hydration"
+          ]
+        },
+        {
+          "name": "SetReminderIntent",
+          "slots": [
+            {
+              "name": "interval",
+              "type": "AMAZON.NUMBER"
+            }
+          ],
+          "samples": [
+            "remind me to drink every {interval} hours",
+            "set a reminder for {interval} hours",
+            "create a hydration alert every {interval} hours",
+            "schedule a drink reminder every {interval} hours",
+            "notify me every {interval} hours",
+            "set reminder interval to {interval} hours",
+            "alert me to hydrate every {interval} hours",
+            "remind me in {interval} hours",
+            "ping me every {interval} hours",
+            "start reminders every {interval} hours"
+          ]
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": [
+            "help",
+            "what can you do",
+            "help me",
+            "how do I use this"
+          ]
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": [
+            "stop",
+            "exit",
+            "bye",
+            "goodbye",
+            "quit"
+          ]
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": [
+            "cancel",
+            "nevermind",
+            "abort"
+          ]
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        }
+      ],
+      "types": [
+        {
+          "name": "VolumeUnitType",
+          "values": [
+            {
+              "id": "ml",
+              "name": {
+                "value": "milliliters",
+                "synonyms": [
+                  "ml",
+                  "mls",
+                  "milliliter"
+                ]
+              }
+            },
+            {
+              "id": "oz",
+              "name": {
+                "value": "ounces",
+                "synonyms": [
+                  "oz",
+                  "fluid ounces"
+                ]
+              }
+            },
+            {
+              "id": "cups",
+              "name": {
+                "value": "cups",
+                "synonyms": [
+                  "glasses",
+                  "mugs"
+                ]
+              }
+            },
+            {
+              "id": "liters",
+              "name": {
+                "value": "liters",
+                "synonyms": [
+                  "l",
+                  "litre",
+                  "litres"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "dialog": {
+      "delegationStrategy": "ALWAYS",
+      "intents": [
+        {
+          "name": "LogWaterIntent",
+          "delegationStrategy": "ALWAYS",
+          "confirmationRequired": false,
+          "slots": [
+            {
+              "name": "amount",
+              "type": "AMAZON.NUMBER",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.LogWaterIntent.amount"
+              }
+            },
+            {
+              "name": "unit",
+              "type": "VolumeUnitType",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.LogWaterIntent.unit"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "prompts": [
+      {
+        "id": "Elicit.LogWaterIntent.amount",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "What is the amount?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.LogWaterIntent.unit",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "What is the unit?"
+          }
+        ]
+      }
+    ]
+  }
+}

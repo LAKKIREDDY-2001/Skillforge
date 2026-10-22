@@ -1,0 +1,63 @@
+{
+  "manifest": {
+    "manifestVersion": "1.0",
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "name": "water tracker",
+          "summary": "AI-Powered voice experience for water tracker.",
+          "description": "Build an Alexa skill that tracks daily water intake, logs glasses of water consumed, and provides a daily progress summary.",
+          "smallIconUri": "https://s3.amazonaws.com/skillforge-assets/icon_108.png",
+          "largeIconUri": "https://s3.amazonaws.com/skillforge-assets/icon_512.png",
+          "examplePhrases": [
+            "Alexa, open water tracker",
+            "Alexa, ask water tracker to log an entry",
+            "Alexa, ask water tracker for my status"
+          ],
+          "keywords": [
+            "skillforge",
+            "alexa+",
+            "ai assistant",
+            "voice productivity",
+            "amazon bedrock"
+          ]
+        }
+      },
+      "isAvailableWorldwide": true,
+      "testingInstructions": "Say 'Alexa, open skill' to begin the interactive voice flow.",
+      "category": "ORGANIZERS_AND_ASSISTANTS",
+      "distributionCountries": []
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "uri": "arn:aws:lambda:us-east-1:123456789012:function:SkillForge-Handler"
+        },
+        "interfaces": [
+          {
+            "type": "ALEXA_PRESENTATION_APL"
+          }
+        ]
+      }
+    },
+    "permissions": [
+      {
+        "name": "alexa::profile:name:read"
+      }
+    ],
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "usesPersonalInfo": false,
+      "isChildDirected": false,
+      "isExportCompliant": true,
+      "containsAds": false,
+      "certifyToCompliance": true,
+      "locales": {
+        "en-US": {
+          "privacyPolicyUrl": "https://skillforge.io/privacy",
+          "termsOfUseUrl": "https://skillforge.io/terms"
+        }
+      }
+    }
+  }
+}

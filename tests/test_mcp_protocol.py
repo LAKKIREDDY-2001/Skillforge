@@ -2,6 +2,8 @@
 
 import json
 import pytest
+fastapi = pytest.importorskip("fastapi")
+sse_starlette = pytest.importorskip("sse_starlette")
 from skillforge.mcp_server import MCPServer
 from skillforge.skill_engine import SkillEngine
 

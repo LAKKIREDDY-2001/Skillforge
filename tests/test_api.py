@@ -1,6 +1,8 @@
 """Integration tests for FastAPI endpoints."""
 
 import pytest
+httpx = pytest.importorskip("httpx")
+fastapi = pytest.importorskip("fastapi")
 from httpx import ASGITransport, AsyncClient
 from skillforge.main import app
 
